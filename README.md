@@ -1,23 +1,23 @@
 # Online-PDF-CV :
 
-PDF resume hosted online with heroku 
+PDF resume hosted online with heroku. 
 
 # Technologie used :
 
-JavaScript : https://www.javascript.com/
-Node.js : https://nodejs.org
-Express.js : https://expressjs.com
-Heroku : https://www.heroku.com/
-Git : https://git-scm.com/
+JavaScript : https://www.javascript.com/.
+Node.js : https://nodejs.org.
+Express.js : https://expressjs.com.
+Heroku : https://www.heroku.com/.
+Git : https://git-scm.com/.
 
 # How to use :
 
-For hosting your White-Paper or PDF (CV or Resume)
+For hosting your White-Paper or PDF (CV or Resume).
 
 1 -> go to :  ".\Online-PDF-CV\public" folder.
-2 -> rename your PDF name with "resume"
+2 -> rename your PDF name with "resume".
 3 -> replace the existing "resume.pdf" with your own.
-4 -> save changes and deploy to your heroku app
+4 -> save changes and deploy to your heroku app.
 
 # Save change and deploy :
 
@@ -27,7 +27,8 @@ For hosting your White-Paper or PDF (CV or Resume)
 
 # Create an app in heroku :
 
-you can use the heroku hosting for small app FREE (as trailer)
+you can use the heroku hosting for small app FREE (as trailer).
+
 https://dashboard.heroku.com/apps
 
 # Create a CV online :
