@@ -1,11 +1,15 @@
 {
-    "name": "cv",
-    "version": "0.1.0",
+    "name": "benyakoub-cv",
+    "version": "3.6.2",
     "private": true,
     "scripts": {
         "start": "node ./bin/www",
         "star": "node app.js",
-        "deploy": "firebase deploy"
+        "deploy": "firebase deploy",
+        "build": ""
+    },
+    "engines": {
+        "node": ">=16.17.1"
     },
     "dependencies": {
         "cookie-parser": "^1.4.6",
