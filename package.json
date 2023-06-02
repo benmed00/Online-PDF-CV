@@ -4,7 +4,8 @@
     "private": true,
     "scripts": {
         "start": "node ./bin/www",
-        "star": "node app.js"
+        "star": "node app.js",
+        "deploy": "firebase deploy"
     },
     "dependencies": {
         "cookie-parser": "^1.4.6",
