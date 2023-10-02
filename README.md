@@ -1,14 +1,14 @@
 # Online-PDF-CV :
 
 PDF resume hosted online with heroku. 
-
+<https://benyakoub-cv.firebaseapp.com/>
 # Technologie used :
 
 JavaScript : https://www.javascript.com/.  
 Node.js : https://nodejs.org.  
 Express.js : https://expressjs.com.  
-Heroku : https://www.heroku.com/.  
-Git : https://git-scm.com/.  
+Git : https://git-scm.com/.
+Firebase-CLi : <https://www.npmjs.com/package/firebase-tools>  
 
 # How to use :
 
@@ -16,7 +16,8 @@ For hosting your White-Paper or PDF (CV or Resume).
 
 1 -> go to :  ".\Online-PDF-CV\public" folder.  
 2 -> rename your PDF name with "resume".  
-3 -> replace the existing "resume.pdf" with your own.  
+3 -> replace the existing "resume.pdf" with your own.
+4 -> commit your changes to your git repository. 'git remote get-url origin' && "git push origin master/main"
 4 -> save changes and deploy to your FireBase app. (Create app first -- use firebase/CLI)  
 
 # Save change and deploy :
@@ -27,7 +28,7 @@ For hosting your White-Paper or PDF (CV or Resume).
 
 # Create an app in FireBase :
 
-you can use the heroku hosting for small app FREE (as trailer).
+you can use the Fire-Base hosting for small app FREE (as trailer).
 
 <https://console.firebase.google.com/>
 
