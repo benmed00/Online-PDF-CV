@@ -1,0 +1,61 @@
+{
+  "env": {
+    "node": true,
+    "es6": true,
+    "jest": true,
+    "browser": true
+  },
+  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-console": "warn",
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "next"
+      }
+    ],
+    "prettier/prettier": "error"
+  },
+  "overrides": [
+    {
+      "files": ["**/__tests__/**/*.js", "**/*.test.js", "**/*.spec.js"],
+      "env": {
+        "jest": true
+      },
+      "rules": {
+        "no-unused-vars": "off"
+      }
+    },
+    {
+      "files": ["public/javascripts/**/*.js"],
+      "env": {
+        "browser": true
+      },
+      "rules": {
+        "no-console": "off"
+      }
+    },
+    {
+      "files": ["scripts/**/*.js"],
+      "env": {
+        "node": true
+      },
+      "rules": {
+        "no-console": "off"
+      }
+    },
+    {
+      "files": ["public/service-worker.js"],
+      "env": {
+        "serviceworker": true
+      },
+      "rules": {
+        "no-console": "off"
+      }
+    }
+  ]
+}

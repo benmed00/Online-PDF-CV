@@ -15,6 +15,11 @@ var http = require('http');
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
+console.log('🚀 Starting server...');
+console.log('📦 Application: benyakoub-cv');
+console.log('🔧 Environment:', process.env.NODE_ENV || 'development');
+console.log('🌐 Port:', port);
+
 /**
  * Create HTTP server.
  */
@@ -55,24 +60,28 @@ function normalizePort(val) {
 
 function onError(error) {
   if (error.syscall !== 'listen') {
+    console.error('❌ Server error:', error.message);
     throw error;
   }
 
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+  var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
 
   // handle specific listen errors with friendly messages
+  console.error('❌ Failed to start server on', bind);
   switch (error.code) {
     case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
+      console.error('🔒 Error: ' + bind + ' requires elevated privileges');
+      console.error('💡 Try running as administrator or use a port > 1024');
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
+      console.error('🚫 Error: ' + bind + ' is already in use');
+      console.error('💡 Try using a different port or stop the other process');
+      console.error('💡 You can set a different port: SET PORT=3001 && npm start');
       process.exit(1);
       break;
     default:
+      console.error('❌ Unexpected error:', error.message);
       throw error;
   }
 }
@@ -83,8 +92,19 @@ function onError(error) {
 
 function onListening() {
   var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
+  var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+
+  // Always show these messages (not just in debug mode)
+  console.log('✅ Server successfully started!');
+  console.log('🌍 Local URL: http://localhost:' + addr.port);
+  console.log('📄 Your resume is available at: http://localhost:' + addr.port);
+  console.log('📚 API documentation: http://localhost:' + addr.port + '/docs');
+  console.log('🔍 Resume analyzer: http://localhost:' + addr.port + '/analyzer');
+  console.log('⚖️  Resume comparison: http://localhost:' + addr.port + '/compare');
+  console.log('📊 API versions: http://localhost:' + addr.port + '/api/versions');
+  console.log('');
+  console.log('Press Ctrl+C to stop the server');
+
+  // Keep the debug message for development
   debug('Listening on ' + bind);
 }

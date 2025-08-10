@@ -1,2 +1,39 @@
-nodes_modules/**
-*node_modules/*
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Firebase
+.firebase/
+firebase-debug.log
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Build files
+/build
+/dist
+
+# Logs
+logs
+*.log
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Temporary files
+tmp/
+temp/

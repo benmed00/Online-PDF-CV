@@ -1,0 +1,19 @@
+{
+  "name": "online-pdf-cv-docs",
+  "version": "1.0.0",
+  "description": "Documentation for the Online-PDF-CV Node.js Express application.",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "your-build-command-here",
+    "serve": "your-serve-command-here"
+  },
+  "dependencies": {
+    "express": "^4.20.0",
+    "markdown-it": "^12.0.6"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "author": "Votre Nom",
+  "license": "MIT"
+}
