@@ -6,6 +6,7 @@ const fs = require('fs');
 describe('Express App', () => {
   test('GET / should serve the home page', async () => {
     const response = await request(app).get('/');
+
     expect(response.status).toBe(200);
     expect(response.type).toBe('text/html');
     expect(response.text).toContain('BEN-YAKOUB');
@@ -17,51 +18,42 @@ describe('Express App', () => {
   });
 
   test('GET /resume should serve the default PDF file', async () => {
-    // Mock the sendFile method since we can't actually send a PDF in the test
-    const mockSendFile = jest.fn();
-    const req = { params: {} }; // Add params object
-    const res = { sendFile: mockSendFile };
+    const response = await request(app).get('/resume');
 
-    // Get the route handler
-    const routeHandler = app._router.stack
-      .filter(layer => layer.route && layer.route.path === '/resume/:version?')
-      .map(layer => layer.route.stack[0].handle)[0];
-
-    // Call the route handler with mock req/res
-    routeHandler(req, res);
-
-    // Check that sendFile was called
-    expect(mockSendFile).toHaveBeenCalled();
+    expect(response.status).toBe(200);
+    expect(response.type).toBe('application/pdf');
   });
 
-  test('GET /resume/version should serve the specific version if it exists', async () => {
-    // Mock the fs and sendFile methods
-    const originalExistsSync = fs.existsSync;
-    const mockSendFile = jest.fn();
+  test('GET /resume/:version should serve a specific version', async () => {
+    const response = await request(app).get('/resume/default');
 
-    // Mock existsSync to return true for a specific version
-    fs.existsSync = jest.fn(path => {
-      if (path.includes('technical.pdf')) {
-        return true;
-      }
-      return originalExistsSync(path);
-    });
+    expect(response.status).toBe(200);
+    expect(response.type).toBe('application/pdf');
+  });
 
-    // Get the route handler
-    const routeHandler = app._router.stack
-      .filter(layer => layer.route && layer.route.path === '/resume/:version?')
-      .map(layer => layer.route.stack[0].handle)[0];
+  test('GET /resume/:version should reject invalid version names', async () => {
+    const response = await request(app).get('/resume/Invalid-Version');
 
-    // Call the route handler with mock req/res
-    const req = { params: { version: 'technical' } };
-    const res = { sendFile: mockSendFile };
-    routeHandler(req, res);
+    expect(response.status).toBe(400);
+  });
 
-    // Check that sendFile was called with the correct path
-    expect(mockSendFile).toHaveBeenCalled();
-    expect(mockSendFile.mock.calls[0][0]).toContain('technical.pdf');
+  test('GET /analyzer should render the analyzer page', async () => {
+    const response = await request(app).get('/analyzer');
 
-    // Restore the original existsSync
-    fs.existsSync = originalExistsSync;
+    expect(response.status).toBe(200);
+    expect(response.text).toContain('Resume Analyzer');
+  });
+
+  test('GET /docs should render the documentation page', async () => {
+    const response = await request(app).get('/docs');
+
+    expect(response.status).toBe(200);
+    expect(response.text).toContain('Resume API Documentation');
+  });
+
+  test('GET /unknown should return 404', async () => {
+    const response = await request(app).get('/does-not-exist');
+
+    expect(response.status).toBe(404);
   });
 });

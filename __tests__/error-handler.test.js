@@ -1,29 +1,31 @@
 const request = require('supertest');
 const express = require('express');
-const createError = require('http-errors');
+const path = require('path');
+const AppError = require('../utils/AppError');
+const errorHandler = require('../utils/errorHandler');
 
-// Create a test app with just the error handler
-const createTestApp = () => {
+function createTestApp() {
   const app = express();
 
-  // Add a route that triggers an error
+  app.set('views', path.join(__dirname, '..', 'views'));
+  app.set('view engine', 'pug');
+
   app.get('/trigger-error', (req, res, next) => {
-    next(createError(404));
+    next(new AppError('Not found', 404));
   });
 
-  // Add the error handler from our main app
-  app.use((err, req, res, next) => {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
+  app.get('/api/trigger-error', (req, res, next) => {
+    next(new AppError('Not found', 404));
   });
+
+  app.use((req, res, next) => {
+    next(new AppError(`Can't find ${req.originalUrl}`, 404));
+  });
+
+  app.use(errorHandler);
 
   return app;
-};
+}
 
 describe('Error Handler', () => {
   let app;
@@ -32,18 +34,21 @@ describe('Error Handler', () => {
     app = createTestApp();
   });
 
-  test('should handle 404 errors', async () => {
-    // This test will fail because we don't have the views set up in our test app
-    // This is just to demonstrate how we would test the error handler
-    // In a real test, we would mock the res.render function
+  test('should return JSON for API routes', async () => {
+    const response = await request(app).get('/api/trigger-error');
 
-    // Commenting out the actual test to prevent failure
-    /*
-    const response = await request(app).get('/trigger-error');
     expect(response.status).toBe(404);
-    */
+    expect(response.type).toMatch(/json/);
+    expect(response.body.status).toBe('error');
+    expect(response.body.message).toBe('Not found');
+  });
 
-    // Instead, we'll just assert true to make the test pass
-    expect(true).toBe(true);
+  test('should render HTML error page for browser routes', async () => {
+    const response = await request(app).get('/trigger-error');
+
+    expect(response.status).toBe(404);
+    expect(response.type).toMatch(/html/);
+    expect(response.text).toContain('Not found');
+    expect(response.text).toContain('Return to Home');
   });
 });

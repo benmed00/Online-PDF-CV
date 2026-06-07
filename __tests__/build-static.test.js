@@ -1,0 +1,38 @@
+const fs = require('fs');
+const path = require('path');
+const { execSync } = require('child_process');
+
+describe('build-static script', () => {
+  const publicDir = path.join(__dirname, '..', 'public');
+  const builtFiles = [
+    'index.html',
+    path.join('docs', 'index.html'),
+    path.join('analyzer', 'index.html'),
+    path.join('compare', 'index.html'),
+    path.join('api', 'versions.json'),
+  ];
+
+  beforeAll(() => {
+    execSync('node scripts/build-static.js', { cwd: path.join(__dirname, '..') });
+  });
+
+  test.each(builtFiles)('should generate %s', relativePath => {
+    expect(fs.existsSync(path.join(publicDir, relativePath))).toBe(true);
+  });
+
+  test('should generate home page with BEN-YAKOUB title', () => {
+    const html = fs.readFileSync(path.join(publicDir, 'index.html'), 'utf8');
+    expect(html).toContain('BEN-YAKOUB');
+    expect(html).toContain('/resume.pdf');
+  });
+
+  test('should generate versions API payload', () => {
+    const payload = JSON.parse(
+      fs.readFileSync(path.join(publicDir, 'api', 'versions.json'), 'utf8')
+    );
+
+    expect(payload.versions).toContain('default');
+    expect(payload.count).toBeGreaterThan(0);
+    expect(payload.baseUrl).toContain('/resume/');
+  });
+});
