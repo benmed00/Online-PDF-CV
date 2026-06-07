@@ -8,8 +8,27 @@
     ],
     "rewrites": [
       {
-        "source": "**",
-        "destination": "/index.html"
+        "source": "/api/versions",
+        "destination": "/api/versions.json"
+      },
+      {
+        "source": "/resume/:version",
+        "destination": "/resumes/:version.pdf"
+      },
+      {
+        "source": "/resume",
+        "destination": "/resume.pdf"
+      }
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(pdf)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=3600"
+          }
+        ]
       }
     ]
   },
