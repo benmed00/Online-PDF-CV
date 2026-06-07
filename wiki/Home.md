@@ -17,7 +17,7 @@ Online-PDF-CV is a lightweight platform for publishing a professional resume as 
 ## Quick start
 
 ```bash
-git clone https://github.com/ben-git-code/Online-PDF-CV.git
+git clone https://github.com/benmed00/Online-PDF-CV.git
 cd Online-PDF-CV
 npm install
 npm start
@@ -38,7 +38,7 @@ Open http://localhost:3000
 
 ## Screenshots
 
-![Home page](https://raw.githubusercontent.com/ben-git-code/Online-PDF-CV/master/docs/assets/screenshots/01-home-desktop.png)
+![Home page](https://raw.githubusercontent.com/benmed00/Online-PDF-CV/master/docs/assets/screenshots/01-home-desktop.png)
 
 See [[Testing-and-Usability]] for the full visual walkthrough.
 

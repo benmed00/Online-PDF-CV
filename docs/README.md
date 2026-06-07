@@ -44,5 +44,5 @@ npm run test:all
 | API reference (wiki) | [`wiki/API-Reference.md`](../wiki/API-Reference.md)                                  |
 | Deployment guide     | [`wiki/Deployment.md`](../wiki/Deployment.md)                                        |
 | Troubleshooting      | [`wiki/Troubleshooting.md`](../wiki/Troubleshooting.md)                              |
-| Fork tracking issues | [benmed00/Online-PDF-CV issues](https://github.com/benmed00/Online-PDF-CV/issues)    |
-| Upstream PR #3       | [ben-git-code/Online-PDF-CV#3](https://github.com/ben-git-code/Online-PDF-CV/pull/3) |
+| GitHub issues | [benmed00/Online-PDF-CV issues](https://github.com/benmed00/Online-PDF-CV/issues) |
+| Platform hardening PR | [benmed00/Online-PDF-CV#31](https://github.com/benmed00/Online-PDF-CV/pull/31) |

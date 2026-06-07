@@ -7,7 +7,7 @@ Release planning for Online-PDF-CV. Aligned with milestone **v3.6.2 — Platform
 ## Current release — v3.6.2 (Platform Hardening)
 
 **Target:** 2026-06-30  
-**Status:** In review ([PR #3](https://github.com/ben-git-code/Online-PDF-CV/pull/3))
+**Status:** In review ([PR #31](https://github.com/benmed00/Online-PDF-CV/pull/31))
 
 ### Delivered
 

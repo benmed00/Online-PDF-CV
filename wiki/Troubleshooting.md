@@ -52,7 +52,7 @@ Ensure these files exist:
 
 ## Permission denied on git push
 
-Verify GitHub credentials for `ben-git-code/Online-PDF-CV` or push to a fork and open a pull request.
+Verify GitHub credentials for `benmed00/Online-PDF-CV` or push to a fork and open a pull request.
 
 ---
 

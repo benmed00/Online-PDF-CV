@@ -59,33 +59,33 @@ Published copies live in the repository at `docs/assets/screenshots/`.
 
 ### Home page
 
-![Home page](https://raw.githubusercontent.com/ben-git-code/Online-PDF-CV/master/docs/assets/screenshots/01-home-desktop.png)
+![Home page](https://raw.githubusercontent.com/benmed00/Online-PDF-CV/master/docs/assets/screenshots/01-home-desktop.png)
 
 ### API documentation
 
-![API docs](https://raw.githubusercontent.com/ben-git-code/Online-PDF-CV/master/docs/assets/screenshots/02-docs-page.png)
+![API docs](https://raw.githubusercontent.com/benmed00/Online-PDF-CV/master/docs/assets/screenshots/02-docs-page.png)
 
 ### Resume analyzer
 
 | Before analysis                                                                                                                       | After analysis                                                                                                                           |
 | ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Analyzer input](https://raw.githubusercontent.com/ben-git-code/Online-PDF-CV/master/docs/assets/screenshots/03-analyzer-before.png) | ![Analyzer results](https://raw.githubusercontent.com/ben-git-code/Online-PDF-CV/master/docs/assets/screenshots/04-analyzer-results.png) |
+| ![Analyzer input](https://raw.githubusercontent.com/benmed00/Online-PDF-CV/master/docs/assets/screenshots/03-analyzer-before.png) | ![Analyzer results](https://raw.githubusercontent.com/benmed00/Online-PDF-CV/master/docs/assets/screenshots/04-analyzer-results.png) |
 
 ### Resume comparison
 
 | Version selectors                                                                                                                       | Side-by-side view                                                                                                                        |
 | --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Compare selectors](https://raw.githubusercontent.com/ben-git-code/Online-PDF-CV/master/docs/assets/screenshots/05-compare-before.png) | ![Compare view](https://raw.githubusercontent.com/ben-git-code/Online-PDF-CV/master/docs/assets/screenshots/06-compare-side-by-side.png) |
+| ![Compare selectors](https://raw.githubusercontent.com/benmed00/Online-PDF-CV/master/docs/assets/screenshots/05-compare-before.png) | ![Compare view](https://raw.githubusercontent.com/benmed00/Online-PDF-CV/master/docs/assets/screenshots/06-compare-side-by-side.png) |
 
 ### Navigation flow
 
-![Docs via navigation](https://raw.githubusercontent.com/ben-git-code/Online-PDF-CV/master/docs/assets/screenshots/08-nav-docs.png)
+![Docs via navigation](https://raw.githubusercontent.com/benmed00/Online-PDF-CV/master/docs/assets/screenshots/08-nav-docs.png)
 
-![Analyzer via navigation](https://raw.githubusercontent.com/ben-git-code/Online-PDF-CV/master/docs/assets/screenshots/09-nav-analyzer.png)
+![Analyzer via navigation](https://raw.githubusercontent.com/benmed00/Online-PDF-CV/master/docs/assets/screenshots/09-nav-analyzer.png)
 
-![Compare via navigation](https://raw.githubusercontent.com/ben-git-code/Online-PDF-CV/master/docs/assets/screenshots/10-nav-compare.png)
+![Compare via navigation](https://raw.githubusercontent.com/benmed00/Online-PDF-CV/master/docs/assets/screenshots/10-nav-compare.png)
 
-![Return to home](https://raw.githubusercontent.com/ben-git-code/Online-PDF-CV/master/docs/assets/screenshots/11-nav-home.png)
+![Return to home](https://raw.githubusercontent.com/benmed00/Online-PDF-CV/master/docs/assets/screenshots/11-nav-home.png)
 
 ---
 
@@ -97,12 +97,12 @@ GitHub Wiki and the README link to these files. Download or open them locally af
 
 | Video                                                                                                                           | Scenario          | Viewport |
 | ------------------------------------------------------------------------------------------------------------------------------- | ----------------- | -------- |
-| [home-desktop.webm](https://github.com/ben-git-code/Online-PDF-CV/blob/master/docs/assets/videos/home-desktop.webm)             | Home page load    | Desktop  |
-| [analyzer-desktop.webm](https://github.com/ben-git-code/Online-PDF-CV/blob/master/docs/assets/videos/analyzer-desktop.webm)     | Analyzer workflow | Desktop  |
-| [compare-desktop.webm](https://github.com/ben-git-code/Online-PDF-CV/blob/master/docs/assets/videos/compare-desktop.webm)       | Compare tool      | Desktop  |
-| [navigation-desktop.webm](https://github.com/ben-git-code/Online-PDF-CV/blob/master/docs/assets/videos/navigation-desktop.webm) | Full navigation   | Desktop  |
-| [home-mobile.webm](https://github.com/ben-git-code/Online-PDF-CV/blob/master/docs/assets/videos/home-mobile.webm)               | Home page load    | Mobile   |
-| [navigation-mobile.webm](https://github.com/ben-git-code/Online-PDF-CV/blob/master/docs/assets/videos/navigation-mobile.webm)   | Full navigation   | Mobile   |
+| [home-desktop.webm](https://github.com/benmed00/Online-PDF-CV/blob/master/docs/assets/videos/home-desktop.webm)             | Home page load    | Desktop  |
+| [analyzer-desktop.webm](https://github.com/benmed00/Online-PDF-CV/blob/master/docs/assets/videos/analyzer-desktop.webm)     | Analyzer workflow | Desktop  |
+| [compare-desktop.webm](https://github.com/benmed00/Online-PDF-CV/blob/master/docs/assets/videos/compare-desktop.webm)       | Compare tool      | Desktop  |
+| [navigation-desktop.webm](https://github.com/benmed00/Online-PDF-CV/blob/master/docs/assets/videos/navigation-desktop.webm) | Full navigation   | Desktop  |
+| [home-mobile.webm](https://github.com/benmed00/Online-PDF-CV/blob/master/docs/assets/videos/home-mobile.webm)               | Home page load    | Mobile   |
+| [navigation-mobile.webm](https://github.com/benmed00/Online-PDF-CV/blob/master/docs/assets/videos/navigation-mobile.webm)   | Full navigation   | Mobile   |
 
 ### Local artifact paths
 

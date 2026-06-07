@@ -6,29 +6,19 @@ Documented limitations and bugs as of v3.6.2.
 
 ## Platform & CI
 
-### No CI checks on upstream fork PRs
+### Legacy `master` branch on GitHub
 
-**Symptom:** [PR #3](https://github.com/ben-git-code/Online-PDF-CV/pull/3) shows only CodeRabbit, not GitHub Actions.
+**Symptom:** [benmed00/Online-PDF-CV `master`](https://github.com/benmed00/Online-PDF-CV) still shows the old README until `platform-hardening-and-docs` is merged.
 
-**Cause:**
-
-- Upstream `master` lacks `ci.yml` until PR merges
-- Fork PR workflows disabled by default on upstream
-- Firebase preview workflow skips external forks
-
-**Workaround:** Monitor fork CI badge: [benmed00/Online-PDF-CV Actions](https://github.com/benmed00/Online-PDF-CV/actions/workflows/ci.yml)
-
-**Tracking:** [#26](https://github.com/benmed00/Online-PDF-CV/issues/26)
+**Fix:** Merge [PR #31](https://github.com/benmed00/Online-PDF-CV/pull/31) or push `master` from local hardening branch.
 
 ---
 
-### Upstream GitHub Issues disabled
+### Stale open PRs (Snyk / Dependabot)
 
-**Symptom:** Cannot open issues on `ben-git-code/Online-PDF-CV`.
+**Symptom:** Multiple open PRs target Express 4.x security bumps while the hardening branch uses Express 5.
 
-**Workaround:** Track on fork [`benmed00/Online-PDF-CV`](https://github.com/benmed00/Online-PDF-CV/issues).
-
-**Tracking:** [#25](https://github.com/benmed00/Online-PDF-CV/issues/25)
+**Action:** Close superseded PRs after merging platform hardening to `master`.
 
 ---
 

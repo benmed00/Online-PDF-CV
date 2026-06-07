@@ -6,19 +6,20 @@ Active short-term tasks. For the full prioritized queue see [backlog.md](backlog
 
 ## Immediate (this sprint)
 
-- [ ] **Merge PR #3** — [ben-git-code/Online-PDF-CV#3](https://github.com/ben-git-code/Online-PDF-CV/pull/3)
-- [ ] **Upstream maintainer:** enable fork PR workflows in Actions settings
-- [ ] **Upstream maintainer:** enable GitHub Issues on `ben-git-code/Online-PDF-CV`
+- [ ] **Merge PR #31** — [benmed00/Online-PDF-CV#31](https://github.com/benmed00/Online-PDF-CV/pull/31)
+- [ ] **Merge `platform-hardening-and-docs` → `master`** on [benmed00/Online-PDF-CV](https://github.com/benmed00/Online-PDF-CV)
 - [ ] **Create GitHub Project board** — run `gh auth refresh -s read:project,project`, then link issues #17–#30
+- [x] **Canonical repo** — `benmed00/Online-PDF-CV` (Issues enabled)
 
 ---
 
-## After merge
+## After merge to master
 
 - [ ] Sync wiki per [wiki/Sync-Wiki.md](../wiki/Sync-Wiki.md)
 - [ ] Verify Firebase production deploy for `/docs`, `/analyzer`, `/compare`
 - [ ] Confirm `npm run test:all` green on `master`
-- [ ] Close or transfer open fork issues #25–#30 to upstream
+- [ ] Close obsolete issues #25–#26 (upstream/fork tracking — no longer applicable)
+- [ ] Close stale Snyk/Dependabot PRs superseded by Express 5 hardening
 
 ---
 
@@ -26,6 +27,7 @@ Active short-term tasks. For the full prioritized queue see [backlog.md](backlog
 
 - [x] Add maintainer docs under `docs/` (roadmap, backlog, how-it-works, …)
 - [x] Link `docs/` index from root README
+- [x] Point clone URLs and metadata to `benmed00/Online-PDF-CV`
 - [ ] Retire or redirect outdated French content in old docs pages
 
 ---
@@ -34,8 +36,8 @@ Active short-term tasks. For the full prioritized queue see [backlog.md](backlog
 
 - [x] Fix Prettier gate on CI
 - [x] Fix ESLint errors in Playwright config and metadata script
-- [x] Green fork CI (build + e2e)
-- [ ] Add `CODECOV_TOKEN` secret on fork/upstream
+- [x] Green CI on `platform-hardening-and-docs` (build + e2e)
+- [ ] Add `CODECOV_TOKEN` secret on repository
 - [ ] Plan Node 24 migration for GitHub Actions (deprecation June 2026)
 
 ---
@@ -50,7 +52,7 @@ Active short-term tasks. For the full prioritized queue see [backlog.md](backlog
 
 ## Housekeeping
 
-- [ ] Review Dependabot alerts on fork default branch
+- [ ] Review Dependabot alerts on `master` after merge
 - [ ] Regenerate Playwright media after any UI change
 - [ ] Bump patch version after merge if needed
 

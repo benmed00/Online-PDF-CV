@@ -11,7 +11,7 @@ Repository **Settings → Features → Wikis** (must be enabled).
 ### 2. Clone the wiki repository
 
 ```bash
-git clone https://github.com/ben-git-code/Online-PDF-CV.wiki.git
+git clone https://github.com/benmed00/Online-PDF-CV.wiki.git
 ```
 
 ### 3. Copy pages from this repo
@@ -43,7 +43,7 @@ git push origin master
 Wiki pages reference media hosted in the **main repository** under `docs/assets/` using raw GitHub URLs, for example:
 
 ```markdown
-![Home](https://raw.githubusercontent.com/ben-git-code/Online-PDF-CV/master/docs/assets/screenshots/01-home-desktop.png)
+![Home](https://raw.githubusercontent.com/benmed00/Online-PDF-CV/master/docs/assets/screenshots/01-home-desktop.png)
 ```
 
 Regenerate assets after UI changes:

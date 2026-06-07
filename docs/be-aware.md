@@ -28,15 +28,9 @@ With `NODE_ENV=production`, stack traces are hidden from users but still logged 
 
 ---
 
-## Fork pull requests
+## External pull requests
 
-### Untrusted workflow code
-
-Upstream maintainers must explicitly **allow workflows from fork PRs** before CI runs on external contributions. This is a security trade-off — review workflow changes in PR diffs before enabling.
-
-### Firebase preview deploy
-
-Preview channels **do not run** for fork PRs (`head.repo != github.repository`). Do not expect a Firebase preview URL on upstream PR #3.
+Contributors without write access should fork the repository and open PRs against `benmed00/Online-PDF-CV` `master`. CI runs on same-repo PRs automatically via `.github/workflows/ci.yml`.
 
 ---
 
@@ -110,11 +104,11 @@ Project is **Apache-2.0**. Preserve license headers when copying utilities. Auth
 
 ---
 
-## Upstream vs fork
+## Canonical repository
 
-| Repo                         | Access                     | Purpose                           |
-| ---------------------------- | -------------------------- | --------------------------------- |
-| `ben-git-code/Online-PDF-CV` | Read-only for contributors | Canonical upstream                |
-| `benmed00/Online-PDF-CV`     | Admin for fork owner       | PR source, issue tracker, CI runs |
+| Repo | Role |
+| ---- | ---- |
+| [`benmed00/Online-PDF-CV`](https://github.com/benmed00/Online-PDF-CV) | **Primary** — code, issues, CI, releases |
+| `ben-git-code/Online-PDF-CV` | Legacy mirror (optional remote `legacy`) |
 
-Do not force-push to upstream `master`.
+Do not force-push to `master` without coordinating with open PRs.

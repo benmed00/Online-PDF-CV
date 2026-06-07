@@ -18,7 +18,7 @@ Guide for running, customizing, testing, and deploying Online-PDF-CV.
 ## Quick start (local)
 
 ```bash
-git clone https://github.com/ben-git-code/Online-PDF-CV.git
+git clone https://github.com/benmed00/Online-PDF-CV.git
 cd Online-PDF-CV
 npm install
 npm start
@@ -143,13 +143,11 @@ Log directory is gitignored; created automatically on first run.
 
 ---
 
-## Fork workflow
+## Contribution workflow
 
-If you lack write access to upstream:
+1. Fork [benmed00/Online-PDF-CV](https://github.com/benmed00/Online-PDF-CV) if you are an external contributor.
+2. Create a feature branch from `master`.
+3. Run `npm run test:all` before opening a pull request.
+4. Open a PR against `benmed00/Online-PDF-CV` `master`.
 
-1. Fork to your GitHub account.
-2. Push feature branches to your fork.
-3. Open a PR against `ben-git-code/Online-PDF-CV`.
-4. Track issues on your fork if upstream Issues are disabled.
-
-See [be-aware.md](be-aware.md) for fork PR CI limitations.
+See [be-aware.md](be-aware.md) for security and deployment cautions.

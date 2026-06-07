@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
 /**
- * Creates labels, milestone, and issues on benmed00/Online-PDF-CV (fork).
- * Cross-references ben-git-code/Online-PDF-CV PR #3.
+ * Creates labels, milestone, and issues on benmed00/Online-PDF-CV.
+ * Cross-references platform hardening PR #31.
  */
 
 const { execFileSync } = require('child_process');
 
 const REPO = 'benmed00/Online-PDF-CV';
-const UPSTREAM_PR = 'ben-git-code/Online-PDF-CV#3';
+const RELEASE_PR = 'benmed00/Online-PDF-CV#31';
 
 const LABELS = [
   { name: 'type: bug', color: 'd73a4a', description: 'Something is broken' },
@@ -41,7 +41,7 @@ const LABELS = [
   { name: 'area: docs', color: '0075ca', description: 'README, wiki, and media assets' },
   { name: 'area: dependencies', color: 'ededed', description: 'npm packages and audit' },
   { name: 'milestone: v3.6.2', color: '5319e7', description: 'Platform hardening release track' },
-  { name: 'pr-3', color: '6f42c1', description: 'Related to upstream PR #3' },
+  { name: 'pr-3', color: '6f42c1', description: 'Related to v3.6.2 platform hardening' },
 ];
 
 const ISSUES = [
@@ -49,85 +49,85 @@ const ISSUES = [
     title: '[RESOLVED] Merge conflicts prevented application startup',
     state: 'closed',
     labels: ['type: bug', 'priority: critical', 'status: resolved', 'pr-3', 'area: express'],
-    body: `Resolved in ${UPSTREAM_PR}.\n\nMerge conflict markers in \`app.js\`, \`package.json\`, views, and \`.gitignore\` blocked parsing and tests.`,
+    body: `Resolved in ${RELEASE_PR}.\n\nMerge conflict markers in \`app.js\`, \`package.json\`, views, and \`.gitignore\` blocked parsing and tests.`,
   },
   {
     title: '[RESOLVED] Express 5 incompatible route syntax and unreachable 404 handler',
     state: 'closed',
     labels: ['type: bug', 'priority: high', 'status: resolved', 'pr-3', 'area: express'],
-    body: `Resolved in ${UPSTREAM_PR}.\n\nReplaced \`app.all('*')\` wildcards, optional params, and \`createError\` usage with Express 5-compatible routing.`,
+    body: `Resolved in ${RELEASE_PR}.\n\nReplaced \`app.all('*')\` wildcards, optional params, and \`createError\` usage with Express 5-compatible routing.`,
   },
   {
     title: '[RESOLVED] Firebase production could not serve /docs, /analyzer, /compare',
     state: 'closed',
     labels: ['type: enhancement', 'priority: high', 'status: resolved', 'pr-3', 'area: firebase'],
-    body: `Resolved in ${UPSTREAM_PR}.\n\nAdded \`npm run build\` static generation and Firebase rewrites for tools and API JSON.`,
+    body: `Resolved in ${RELEASE_PR}.\n\nAdded \`npm run build\` static generation and Firebase rewrites for tools and API JSON.`,
   },
   {
     title: '[RESOLVED] npm audit reported 11 vulnerabilities',
     state: 'closed',
     labels: ['type: security', 'priority: high', 'status: resolved', 'pr-3', 'area: dependencies'],
-    body: `Resolved in ${UPSTREAM_PR}.\n\nRegenerated lockfile and removed unused packages. Current audit: 0 vulnerabilities.`,
+    body: `Resolved in ${RELEASE_PR}.\n\nRegenerated lockfile and removed unused packages. Current audit: 0 vulnerabilities.`,
   },
   {
     title: '[RESOLVED] Missing Playwright usability coverage and media artifacts',
     state: 'closed',
     labels: ['type: testing', 'priority: high', 'status: resolved', 'pr-3', 'area: playwright'],
-    body: `Resolved in ${UPSTREAM_PR}.\n\n14 Playwright tests, screenshots in \`docs/assets/screenshots/\`, videos in \`docs/assets/videos/\`.`,
+    body: `Resolved in ${RELEASE_PR}.\n\n14 Playwright tests, screenshots in \`docs/assets/screenshots/\`, videos in \`docs/assets/videos/\`.`,
   },
   {
     title: '[RESOLVED] CI workflow targeted wrong branch (main vs master)',
     state: 'closed',
     labels: ['type: ci/cd', 'priority: medium', 'status: resolved', 'pr-3'],
-    body: `Resolved in ${UPSTREAM_PR}.\n\nGitHub Actions now trigger on \`master\` with build, lint, test, coverage, and e2e jobs.`,
+    body: `Resolved in ${RELEASE_PR}.\n\nGitHub Actions now trigger on \`master\` with build, lint, test, coverage, and e2e jobs.`,
   },
   {
     title: '[RESOLVED] Centralized logging and operational error handling',
     state: 'closed',
     labels: ['type: infrastructure', 'priority: high', 'status: resolved', 'pr-3', 'area: express'],
-    body: `Resolved in ${UPSTREAM_PR}.\n\nWinston logging, AppError, hybrid JSON/HTML error handler, process crash hooks.`,
+    body: `Resolved in ${RELEASE_PR}.\n\nWinston logging, AppError, hybrid JSON/HTML error handler, process crash hooks.`,
   },
   {
     title: '[RESOLVED] Path traversal risk on /resume/:version',
     state: 'closed',
     labels: ['type: security', 'priority: high', 'status: resolved', 'pr-3', 'area: express'],
-    body: `Resolved in ${UPSTREAM_PR}.\n\nVersion slugs validated with \`/^[a-z0-9-]+$/\` before serving PDFs.`,
+    body: `Resolved in ${RELEASE_PR}.\n\nVersion slugs validated with \`/^[a-z0-9-]+$/\` before serving PDFs.`,
   },
   {
-    title: 'Enable GitHub Issues on ben-git-code/Online-PDF-CV upstream repository',
-    state: 'open',
-    labels: ['type: infrastructure', 'priority: medium', 'status: blocked', 'pr-3'],
-    body: `Upstream repo has \`has_issues: false\`. Enable in Settings → General → Features.\n\nRelated: ${UPSTREAM_PR}`,
+    title: '[RESOLVED] Canonical repository confirmed as benmed00/Online-PDF-CV',
+    state: 'closed',
+    labels: ['type: infrastructure', 'priority: medium', 'status: resolved', 'pr-3'],
+    body: `Resolved — ${REPO} is the primary repository with Issues enabled.\n\nLegacy remote: ben-git-code/Online-PDF-CV.`,
   },
   {
-    title: 'Enable GitHub Actions checks for fork pull requests on upstream',
-    state: 'open',
-    labels: ['type: ci/cd', 'priority: high', 'status: in-progress', 'pr-3'],
-    body: `CI workflows were not present on upstream \`master\`, so ${UPSTREAM_PR} showed no checks.\n\nMaintainer action: Settings → Actions → General → allow fork PR workflows.\n\nThis PR adds \`ci.yml\` with push, pull_request, and workflow_dispatch triggers.`,
+    title: '[RESOLVED] CI workflow on canonical repository',
+    state: 'closed',
+    labels: ['type: ci/cd', 'priority: high', 'status: resolved', 'pr-3'],
+    body: `Resolved in ${RELEASE_PR}.\n\n\`ci.yml\` runs on push/PR to \`master\` and \`platform-hardening-and-docs\`.`,
   },
   {
     title: 'Firebase static fallback when resume version PDF is missing',
     state: 'open',
     labels: ['type: enhancement', 'priority: high', 'pr-3', 'area: firebase'],
-    body: `Express falls back to \`resume.pdf\`; Firebase rewrite returns 404 for missing files.\n\nRelated: ${UPSTREAM_PR}`,
+    body: `Express falls back to \`resume.pdf\`; Firebase rewrite returns 404 for missing files.\n\nRelated: ${RELEASE_PR}`,
   },
   {
     title: 'Sync wiki/ source to GitHub Wiki',
     state: 'open',
     labels: ['type: documentation', 'priority: medium', 'pr-3', 'area: docs'],
-    body: `Follow \`wiki/Sync-Wiki.md\` after merge of ${UPSTREAM_PR}.`,
+    body: `Follow \`wiki/Sync-Wiki.md\` after merge of ${RELEASE_PR}.`,
   },
   {
     title: 'Remove or integrate unused Firebase client scaffolding',
     state: 'open',
     labels: ['type: refactor', 'priority: low', 'pr-3', 'area: firebase'],
-    body: `Files: \`src/lib/firebase.ts\`, \`public/js/firebase-config.js\`. Related: ${UPSTREAM_PR}`,
+    body: `Files: \`src/lib/firebase.ts\`, \`public/js/firebase-config.js\`. Related: ${RELEASE_PR}`,
   },
   {
     title: 'Automate GitHub Wiki sync from wiki/ folder',
     state: 'open',
     labels: ['type: ci/cd', 'priority: low', 'pr-3', 'area: docs'],
-    body: `Future improvement tracked from ${UPSTREAM_PR} roadmap.`,
+    body: `Future improvement tracked from ${RELEASE_PR} roadmap.`,
   },
 ];
 
@@ -175,7 +175,7 @@ function ensureMilestone() {
     '-f',
     'title=v3.6.2 — Platform Hardening',
     '-f',
-    'description=Platform hardening, Firebase static build, Playwright usability, and documentation (PR #3)',
+    'description=Platform hardening, Firebase static build, Playwright usability, and documentation (PR #31)',
     '-f',
     'state=open',
     '-f',
@@ -206,7 +206,7 @@ function createIssue(issue) {
   const issueNumber = url.split('/').pop();
 
   if (issue.state === 'closed') {
-    gh(['issue', 'close', issueNumber, '--repo', REPO, '--comment', `Resolved by ${UPSTREAM_PR}.`]);
+    gh(['issue', 'close', issueNumber, '--repo', REPO, '--comment', `Resolved by ${RELEASE_PR}.`]);
   }
 
   console.log(`${issue.state.toUpperCase()}: ${url}`);

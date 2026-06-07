@@ -12,7 +12,7 @@ This guide helps you publish your own PDF resume using Online-PDF-CV.
 ## Installation
 
 ```bash
-git clone https://github.com/ben-git-code/Online-PDF-CV.git
+git clone https://github.com/benmed00/Online-PDF-CV.git
 cd Online-PDF-CV
 npm install
 ```
