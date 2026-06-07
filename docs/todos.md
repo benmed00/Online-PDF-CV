@@ -6,10 +6,9 @@ Active short-term tasks. For the full prioritized queue see [backlog.md](backlog
 
 ## Immediate (this sprint)
 
-- [ ] **Merge PR #31** — [benmed00/Online-PDF-CV#31](https://github.com/benmed00/Online-PDF-CV/pull/31)
-- [ ] **Merge `platform-hardening-and-docs` → `master`** on [benmed00/Online-PDF-CV](https://github.com/benmed00/Online-PDF-CV)
-- [ ] **Create GitHub Project board** — run `gh auth refresh -s read:project,project`, then link issues #17–#30
+- [x] **Create GitHub Project board** — [Project #7](https://github.com/users/benmed00/projects/7) (issues #13–#30 + PR #32)
 - [x] **Canonical repo** — `benmed00/Online-PDF-CV` (Issues enabled)
+- [ ] **Merge PR #32** — explicit approval required before merge
 
 ---
 
