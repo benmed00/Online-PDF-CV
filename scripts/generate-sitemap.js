@@ -31,7 +31,7 @@ if (!baseUrl.startsWith('http://') && !baseUrl.startsWith('https://')) {
 const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
 
 // Define the paths to include in the sitemap
-const staticPaths = ['/', '/docs', '/analyzer'];
+const staticPaths = ['/', '/docs', '/analyzer', '/compare'];
 
 // Get resume versions
 const resumesDir = path.join(__dirname, '..', 'public', 'resumes');
