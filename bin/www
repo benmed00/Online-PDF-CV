@@ -4,15 +4,22 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('cv:server');
-var http = require('http');
+const app = require('../app');
+const debug = require('debug')('cv:server');
+const http = require('http');
+const logger = require('../utils/logger');
+
+process.on('uncaughtException', err => {
+  logger.error('UNCAUGHT EXCEPTION! 💥 Shutting down...');
+  logger.error(err.name, err.message);
+  process.exit(1);
+});
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 console.log('🚀 Starting server...');
@@ -24,7 +31,7 @@ console.log('🌐 Port:', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+const server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -39,7 +46,7 @@ server.on('listening', onListening);
  */
 
 function normalizePort(val) {
-  var port = parseInt(val, 10);
+  const port = parseInt(val, 10);
 
   if (isNaN(port)) {
     // named pipe
@@ -108,3 +115,11 @@ function onListening() {
   // Keep the debug message for development
   debug('Listening on ' + bind);
 }
+
+process.on('unhandledRejection', err => {
+  logger.error('UNHANDLED REJECTION! 💥 Shutting down...');
+  logger.error(err.name, err.message);
+  server.close(() => {
+    process.exit(1);
+  });
+});
