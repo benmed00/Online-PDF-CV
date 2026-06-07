@@ -29,7 +29,7 @@ html
   body
     header.main-header
       .container
-        h1.site-title Online Resume
+        h1.site-title #{title}
         nav.main-nav
           ul
             li
@@ -46,6 +46,6 @@ html
     
     footer.main-footer
       .container
-        p &copy; #{new Date().getFullYear()} - Online PDF Resume
+        p &copy; #{new Date().getFullYear()} - #{title}
     
     block scripts
