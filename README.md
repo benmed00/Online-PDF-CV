@@ -131,6 +131,14 @@ See [wiki/Deployment.md](wiki/Deployment.md) for CI/CD and rewrite rules.
 
 ## Documentation
 
+| Resource                             | Topic                                                                                          |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| [`docs/`](docs/README.md)            | **Maintainer hub** — roadmap, backlog, how-it-works, best practices, known issues, maintenance |
+| [How to use](docs/how-to-use.md)     | Scripts, deploy, local dev                                                                     |
+| [How it works](docs/how-it-works.md) | Architecture and request flow                                                                  |
+
+### Wiki (user guides)
+
 | Wiki page                                              | Topic                          |
 | ------------------------------------------------------ | ------------------------------ |
 | [Home](wiki/Home.md)                                   | Overview                       |

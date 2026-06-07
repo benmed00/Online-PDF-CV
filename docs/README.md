@@ -1,91 +1,48 @@
-# CV PDF en Ligne
+# Online-PDF-CV — Documentation
 
-> Une application Node.js Express simple et élégante pour héberger votre CV en PDF
+Project documentation for developers, maintainers, and contributors.
 
-![Status](https://img.shields.io/badge/status-active-success.svg)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
+**Live site:** [benyakoub-cv.firebaseapp.com](https://benyakoub-cv.firebaseapp.com/)  
+**Version:** 3.6.2  
+**Wiki (user guides):** [`wiki/`](../wiki/Home.md)
 
-## 📝 Table des Matières
+---
 
-- [Aperçu](#aperçu)
-- [Installation](#installation)
-- [Déploiement](#déploiement)
-- [Architecture](#architecture)
-- [Technologies](#technologies)
+## Documentation index
 
-## 🎯 Aperçu
+| Document                                          | Purpose                                                              |
+| ------------------------------------------------- | -------------------------------------------------------------------- |
+| [How to use](how-to-use.md)                       | End-user and developer usage — local dev, deploy, scripts, workflows |
+| [How it works](how-it-works.md)                   | Architecture, request flow, static build, Firebase rewrites          |
+| [Best practices](best-practices.md)               | Coding, security, testing, and deployment conventions                |
+| [Roadmap](roadmap.md)                             | Release phases and planned capabilities                              |
+| [Backlog](backlog.md)                             | Prioritized work items mapped to GitHub issues                       |
+| [TODOs](todos.md)                                 | Active short-term tasks                                              |
+| [Known issues](known-issues.md)                   | Documented bugs, gaps, and limitations                               |
+| [Be aware](be-aware.md)                           | Security, operational, and platform cautions                         |
+| [Scheduled maintenance](scheduled-maintenance.md) | Recurring upkeep calendar and checklists                             |
 
-Cette application permet d'héberger facilement votre CV au format PDF en ligne via Firebase Hosting. Accessible à l'adresse : <https://benyakoub-cv.firebaseapp.com/>
+---
 
-### ✨ Caractéristiques Principales
+## Media assets
 
-- 📄 Hébergement simple de CV PDF
-- 🚀 Déploiement automatisé via GitHub Actions
-- 📱 Design responsive
-- 🔍 Intégration Google Analytics
+Screenshots and Playwright usability videos live in [`assets/`](assets/README.md).
 
-## ⚙️ Installation
-
-1. Cloner le dépôt :
-
-```bash
-git clone https://github.com/votre-username/Online-PDF-CV.git
-cd Online-PDF-CV
-```
-
-2. Installer les dépendances :
+Regenerate after UI changes:
 
 ```bash
-npm install
+npm run test:all
 ```
 
-3. Démarrer en développement :
+---
 
-```bash
-npm start
-```
+## Related resources
 
-## 🚀 Déploiement
-
-Le déploiement est automatisé via GitHub Actions vers Firebase Hosting.
-
-1. Configuration Firebase :
-
-```bash
-npm install -g firebase-tools
-firebase login
-```
-
-2. Déploiement manuel :
-
-```bash
-npm run deploy
-```
-
-## 🏗️ Architecture
-
-```
-Online-PDF-CV/
-├── bin/              # Scripts de démarrage
-├── public/           # Fichiers statiques (PDF, HTML)
-├── routes/           # Routes Express
-├── views/            # Templates Jade
-├── .github/          # Configuration GitHub Actions
-└── app.js           # Point d'entrée de l'application
-```
-
-## 🛠️ Technologies
-
-- **Runtime**: Node.js ≥16.17.1
-- **Framework**: Express.js 4.20.0
-- **Template**: Jade 1.11.0
-- **Hébergement**: Firebase
-- **CI/CD**: GitHub Actions
-
-### Dépendances Principales
-
-| Package | Version | Description        |
-| ------- | ------- | ------------------ |
-| express | ^4.20.0 | Framework web      |
-| jade    | ~1.11.0 | Moteur de template |
-| morgan  | ^1.10.1 | Logger HTTP        |
+| Resource             | Location                                                                             |
+| -------------------- | ------------------------------------------------------------------------------------ |
+| GitHub Wiki source   | [`wiki/`](../wiki/Home.md)                                                           |
+| API reference (wiki) | [`wiki/API-Reference.md`](../wiki/API-Reference.md)                                  |
+| Deployment guide     | [`wiki/Deployment.md`](../wiki/Deployment.md)                                        |
+| Troubleshooting      | [`wiki/Troubleshooting.md`](../wiki/Troubleshooting.md)                              |
+| Fork tracking issues | [benmed00/Online-PDF-CV issues](https://github.com/benmed00/Online-PDF-CV/issues)    |
+| Upstream PR #3       | [ben-git-code/Online-PDF-CV#3](https://github.com/ben-git-code/Online-PDF-CV/pull/3) |
