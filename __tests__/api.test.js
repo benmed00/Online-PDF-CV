@@ -1,7 +1,27 @@
 const request = require('supertest');
-const app = require('../app');
 const fs = require('fs');
 const path = require('path');
+
+jest.mock('../utils/virusTotalScanner', () => ({
+  scanUploadedFile: jest.fn().mockResolvedValue({
+    scanned: true,
+    verdict: 'clean',
+    provider: 'virustotal',
+    stats: { malicious: 0, suspicious: 0, harmless: 70, undetected: 0 },
+  }),
+  isConfigured: jest.fn().mockReturnValue(false),
+}));
+
+jest.mock('../utils/openAiResumeInsights', () => ({
+  getAiResumeInsights: jest.fn().mockResolvedValue({
+    available: false,
+    skipped: true,
+    reason: 'test mock',
+  }),
+  isConfigured: jest.fn().mockReturnValue(false),
+}));
+
+const app = require('../app');
 
 // Mock fs functions
 jest.mock('fs', () => ({
@@ -134,7 +154,7 @@ describe('API Endpoints', () => {
       expect(response.body.text).toContain('JavaScript');
       expect(response.body.source.filename).toBe('resume.txt');
       expect(response.body.security).toBeDefined();
-      expect(response.body.security.scanned).toBe(false);
+      expect(response.body.security.verdict).toBe('clean');
     });
 
     test('should reject requests without a file', async () => {

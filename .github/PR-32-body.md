@@ -9,15 +9,15 @@
 
 ## At a glance
 
-| | |
-|---|---|
-| **Package** | `benyakoub-cv@3.6.2` |
-| **Repo** | [`benmed00/Online-PDF-CV`](https://github.com/benmed00/Online-PDF-CV) → `master` |
-| **Branch** | `platform-hardening-and-docs` |
-| **Live demo** | https://benyakoub-cv.firebaseapp.com/ |
-| **Project board** | [v3.6.2 Platform Hardening (#7)](https://github.com/users/benmed00/projects/7) |
-| **Diff** | **142 files** · +28,689 / −1,648 lines · **27 commits** |
-| **Tests** | Jest 22+ · Playwright 14 · `npm audit` clean on branch |
+|                     |                                                                                                                                                                                         |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Package**         | `benyakoub-cv@3.6.2`                                                                                                                                                                    |
+| **Repo**            | [`benmed00/Online-PDF-CV`](https://github.com/benmed00/Online-PDF-CV) → `master`                                                                                                        |
+| **Branch**          | `platform-hardening-and-docs`                                                                                                                                                           |
+| **Live demo**       | https://benyakoub-cv.firebaseapp.com/                                                                                                                                                   |
+| **Project board**   | [v3.6.2 Platform Hardening (#7)](https://github.com/users/benmed00/projects/7)                                                                                                          |
+| **Diff**            | **142 files** · +28,689 / −1,648 lines · **27 commits**                                                                                                                                 |
+| **Tests**           | Jest 22+ · Playwright 14 · `npm audit` clean on branch                                                                                                                                  |
 | **Maintainer docs** | [`docs/`](https://github.com/benmed00/Online-PDF-CV/tree/platform-hardening-and-docs/docs) · [`wiki/`](https://github.com/benmed00/Online-PDF-CV/tree/platform-hardening-and-docs/wiki) |
 
 ---
@@ -26,11 +26,11 @@
 
 Turns a conflicted PDF-only Express app into a **production-ready resume platform**:
 
-1. **Runtime** — Express 5, Winston logging, `AppError`, hybrid JSON/HTML errors  
-2. **Security** — Helmet + CSP, resume slug validation (`/^[a-z0-9-]+$/`)  
-3. **Production** — `npm run build` static HTML + Firebase rewrites for tools & API  
-4. **Quality** — Jest + Playwright + GitHub Actions (lint, test, build, e2e)  
-5. **Docs** — README media, wiki source, maintainer `docs/` hub  
+1. **Runtime** — Express 5, Winston logging, `AppError`, hybrid JSON/HTML errors
+2. **Security** — Helmet + CSP, resume slug validation (`/^[a-z0-9-]+$/`)
+3. **Production** — `npm run build` static HTML + Firebase rewrites for tools & API
+4. **Quality** — Jest + Playwright + GitHub Actions (lint, test, build, e2e)
+5. **Docs** — README media, wiki source, maintainer `docs/` hub
 6. **Analyzer+** — File upload extraction, optional VirusTotal + OpenAI coach (`65b57fa`)
 
 ---
@@ -46,43 +46,43 @@ Closes #20
 Closes #21  
 Closes #22  
 Closes #23  
-Closes #24  
+Closes #24
 
-| Issue | Topic |
-|-------|-------|
-| #17 | Merge conflicts blocked startup |
-| #18 | Express 5 route syntax / 404 handler |
-| #19 | Firebase static pages for `/docs`, `/analyzer`, `/compare` |
-| #20 | npm audit vulnerabilities |
-| #21 | Playwright usability + media |
-| #22 | CI branch targeting (`main` vs `master`) |
-| #23 | Centralized logging & error handling |
-| #24 | Path traversal on `/resume/:version` |
+| Issue | Topic                                                      |
+| ----- | ---------------------------------------------------------- |
+| #17   | Merge conflicts blocked startup                            |
+| #18   | Express 5 route syntax / 404 handler                       |
+| #19   | Firebase static pages for `/docs`, `/analyzer`, `/compare` |
+| #20   | npm audit vulnerabilities                                  |
+| #21   | Playwright usability + media                               |
+| #22   | CI branch targeting (`main` vs `master`)                   |
+| #23   | Centralized logging & error handling                       |
+| #24   | Path traversal on `/resume/:version`                       |
 
 ### Follow-up (tracked separately — not closed by this PR)
 
 Related to #27 · Related to #28 · Related to #29 · Related to #30
 
-| Issue | Topic |
-|-------|-------|
-| #27 | Firebase PDF fallback when version missing |
-| #28 | Sync `wiki/` → GitHub Wiki |
-| #29 | Unused Firebase client scaffolding |
-| #30 | Automate wiki sync in CI |
+| Issue | Topic                                      |
+| ----- | ------------------------------------------ |
+| #27   | Firebase PDF fallback when version missing |
+| #28   | Sync `wiki/` → GitHub Wiki                 |
+| #29   | Unused Firebase client scaffolding         |
+| #30   | Automate wiki sync in CI                   |
 
 ---
 
 ## Before → after
 
-| Area | `master` today | This PR |
-|------|----------------|---------|
-| App | Old Express 4 PDF host | Express 5, conflict-free, tested |
-| Home | Boilerplate / wildcard PDF | Pug + embedded PDF iframe |
-| Tools in prod | N/A on Firebase | Static build + rewrites |
-| Errors | Broken / unreachable 404 | `AppError` + structured handler |
-| Security | No Helmet, traversal risk | Helmet CSP + slug validation |
-| CI | Wrong branch / minimal | Full pipeline + Playwright job |
-| Docs | Legacy README | README gallery + wiki + `docs/` |
+| Area          | `master` today             | This PR                          |
+| ------------- | -------------------------- | -------------------------------- |
+| App           | Old Express 4 PDF host     | Express 5, conflict-free, tested |
+| Home          | Boilerplate / wildcard PDF | Pug + embedded PDF iframe        |
+| Tools in prod | N/A on Firebase            | Static build + rewrites          |
+| Errors        | Broken / unreachable 404   | `AppError` + structured handler  |
+| Security      | No Helmet, traversal risk  | Helmet CSP + slug validation     |
+| CI            | Wrong branch / minimal     | Full pipeline + Playwright job   |
+| Docs          | Legacy README              | README gallery + wiki + `docs/`  |
 
 ---
 
@@ -100,12 +100,12 @@ flowchart LR
   end
 ```
 
-| Route | Purpose |
-|-------|---------|
-| `/` | Home + PDF viewer |
-| `/docs` `/analyzer` `/compare` | Tools |
-| `/api/versions` | JSON version list |
-| `/resume` `/resume/:version` | PDF delivery |
+| Route                          | Purpose           |
+| ------------------------------ | ----------------- |
+| `/`                            | Home + PDF viewer |
+| `/docs` `/analyzer` `/compare` | Tools             |
+| `/api/versions`                | JSON version list |
+| `/resume` `/resume/:version`   | PDF delivery      |
 
 Details: [`docs/how-it-works.md`](https://github.com/benmed00/Online-PDF-CV/blob/platform-hardening-and-docs/docs/how-it-works.md)
 
@@ -121,12 +121,12 @@ Details: [`docs/how-it-works.md`](https://github.com/benmed00/Online-PDF-CV/blob
 
 ### Analyzer & compare
 
-| Input | Results |
-|:-----:|:-------:|
+|                                                                         Input                                                                          |                                                                          Results                                                                          |
+| :----------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------: |
 | ![Analyzer input](https://raw.githubusercontent.com/benmed00/Online-PDF-CV/platform-hardening-and-docs/docs/assets/screenshots/03-analyzer-before.png) | ![Analyzer results](https://raw.githubusercontent.com/benmed00/Online-PDF-CV/platform-hardening-and-docs/docs/assets/screenshots/04-analyzer-results.png) |
 
-| Selectors | Side-by-side |
-|:---------:|:------------:|
+|                                                                   Selectors                                                                    |                                                                   Side-by-side                                                                    |
+| :--------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------: |
 | ![Compare](https://raw.githubusercontent.com/benmed00/Online-PDF-CV/platform-hardening-and-docs/docs/assets/screenshots/05-compare-before.png) | ![View](https://raw.githubusercontent.com/benmed00/Online-PDF-CV/platform-hardening-and-docs/docs/assets/screenshots/06-compare-side-by-side.png) |
 
 ### Navigation
@@ -137,27 +137,27 @@ Details: [`docs/how-it-works.md`](https://github.com/benmed00/Online-PDF-CV/blob
 
 ### Usability videos
 
-| Video | Link |
-|-------|------|
-| Home desktop | [home-desktop.webm](https://github.com/benmed00/Online-PDF-CV/blob/platform-hardening-and-docs/docs/assets/videos/home-desktop.webm) |
-| Analyzer | [analyzer-desktop.webm](https://github.com/benmed00/Online-PDF-CV/blob/platform-hardening-and-docs/docs/assets/videos/analyzer-desktop.webm) |
-| Compare | [compare-desktop.webm](https://github.com/benmed00/Online-PDF-CV/blob/platform-hardening-and-docs/docs/assets/videos/compare-desktop.webm) |
-| Navigation | [navigation-desktop.webm](https://github.com/benmed00/Online-PDF-CV/blob/platform-hardening-and-docs/docs/assets/videos/navigation-desktop.webm) |
-| Mobile | [home-mobile.webm](https://github.com/benmed00/Online-PDF-CV/blob/platform-hardening-and-docs/docs/assets/videos/home-mobile.webm) · [navigation-mobile.webm](https://github.com/benmed00/Online-PDF-CV/blob/platform-hardening-and-docs/docs/assets/videos/navigation-mobile.webm) |
+| Video        | Link                                                                                                                                                                                                                                                                                |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Home desktop | [home-desktop.webm](https://github.com/benmed00/Online-PDF-CV/blob/platform-hardening-and-docs/docs/assets/videos/home-desktop.webm)                                                                                                                                                |
+| Analyzer     | [analyzer-desktop.webm](https://github.com/benmed00/Online-PDF-CV/blob/platform-hardening-and-docs/docs/assets/videos/analyzer-desktop.webm)                                                                                                                                        |
+| Compare      | [compare-desktop.webm](https://github.com/benmed00/Online-PDF-CV/blob/platform-hardening-and-docs/docs/assets/videos/compare-desktop.webm)                                                                                                                                          |
+| Navigation   | [navigation-desktop.webm](https://github.com/benmed00/Online-PDF-CV/blob/platform-hardening-and-docs/docs/assets/videos/navigation-desktop.webm)                                                                                                                                    |
+| Mobile       | [home-mobile.webm](https://github.com/benmed00/Online-PDF-CV/blob/platform-hardening-and-docs/docs/assets/videos/home-mobile.webm) · [navigation-mobile.webm](https://github.com/benmed00/Online-PDF-CV/blob/platform-hardening-and-docs/docs/assets/videos/navigation-mobile.webm) |
 
 ---
 
 ## Test & CI checklist
 
-| Gate | Command | Status |
-|------|---------|--------|
-| Unit / integration | `npm test` | ✅ |
-| Coverage | `npm run test:coverage` | ✅ |
-| Static build | `npm run build` | ✅ |
-| E2E | `npm run test:e2e` | ✅ 14 scenarios |
-| Full pipeline | `npm run test:all` | ✅ |
-| Lint / format | `npm run lint` · `format:check` | ✅ |
-| Audit | `npm audit` | ✅ on branch |
+| Gate               | Command                         | Status          |
+| ------------------ | ------------------------------- | --------------- |
+| Unit / integration | `npm test`                      | ✅              |
+| Coverage           | `npm run test:coverage`         | ✅              |
+| Static build       | `npm run build`                 | ✅              |
+| E2E                | `npm run test:e2e`              | ✅ 14 scenarios |
+| Full pipeline      | `npm run test:all`              | ✅              |
+| Lint / format      | `npm run lint` · `format:check` | ✅              |
+| Audit              | `npm audit`                     | ✅ on branch    |
 
 Playwright covers: home, docs, analyzer, compare, API, PDF endpoints, full navigation (desktop + mobile).
 
@@ -199,10 +199,10 @@ Optional analyzer keys: copy `.env.example` → `.env` (VirusTotal, OpenAI).
 
 ## References
 
-| Resource | Link |
-|----------|------|
-| Testing guide | [`wiki/Testing-and-Usability.md`](https://github.com/benmed00/Online-PDF-CV/blob/platform-hardening-and-docs/wiki/Testing-and-Usability.md) |
-| API reference | [`wiki/API-Reference.md`](https://github.com/benmed00/Online-PDF-CV/blob/platform-hardening-and-docs/wiki/API-Reference.md) |
+| Resource          | Link                                                                                                                                                                                                                              |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Testing guide     | [`wiki/Testing-and-Usability.md`](https://github.com/benmed00/Online-PDF-CV/blob/platform-hardening-and-docs/wiki/Testing-and-Usability.md)                                                                                       |
+| API reference     | [`wiki/API-Reference.md`](https://github.com/benmed00/Online-PDF-CV/blob/platform-hardening-and-docs/wiki/API-Reference.md)                                                                                                       |
 | Roadmap / backlog | [`docs/roadmap.md`](https://github.com/benmed00/Online-PDF-CV/blob/platform-hardening-and-docs/docs/roadmap.md) · [`docs/backlog.md`](https://github.com/benmed00/Online-PDF-CV/blob/platform-hardening-and-docs/docs/backlog.md) |
-| Security | [`SECURITY.md`](https://github.com/benmed00/Online-PDF-CV/blob/platform-hardening-and-docs/SECURITY.md) |
-| Previous PR | [#31](https://github.com/benmed00/Online-PDF-CV/pull/31) (superseded) |
+| Security          | [`SECURITY.md`](https://github.com/benmed00/Online-PDF-CV/blob/platform-hardening-and-docs/SECURITY.md)                                                                                                                           |
+| Previous PR       | [#31](https://github.com/benmed00/Online-PDF-CV/pull/31) (superseded)                                                                                                                                                             |

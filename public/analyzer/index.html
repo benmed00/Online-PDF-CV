@@ -1,2 +1,300 @@
-<!DOCTYPE html><html><head><title>Resume Analyzer Tool</title><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Tool to analyze resume content and provide improvement suggestions"><meta name="keywords" content="resume analyzer, resume optimization, resume keywords, resume improvement"><meta name="author" content="Resume Owner"><meta property="og:title" content="Resume Analyzer Tool"><meta property="og:description" content="Tool to analyze resume content and provide improvement suggestions"><meta property="og:type" content="website"><meta property="og:url" content="https://benyakoub-cv.firebaseapp.com/analyzer"><meta property="og:image" content="/images/resume-preview.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Resume Analyzer Tool"><meta name="twitter:description" content="Tool to analyze resume content and provide improvement suggestions"><meta name="twitter:image" content="/images/resume-preview.png"><link rel="icon" href="/favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="stylesheet" href="/stylesheets/style.css"><link rel="stylesheet" href="/stylesheets/analyzer.css"></head><body><header class="main-header"><div class="container"><h1 class="site-title">Resume Analyzer Tool</h1><nav class="main-nav"><ul><li><a href="/">View CV</a></li><li><a href="/docs">API Docs</a></li><li><a href="/analyzer">Resume Analyzer</a></li><li><a href="/compare">Compare Versions</a></li></ul></nav></div></header><main class="container"><div class="analyzer-page"><h1>Resume Analyzer Tool</h1><p class="analyzer-hero">Paste or upload your resume text for instant keyword coverage, ATS-friendly checks,
-and actionable suggestions powered by industry best practices.</p><div class="alert-banner" id="alert-banner" role="alert" aria-live="polite"><span id="alert-message"></span><button class="alert-close" type="button" aria-label="Dismiss">×</button></div><div class="analyzer-grid"><section class="analyzer-card input-panel"><h2>Your Resume</h2><div class="analyzer-toolbar"><label for="target-role">Target role</label><select class="analyzer-select" id="target-role" name="targetRole"><option value="general" selected>General / Mixed</option><option value="engineering">Software Engineering</option><option value="management">Management / Leadership</option></select><label class="ai-toggle hidden" for="use-ai" id="ai-toggle-label"><input id="use-ai" type="checkbox" checked>AI coach insights</label></div><div class="drop-zone" id="drop-zone"><div class="drop-zone-inner"><span class="drop-zone-icon" aria-hidden="true">↑</span><p class="drop-zone-label">Drag & drop your CV here</p><p class="drop-zone-formats">HTML · Markdown · Word · ODT · Excel · PowerPoint · PDF · Images · TXT</p></div><input class="file-upload-input" id="file-upload" type="file" accept=".txt,.md,.markdown,.html,.htm,.csv,.rtf,.doc,.docx,.xlsx,.odt,.ods,.odp,.pptx,.pdf,.png,.jpg,.jpeg,.webp,.gif,.bmp,.tif,.tiff" aria-label="Upload resume file" tabindex="-1"><textarea id="resume-text" rows="12" placeholder="Paste your resume text here, or upload / drop a file…" aria-describedby="text-stats live-hints" spellcheck="true"></textarea></div><div class="text-stats" id="text-stats"><span class="stat-pill" id="stat-chars">0 characters</span><span class="stat-pill" id="stat-words">0 words</span><span class="stat-pill" id="stat-status">Ready</span></div><div class="live-hints" id="live-hints" role="status" aria-live="polite"></div><div class="upload-status hidden" id="upload-status" role="status" aria-live="polite"></div><div class="analyzer-actions"><button class="btn-upload" id="upload-btn" type="button"><span class="upload-spinner" aria-hidden="true"></span><span class="upload-label">Upload CV</span></button><button class="btn-analyze" id="analyze-btn" type="button"><span class="btn-spinner" aria-hidden="true"></span><span class="btn-label">Analyze Resume</span></button><button class="btn-secondary" id="sample-btn" type="button">Load sample</button><button class="btn-secondary" id="clear-btn" type="button">Clear</button></div><p style="margin-top:0.75rem;font-size:0.75rem;color:#94a3b8">Tip: Press Ctrl+Enter to analyze · Supports Word, Excel, PowerPoint, ODT, PDF, images & more</p></section><aside class="analyzer-card tips-sidebar"><h2>Best Practices</h2><div class="tip-item"><span class="tip-icon">✦</span><span>Use strong action verbs (Led, Built, Delivered) at the start of bullet points.</span></div><div class="tip-item"><span class="tip-icon">#</span><span>Quantify impact with numbers, percentages, and dollar amounts.</span></div><div class="tip-item"><span class="tip-icon">§</span><span>Include clear sections: Summary, Experience, Skills, Education.</span></div><div class="tip-item"><span class="tip-icon">@</span><span>Add contact info: email, phone, and LinkedIn URL.</span></div><div class="tip-item"><span class="tip-icon">✓</span><span>Tailor keywords to each job posting — ATS systems scan for matches.</span></div><div class="tip-item"><span class="tip-icon">↑</span><span>Upload Word, Excel, PowerPoint, ODT, PDF, or scanned images — files are VirusTotal-scanned on the server before extraction.</span></div></aside></div><section class="results-area hidden" id="results" aria-live="polite"><div class="results-header"><h2>Analysis Results</h2><div class="overall-badge"><div class="overall-score-ring"><span id="overall-score">0%</span></div><div><div class="overall-label">Overall Score</div><div class="overall-grade" id="overall-grade">—</div></div></div></div><div class="score-cards"><div class="score-card"><h3>Technical Skills</h3><div class="score-value" id="technical-score">0%</div><div class="progress"><div class="progress-bar" id="technical-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div></div><div class="score-card"><h3>Soft Skills</h3><div class="score-value" id="soft-score">0%</div><div class="progress"><div class="progress-bar" id="soft-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div></div><div class="score-card"><h3>Management Skills</h3><div class="score-value" id="management-score">0%</div><div class="progress"><div class="progress-bar" id="management-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div></div><div class="score-card"><h3>Best Practices</h3><div class="score-value" id="practices-score">0%</div><div class="progress"><div class="progress-bar" id="practices-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div></div></div><div class="results-tabs" role="tablist"><button class="tab-btn active" type="button" role="tab" data-tab="checks" aria-selected="true">Checks</button><button class="tab-btn" type="button" role="tab" data-tab="keywords" aria-selected="false">Keywords</button><button class="tab-btn" type="button" role="tab" data-tab="suggestions" aria-selected="false">Suggestions</button><button class="tab-btn hidden" id="ai-tab-btn" type="button" role="tab" data-tab="ai" aria-selected="false">AI Coach</button></div><div class="tab-panel active" id="tab-checks" role="tabpanel"><div class="practices-grid" id="practices-grid"></div></div><div class="tab-panel" id="tab-keywords" role="tabpanel"><div class="keyword-section"><div class="keyword-category"><h4>Technical Keywords</h4><div class="keywords" id="technical-keywords"></div></div><div class="keyword-category"><h4>Soft Skills Keywords</h4><div class="keywords" id="soft-keywords"></div></div><div class="keyword-category"><h4>Management Keywords</h4><div class="keywords" id="management-keywords"></div></div></div></div><div class="tab-panel" id="tab-suggestions" role="tabpanel"><ul class="suggestions-list" id="suggestions-list"></ul></div><div class="tab-panel" id="tab-ai" role="tabpanel"><div class="ai-insights" id="ai-insights-panel"><p class="ai-placeholder">AI insights appear here when OpenAI is configured on the server.</p></div></div></section></div></main><footer class="main-footer"><div class="container"><p>&copy; 2026 - Resume Analyzer Tool</p></div></footer><script src="/javascripts/resume-analyzer.js"></script><script src="/javascripts/analyzer-app.js"></script></body></html>
+<!doctype html>
+<html>
+  <head>
+    <title>Resume Analyzer Tool</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Tool to analyze resume content and provide improvement suggestions"
+    />
+    <meta
+      name="keywords"
+      content="resume analyzer, resume optimization, resume keywords, resume improvement"
+    />
+    <meta name="author" content="Resume Owner" />
+    <meta property="og:title" content="Resume Analyzer Tool" />
+    <meta
+      property="og:description"
+      content="Tool to analyze resume content and provide improvement suggestions"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://benyakoub-cv.firebaseapp.com/analyzer" />
+    <meta property="og:image" content="/images/resume-preview.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Resume Analyzer Tool" />
+    <meta
+      name="twitter:description"
+      content="Tool to analyze resume content and provide improvement suggestions"
+    />
+    <meta name="twitter:image" content="/images/resume-preview.png" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link rel="stylesheet" href="/stylesheets/analyzer.css" />
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="container">
+        <h1 class="site-title">Resume Analyzer Tool</h1>
+        <nav class="main-nav">
+          <ul>
+            <li><a href="/">View CV</a></li>
+            <li><a href="/docs">API Docs</a></li>
+            <li><a href="/analyzer">Resume Analyzer</a></li>
+            <li><a href="/compare">Compare Versions</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main class="container">
+      <div class="analyzer-page">
+        <h1>Resume Analyzer Tool</h1>
+        <p class="analyzer-hero">
+          Paste or upload your resume text for instant keyword coverage, ATS-friendly checks, and
+          actionable suggestions powered by industry best practices.
+        </p>
+        <div class="alert-banner" id="alert-banner" role="alert" aria-live="polite">
+          <span id="alert-message"></span
+          ><button class="alert-close" type="button" aria-label="Dismiss">×</button>
+        </div>
+        <div class="analyzer-grid">
+          <section class="analyzer-card input-panel">
+            <h2>Your Resume</h2>
+            <div class="analyzer-toolbar">
+              <label for="target-role">Target role</label
+              ><select class="analyzer-select" id="target-role" name="targetRole">
+                <option value="general" selected>General / Mixed</option>
+                <option value="engineering">Software Engineering</option>
+                <option value="management">Management / Leadership</option></select
+              ><label class="ai-toggle hidden" for="use-ai" id="ai-toggle-label"
+                ><input id="use-ai" type="checkbox" checked />AI coach insights</label
+              >
+            </div>
+            <div class="drop-zone" id="drop-zone">
+              <div class="drop-zone-inner">
+                <span class="drop-zone-icon" aria-hidden="true">↑</span>
+                <p class="drop-zone-label">Drag & drop your CV here</p>
+                <p class="drop-zone-formats">
+                  HTML · Markdown · Word · ODT · Excel · PowerPoint · PDF · Images · TXT
+                </p>
+              </div>
+              <input
+                class="file-upload-input"
+                id="file-upload"
+                type="file"
+                accept=".txt,.md,.markdown,.html,.htm,.csv,.rtf,.doc,.docx,.xlsx,.odt,.ods,.odp,.pptx,.pdf,.png,.jpg,.jpeg,.webp,.gif,.bmp,.tif,.tiff"
+                aria-label="Upload resume file"
+                tabindex="-1"
+              /><textarea
+                id="resume-text"
+                rows="12"
+                placeholder="Paste your resume text here, or upload / drop a file…"
+                aria-describedby="text-stats live-hints"
+                spellcheck="true"
+              ></textarea>
+            </div>
+            <div class="text-stats" id="text-stats">
+              <span class="stat-pill" id="stat-chars">0 characters</span
+              ><span class="stat-pill" id="stat-words">0 words</span
+              ><span class="stat-pill" id="stat-status">Ready</span>
+            </div>
+            <div class="live-hints" id="live-hints" role="status" aria-live="polite"></div>
+            <div
+              class="upload-status hidden"
+              id="upload-status"
+              role="status"
+              aria-live="polite"
+            ></div>
+            <div class="analyzer-actions">
+              <button class="btn-upload" id="upload-btn" type="button">
+                <span class="upload-spinner" aria-hidden="true"></span
+                ><span class="upload-label">Upload CV</span></button
+              ><button class="btn-analyze" id="analyze-btn" type="button">
+                <span class="btn-spinner" aria-hidden="true"></span
+                ><span class="btn-label">Analyze Resume</span></button
+              ><button class="btn-secondary" id="sample-btn" type="button">Load sample</button
+              ><button class="btn-secondary" id="clear-btn" type="button">Clear</button>
+            </div>
+            <p style="margin-top: 0.75rem; font-size: 0.75rem; color: #94a3b8">
+              Tip: Press Ctrl+Enter to analyze · Supports Word, Excel, PowerPoint, ODT, PDF, images
+              & more
+            </p>
+          </section>
+          <aside class="analyzer-card tips-sidebar">
+            <h2>Best Practices</h2>
+            <div class="tip-item">
+              <span class="tip-icon">✦</span
+              ><span
+                >Use strong action verbs (Led, Built, Delivered) at the start of bullet
+                points.</span
+              >
+            </div>
+            <div class="tip-item">
+              <span class="tip-icon">#</span
+              ><span>Quantify impact with numbers, percentages, and dollar amounts.</span>
+            </div>
+            <div class="tip-item">
+              <span class="tip-icon">§</span
+              ><span>Include clear sections: Summary, Experience, Skills, Education.</span>
+            </div>
+            <div class="tip-item">
+              <span class="tip-icon">@</span
+              ><span>Add contact info: email, phone, and LinkedIn URL.</span>
+            </div>
+            <div class="tip-item">
+              <span class="tip-icon">✓</span
+              ><span>Tailor keywords to each job posting — ATS systems scan for matches.</span>
+            </div>
+            <div class="tip-item">
+              <span class="tip-icon">↑</span
+              ><span
+                >Upload Word, Excel, PowerPoint, ODT, PDF, or scanned images — files are
+                VirusTotal-scanned on the server before extraction.</span
+              >
+            </div>
+          </aside>
+        </div>
+        <section class="results-area hidden" id="results" aria-live="polite">
+          <div class="results-header">
+            <h2>Analysis Results</h2>
+            <div class="overall-badge">
+              <div class="overall-score-ring"><span id="overall-score">0%</span></div>
+              <div>
+                <div class="overall-label">Overall Score</div>
+                <div class="overall-grade" id="overall-grade">—</div>
+              </div>
+            </div>
+          </div>
+          <div class="score-cards">
+            <div class="score-card">
+              <h3>Technical Skills</h3>
+              <div class="score-value" id="technical-score">0%</div>
+              <div class="progress">
+                <div
+                  class="progress-bar"
+                  id="technical-bar"
+                  role="progressbar"
+                  aria-valuenow="0"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                ></div>
+              </div>
+            </div>
+            <div class="score-card">
+              <h3>Soft Skills</h3>
+              <div class="score-value" id="soft-score">0%</div>
+              <div class="progress">
+                <div
+                  class="progress-bar"
+                  id="soft-bar"
+                  role="progressbar"
+                  aria-valuenow="0"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                ></div>
+              </div>
+            </div>
+            <div class="score-card">
+              <h3>Management Skills</h3>
+              <div class="score-value" id="management-score">0%</div>
+              <div class="progress">
+                <div
+                  class="progress-bar"
+                  id="management-bar"
+                  role="progressbar"
+                  aria-valuenow="0"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                ></div>
+              </div>
+            </div>
+            <div class="score-card">
+              <h3>Best Practices</h3>
+              <div class="score-value" id="practices-score">0%</div>
+              <div class="progress">
+                <div
+                  class="progress-bar"
+                  id="practices-bar"
+                  role="progressbar"
+                  aria-valuenow="0"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                ></div>
+              </div>
+            </div>
+          </div>
+          <div class="results-tabs" role="tablist">
+            <button
+              class="tab-btn active"
+              type="button"
+              role="tab"
+              data-tab="checks"
+              aria-selected="true"
+            >
+              Checks</button
+            ><button
+              class="tab-btn"
+              type="button"
+              role="tab"
+              data-tab="keywords"
+              aria-selected="false"
+            >
+              Keywords</button
+            ><button
+              class="tab-btn"
+              type="button"
+              role="tab"
+              data-tab="suggestions"
+              aria-selected="false"
+            >
+              Suggestions</button
+            ><button
+              class="tab-btn hidden"
+              id="ai-tab-btn"
+              type="button"
+              role="tab"
+              data-tab="ai"
+              aria-selected="false"
+            >
+              AI Coach
+            </button>
+          </div>
+          <div class="tab-panel active" id="tab-checks" role="tabpanel">
+            <div class="practices-grid" id="practices-grid"></div>
+          </div>
+          <div class="tab-panel" id="tab-keywords" role="tabpanel">
+            <div class="keyword-section">
+              <div class="keyword-category">
+                <h4>Technical Keywords</h4>
+                <div class="keywords" id="technical-keywords"></div>
+              </div>
+              <div class="keyword-category">
+                <h4>Soft Skills Keywords</h4>
+                <div class="keywords" id="soft-keywords"></div>
+              </div>
+              <div class="keyword-category">
+                <h4>Management Keywords</h4>
+                <div class="keywords" id="management-keywords"></div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-panel" id="tab-suggestions" role="tabpanel">
+            <ul class="suggestions-list" id="suggestions-list"></ul>
+          </div>
+          <div class="tab-panel" id="tab-ai" role="tabpanel">
+            <div class="ai-insights" id="ai-insights-panel">
+              <p class="ai-placeholder">
+                AI insights appear here when OpenAI is configured on the server.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+    <footer class="main-footer">
+      <div class="container"><p>&copy; 2026 - Resume Analyzer Tool</p></div>
+    </footer>
+    <script src="/javascripts/resume-analyzer.js"></script>
+    <script src="/javascripts/analyzer-app.js"></script>
+  </body>
+</html>

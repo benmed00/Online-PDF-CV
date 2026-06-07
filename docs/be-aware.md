@@ -106,9 +106,9 @@ Project is **Apache-2.0**. Preserve license headers when copying utilities. Auth
 
 ## Canonical repository
 
-| Repo | Role |
-| ---- | ---- |
+| Repo                                                                  | Role                                     |
+| --------------------------------------------------------------------- | ---------------------------------------- |
 | [`benmed00/Online-PDF-CV`](https://github.com/benmed00/Online-PDF-CV) | **Primary** — code, issues, CI, releases |
-| `ben-git-code/Online-PDF-CV` | Legacy mirror (optional remote `legacy`) |
+| `ben-git-code/Online-PDF-CV`                                          | Legacy mirror (optional remote `legacy`) |
 
 Do not force-push to `master` without coordinating with open PRs.

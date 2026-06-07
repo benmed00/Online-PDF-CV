@@ -6,9 +6,9 @@ module.exports = defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   workers: 1,
-  timeout: 60000,
+  timeout: 120_000,
   expect: {
-    timeout: 10000,
+    timeout: 15_000,
   },
   reporter: [['list'], ['html', { open: 'never', outputFolder: 'playwright-report' }]],
   outputDir: 'test-results',

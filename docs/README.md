@@ -38,12 +38,12 @@ npm run test:all
 
 ## Related resources
 
-| Resource             | Location                                                                             |
-| -------------------- | ------------------------------------------------------------------------------------ |
-| GitHub Wiki source   | [`wiki/`](../wiki/Home.md)                                                           |
-| API reference (wiki) | [`wiki/API-Reference.md`](../wiki/API-Reference.md)                                  |
-| Deployment guide     | [`wiki/Deployment.md`](../wiki/Deployment.md)                                        |
-| Troubleshooting      | [`wiki/Troubleshooting.md`](../wiki/Troubleshooting.md)                              |
-| GitHub issues | [benmed00/Online-PDF-CV issues](https://github.com/benmed00/Online-PDF-CV/issues) |
-| Platform hardening PR | [benmed00/Online-PDF-CV#32](https://github.com/benmed00/Online-PDF-CV/pull/32) |
-| Project board | [v3.6.2 Platform Hardening](https://github.com/users/benmed00/projects/7) |
+| Resource              | Location                                                                          |
+| --------------------- | --------------------------------------------------------------------------------- |
+| GitHub Wiki source    | [`wiki/`](../wiki/Home.md)                                                        |
+| API reference (wiki)  | [`wiki/API-Reference.md`](../wiki/API-Reference.md)                               |
+| Deployment guide      | [`wiki/Deployment.md`](../wiki/Deployment.md)                                     |
+| Troubleshooting       | [`wiki/Troubleshooting.md`](../wiki/Troubleshooting.md)                           |
+| GitHub issues         | [benmed00/Online-PDF-CV issues](https://github.com/benmed00/Online-PDF-CV/issues) |
+| Platform hardening PR | [benmed00/Online-PDF-CV#32](https://github.com/benmed00/Online-PDF-CV/pull/32)    |
+| Project board         | [v3.6.2 Platform Hardening](https://github.com/users/benmed00/projects/7)         |

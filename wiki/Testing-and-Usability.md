@@ -67,14 +67,14 @@ Published copies live in the repository at `docs/assets/screenshots/`.
 
 ### Resume analyzer
 
-| Before analysis                                                                                                                       | After analysis                                                                                                                           |
-| ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Before analysis                                                                                                                   | After analysis                                                                                                                       |
+| --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | ![Analyzer input](https://raw.githubusercontent.com/benmed00/Online-PDF-CV/master/docs/assets/screenshots/03-analyzer-before.png) | ![Analyzer results](https://raw.githubusercontent.com/benmed00/Online-PDF-CV/master/docs/assets/screenshots/04-analyzer-results.png) |
 
 ### Resume comparison
 
-| Version selectors                                                                                                                       | Side-by-side view                                                                                                                        |
-| --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Version selectors                                                                                                                   | Side-by-side view                                                                                                                    |
+| ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | ![Compare selectors](https://raw.githubusercontent.com/benmed00/Online-PDF-CV/master/docs/assets/screenshots/05-compare-before.png) | ![Compare view](https://raw.githubusercontent.com/benmed00/Online-PDF-CV/master/docs/assets/screenshots/06-compare-side-by-side.png) |
 
 ### Navigation flow
@@ -95,8 +95,8 @@ Documentation videos are stored at `docs/assets/videos/` (WebM).
 
 GitHub Wiki and the README link to these files. Download or open them locally after running `npm run test:all`.
 
-| Video                                                                                                                           | Scenario          | Viewport |
-| ------------------------------------------------------------------------------------------------------------------------------- | ----------------- | -------- |
+| Video                                                                                                                       | Scenario          | Viewport |
+| --------------------------------------------------------------------------------------------------------------------------- | ----------------- | -------- |
 | [home-desktop.webm](https://github.com/benmed00/Online-PDF-CV/blob/master/docs/assets/videos/home-desktop.webm)             | Home page load    | Desktop  |
 | [analyzer-desktop.webm](https://github.com/benmed00/Online-PDF-CV/blob/master/docs/assets/videos/analyzer-desktop.webm)     | Analyzer workflow | Desktop  |
 | [compare-desktop.webm](https://github.com/benmed00/Online-PDF-CV/blob/master/docs/assets/videos/compare-desktop.webm)       | Compare tool      | Desktop  |

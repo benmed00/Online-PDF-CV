@@ -68,16 +68,16 @@ POST /api/extract-resume
 Content-Type: multipart/form-data
 ```
 
-| Field  | Type | Description        |
-| ------ | ---- | ------------------ |
+| Field  | Type | Description          |
+| ------ | ---- | -------------------- |
 | `file` | file | CV document (≤10 MB) |
 
 Runs **VirusTotal** scan when `VIRUSTOTAL_API_KEY` is set, then extracts text from Word, Excel, PowerPoint, ODT, PDF, HTML, Markdown, images (OCR), etc.
 
-| Status | Meaning                          |
-| ------ | -------------------------------- |
+| Status | Meaning                           |
+| ------ | --------------------------------- |
 | `403`  | File flagged malicious/suspicious |
-| `422`  | Could not extract text           |
+| `422`  | Could not extract text            |
 
 ---
 
