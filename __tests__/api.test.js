@@ -93,6 +93,15 @@ describe('API Endpoints', () => {
       expect(response.body.success).toBe(true);
       expect(response.body.results.technicalScore).toBeGreaterThan(0);
       expect(response.body.suggestions.length).toBeGreaterThan(0);
+      expect(response.body.aiInsights).toBeDefined();
+    });
+
+    test('GET /api/analyzer/config returns capability flags', async () => {
+      const response = await request(app).get('/api/analyzer/config');
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('openAi');
+      expect(response.body).toHaveProperty('virusTotal');
+      expect(response.body.maxUploadMb).toBe(10);
     });
 
     test('should reject empty text', async () => {
@@ -107,6 +116,36 @@ describe('API Endpoints', () => {
       const response = await request(app)
         .post('/api/analyze')
         .send({ text: validText, targetRole: 'invalid-role' });
+
+      expect(response.status).toBe(400);
+    });
+  });
+
+  describe('POST /api/extract-resume', () => {
+    test('should extract text from uploaded txt file', async () => {
+      const content =
+        'Senior engineer with JavaScript, React, Node, AWS, Docker, CI/CD, leadership, communication, and project management experience since 2020.';
+      const response = await request(app)
+        .post('/api/extract-resume')
+        .attach('file', Buffer.from(content, 'utf8'), 'resume.txt');
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.text).toContain('JavaScript');
+      expect(response.body.source.filename).toBe('resume.txt');
+      expect(response.body.security).toBeDefined();
+      expect(response.body.security.scanned).toBe(false);
+    });
+
+    test('should reject requests without a file', async () => {
+      const response = await request(app).post('/api/extract-resume');
+      expect(response.status).toBe(400);
+    });
+
+    test('should reject unsupported file types', async () => {
+      const response = await request(app)
+        .post('/api/extract-resume')
+        .attach('file', Buffer.from('data'), 'resume.xyz');
 
       expect(response.status).toBe(400);
     });

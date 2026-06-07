@@ -18,7 +18,36 @@
 
   const LIMITS = { minChars: 80, minWords: 40 };
 
+  const LOCAL_EXTENSIONS = new Set(['.txt', '.md', '.markdown', '.html', '.htm', '.csv', '.rtf']);
+
+  const SUPPORTED_EXTENSIONS = [
+    '.txt',
+    '.md',
+    '.markdown',
+    '.html',
+    '.htm',
+    '.csv',
+    '.rtf',
+    '.doc',
+    '.docx',
+    '.xlsx',
+    '.odt',
+    '.ods',
+    '.odp',
+    '.pptx',
+    '.pdf',
+    '.png',
+    '.jpg',
+    '.jpeg',
+    '.webp',
+    '.gif',
+    '.bmp',
+    '.tif',
+    '.tiff',
+  ];
+
   const els = {};
+  let serverConfig = { openAi: false, virusTotal: false };
 
   function cacheElements() {
     [
@@ -26,7 +55,14 @@
       'analyze-btn',
       'sample-btn',
       'clear-btn',
+      'upload-btn',
+      'file-upload',
+      'upload-status',
       'target-role',
+      'use-ai',
+      'ai-toggle-label',
+      'ai-tab-btn',
+      'ai-insights-panel',
       'results',
       'alert-banner',
       'alert-message',
@@ -73,6 +109,180 @@
     els['analyze-btn'].classList.toggle('loading', loading);
   }
 
+  function setUploading(loading) {
+    els['upload-btn'].disabled = loading;
+    els['upload-btn'].classList.toggle('loading', loading);
+    els['drop-zone'].classList.toggle('uploading', loading);
+  }
+
+  function getExtension(filename) {
+    const dot = filename.lastIndexOf('.');
+    return dot >= 0 ? filename.slice(dot).toLowerCase() : '';
+  }
+
+  function isSupportedFile(filename) {
+    return SUPPORTED_EXTENSIONS.includes(getExtension(filename));
+  }
+
+  function formatSecurityLine(security) {
+    if (!security) return '';
+    if (security.skipped || !security.scanned) {
+      return 'Security scan: not run (configure VIRUSTOTAL_API_KEY on server).';
+    }
+    const s = security.stats;
+    const clean = (s.harmless || 0) + (s.undetected || 0);
+    return `Security scan (VirusTotal): ${security.verdict} — ${clean} engines clean, ${s.malicious || 0} malicious, ${s.suspicious || 0} suspicious.`;
+  }
+
+  function setUploadStatus(message, type, subline) {
+    const el = els['upload-status'];
+    if (!message) {
+      el.classList.add('hidden');
+      el.innerHTML = '';
+      el.className = 'upload-status hidden';
+      return;
+    }
+    el.className = `upload-status ${type || ''}`.trim();
+    el.innerHTML = subline
+      ? `<strong>${message}</strong><span class="upload-subline">${subline}</span>`
+      : message;
+    el.classList.remove('hidden');
+  }
+
+  function htmlToPlainText(html) {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    doc.querySelectorAll('script, style, noscript').forEach(node => node.remove());
+    return (doc.body?.textContent || doc.documentElement?.textContent || '').trim();
+  }
+
+  function readFileAsText(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = ev => resolve(ev.target.result);
+      reader.onerror = () => reject(new Error('Could not read the file.'));
+      reader.readAsText(file);
+    });
+  }
+
+  async function extractFileLocally(file) {
+    const ext = getExtension(file.name);
+    const raw = await readFileAsText(file);
+    if (ext === '.html' || ext === '.htm') return htmlToPlainText(raw);
+    return raw;
+  }
+
+  async function extractFileViaApi(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    let response;
+    try {
+      response = await fetch('/api/extract-resume', { method: 'POST', body: formData });
+    } catch {
+      return null;
+    }
+
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      return null;
+    }
+
+    if (response.ok && data.success) return data;
+
+    if ([400, 403, 422, 503, 504].includes(response.status)) {
+      throw new Error(data.message || data.error || 'Could not process this file.');
+    }
+
+    return null;
+  }
+
+  function applyExtractedText(text, sourceLabel, security) {
+    els['resume-text'].value = text;
+    els['drop-zone'].classList.add('has-content');
+    updateLiveStats();
+    const main = sourceLabel
+      ? `Imported from ${sourceLabel} (${text.length.toLocaleString()} characters)`
+      : 'Import complete';
+    const sub = formatSecurityLine(security);
+    setUploadStatus(
+      main,
+      security?.scanned && security.verdict === 'clean' ? 'success' : 'success',
+      sub
+    );
+  }
+
+  async function handleFileUpload(file) {
+    if (!file) return;
+
+    hideAlert();
+    setUploadStatus('', '');
+
+    if (!isSupportedFile(file.name)) {
+      showAlert(`Unsupported file type. Supported: ${SUPPORTED_EXTENSIONS.join(', ')}`);
+      return;
+    }
+
+    const ext = getExtension(file.name);
+    setUploading(true);
+    const needsServerScan = !LOCAL_EXTENSIONS.has(ext);
+    setUploadStatus(
+      needsServerScan ? `Security scan & extraction: ${file.name}…` : `Reading ${file.name}…`,
+      ''
+    );
+
+    try {
+      let text = '';
+      let security = null;
+
+      if (LOCAL_EXTENSIONS.has(ext)) {
+        text = await extractFileLocally(file);
+        security = {
+          scanned: false,
+          skipped: true,
+          reason: 'Plain-text formats are read locally without VirusTotal scan',
+        };
+      } else {
+        const apiResult = await extractFileViaApi(file);
+        if (apiResult) {
+          text = apiResult.text;
+          security = apiResult.security;
+        } else {
+          throw new Error(
+            'This format requires the server upload API. Restart the dev server or paste text manually.'
+          );
+        }
+      }
+
+      text = text.trim();
+      if (text.length < 10) {
+        throw new Error(
+          'Not enough text was extracted. Try another export format or paste manually.'
+        );
+      }
+
+      applyExtractedText(text, file.name, security);
+      const alertMsg =
+        security?.scanned && security.verdict === 'clean'
+          ? `Loaded ${file.name} — passed VirusTotal security scan.`
+          : `Loaded ${file.name} successfully.`;
+      showAlert(alertMsg, 'success');
+      setTimeout(hideAlert, 3500);
+    } catch (err) {
+      setUploadStatus(err.message, 'error');
+      showAlert(err.message || 'Upload failed. Please try again.');
+    } finally {
+      setUploading(false);
+      if (els['file-upload']) els['file-upload'].value = '';
+    }
+  }
+
+  function syncDropZoneState() {
+    const hasText = Boolean(els['resume-text'].value.trim());
+    els['drop-zone'].classList.toggle('has-content', hasText);
+  }
+
   function updateLiveStats() {
     const text = els['resume-text'].value;
     const chars = text.trim().length;
@@ -100,6 +310,7 @@
 
     updateLiveHints(text, chars, words);
     els['drop-zone'].classList.toggle('has-error', chars > 0 && chars < LIMITS.minChars);
+    syncDropZoneState();
   }
 
   function updateLiveHints(text, chars, words) {
@@ -168,8 +379,54 @@
     });
   }
 
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function renderAiInsights(aiInsights) {
+    const panel = els['ai-insights-panel'];
+    const tabBtn = els['ai-tab-btn'];
+    if (!panel) return;
+
+    if (!aiInsights?.available) {
+      tabBtn?.classList.add('hidden');
+      panel.innerHTML = `<p class="ai-placeholder">${escapeHtml(
+        aiInsights?.error ||
+          (aiInsights?.skipped
+            ? 'Enable OPENAI_API_KEY on the server for AI coach insights.'
+            : 'AI insights unavailable.')
+      )}</p>`;
+      return;
+    }
+
+    tabBtn?.classList.remove('hidden');
+
+    const list = (title, items, cls) => {
+      if (!items?.length) return '';
+      return `<div class="ai-block"><h4>${escapeHtml(title)}</h4><ul class="ai-list ${cls}">${items
+        .map(item => `<li>${escapeHtml(item)}</li>`)
+        .join('')}</ul></div>`;
+    };
+
+    panel.innerHTML = `
+      <div class="ai-summary-card">
+        <div class="ai-score-badge">${aiInsights.scoreEstimate ?? '—'}<span>/100</span></div>
+        <p class="ai-summary-text">${escapeHtml(aiInsights.summary || '')}</p>
+      </div>
+      ${list('Strengths', aiInsights.strengths, 'strengths')}
+      ${list('Improvements', aiInsights.improvements, 'improvements')}
+      ${list('ATS tips', aiInsights.atsTips, 'tips')}
+      ${list('Keywords to add', aiInsights.missingKeywords, 'keywords')}
+      <p class="ai-meta">Model: ${escapeHtml(aiInsights.model || 'OpenAI')} · ${escapeHtml(new Date(aiInsights.generatedAt).toLocaleString())}</p>
+    `;
+  }
+
   function renderResults(data) {
-    const { results, checks, suggestions } = data;
+    const { results, checks, suggestions, aiInsights } = data;
 
     els['overall-score'].textContent = `${results.overallScore}%`;
     els['overall-grade'].textContent = results.grade.replace('-', ' ');
@@ -212,17 +469,19 @@
       )
       .join('');
 
+    renderAiInsights(aiInsights);
+
     els['results'].classList.remove('hidden');
     els['results'].scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  async function analyzeViaApi(text, targetRole) {
+  async function analyzeViaApi(text, targetRole, useAi) {
     let response;
     try {
       response = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, targetRole }),
+        body: JSON.stringify({ text, targetRole, useAi }),
       });
     } catch {
       return null;
@@ -264,12 +523,17 @@
 
     setLoading(true);
     try {
-      let data = await analyzeViaApi(text, targetRole);
+      const useAi = serverConfig.openAi && els['use-ai']?.checked !== false;
+      let data = await analyzeViaApi(text, targetRole, useAi);
       if (!data) {
         data = analyzeLocally(text, targetRole);
+        data.aiInsights = { available: false, skipped: true, reason: 'local_only' };
       }
       renderResults(data);
-      showAlert('Analysis complete!', 'success');
+      const doneMsg = data.aiInsights?.available
+        ? 'Analysis complete with AI coach insights!'
+        : 'Analysis complete!';
+      showAlert(doneMsg, 'success');
       setTimeout(hideAlert, 3000);
     } catch (err) {
       showAlert(err.message || 'Something went wrong. Please try again.');
@@ -309,25 +573,37 @@
     });
     zone.addEventListener('drop', e => {
       const file = e.dataTransfer?.files?.[0];
-      if (!file) return;
-      if (!file.name.endsWith('.txt') && file.type !== 'text/plain') {
-        showAlert('Only .txt files are supported for upload. Paste PDF content manually.');
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = ev => {
-        els['resume-text'].value = ev.target.result;
-        updateLiveStats();
-      };
-      reader.onerror = () => showAlert('Could not read the file. Please try again.');
-      reader.readAsText(file);
+      if (file) handleFileUpload(file);
     });
+  }
+
+  function setupUpload() {
+    els['upload-btn'].addEventListener('click', () => els['file-upload'].click());
+    els['file-upload'].addEventListener('change', e => {
+      const file = e.target.files?.[0];
+      if (file) handleFileUpload(file);
+    });
+  }
+
+  async function loadServerConfig() {
+    try {
+      const response = await fetch('/api/analyzer/config');
+      if (!response.ok) return;
+      serverConfig = await response.json();
+      if (serverConfig.openAi) {
+        els['ai-toggle-label']?.classList.remove('hidden');
+      }
+    } catch {
+      /* static hosting — local analysis only */
+    }
   }
 
   document.addEventListener('DOMContentLoaded', () => {
     cacheElements();
     setupTabs();
     setupDropZone();
+    setupUpload();
+    loadServerConfig();
 
     els['analyze-btn'].addEventListener('click', runAnalysis);
     els['sample-btn'].addEventListener('click', () => {
@@ -338,6 +614,7 @@
     els['clear-btn'].addEventListener('click', () => {
       els['resume-text'].value = '';
       els['results'].classList.add('hidden');
+      setUploadStatus('', '');
       updateLiveStats();
       hideAlert();
       els['resume-text'].focus();

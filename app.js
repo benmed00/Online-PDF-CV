@@ -1,10 +1,13 @@
 /**
  * Module dependencies.
  */
+require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const cookieParser = require('cookie-parser');
+const multer = require('multer');
 const helmet = require('helmet');
 const logger = require('./utils/logger');
 const AppError = require('./utils/AppError');
@@ -12,7 +15,25 @@ const errorHandler = require('./utils/errorHandler');
 const { getResumeVersions, RESUMES_DIR } = require('./utils/getResumeVersions');
 const { isValidVersion } = require('./utils/validateVersion');
 const { analyzeResume, TARGET_ROLES } = require('./utils/resumeAnalyzer');
+const {
+  extractResumeText,
+  MAX_FILE_SIZE,
+  SUPPORTED_EXTENSIONS,
+} = require('./utils/extractResumeText');
+const {
+  scanUploadedFile,
+  isConfigured: isVirusTotalConfigured,
+} = require('./utils/virusTotalScanner');
+const {
+  getAiResumeInsights,
+  isConfigured: isOpenAiConfigured,
+} = require('./utils/openAiResumeInsights');
 const indexRouter = require('./routes/index');
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: MAX_FILE_SIZE },
+});
 
 const app = express();
 
@@ -53,10 +74,20 @@ app.get('/api/versions', function (req, res) {
   });
 });
 
-app.post('/api/analyze', function (req, res, next) {
+app.get('/api/analyzer/config', function (req, res) {
+  res.json({
+    openAi: isOpenAiConfigured(),
+    virusTotal: isVirusTotalConfigured(),
+    maxUploadMb: MAX_FILE_SIZE / (1024 * 1024),
+    supportedUploads: SUPPORTED_EXTENSIONS,
+  });
+});
+
+app.post('/api/analyze', async function (req, res, next) {
   try {
     const text = typeof req.body?.text === 'string' ? req.body.text : '';
     const targetRole = req.body?.targetRole;
+    const useAi = req.body?.useAi !== false;
 
     if (targetRole && !Object.prototype.hasOwnProperty.call(TARGET_ROLES, targetRole)) {
       return next(
@@ -74,10 +105,47 @@ app.post('/api/analyze', function (req, res, next) {
       });
     }
 
-    res.json(analysis);
+    let aiInsights = { available: false, skipped: true, reason: 'disabled' };
+    if (useAi) {
+      try {
+        aiInsights = await getAiResumeInsights(text, targetRole || 'general');
+      } catch (aiErr) {
+        aiInsights = { available: false, error: aiErr.message };
+      }
+    }
+
+    res.json({ ...analysis, aiInsights });
   } catch (err) {
     next(err);
   }
+});
+
+app.post('/api/extract-resume', upload.single('file'), function (req, res, next) {
+  if (!req.file) {
+    return next(new AppError('No file uploaded.', 400));
+  }
+
+  scanUploadedFile(req.file.buffer, req.file.originalname)
+    .then(security =>
+      extractResumeText(req.file.buffer, req.file.originalname).then(result => ({
+        result,
+        security,
+      }))
+    )
+    .then(({ result, security }) => {
+      res.json({ success: true, ...result, security });
+    })
+    .catch(next);
+});
+
+app.use(function (err, req, res, next) {
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return next(new AppError(`File exceeds the ${MAX_FILE_SIZE / (1024 * 1024)} MB limit.`, 400));
+    }
+    return next(new AppError(err.message, 400));
+  }
+  next(err);
 });
 
 app.get('/docs', function (req, res) {

@@ -43,3 +43,7 @@ e2e/artifacts/videos/
 # Temporary files
 tmp/
 temp/
+
+# Tesseract OCR language data (downloaded at runtime)
+*.traineddata
+eng.traineddata

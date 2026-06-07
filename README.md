@@ -71,7 +71,7 @@ npm run test:all
 
 - **Multiple Resume Versions** — `/resume/:version` (technical, executive, creative, …)
 - **API Documentation** — interactive page at `/docs`
-- **Resume Analyzer** — keyword coverage and suggestions at `/analyzer`
+- **Resume Analyzer** — keyword coverage, best-practice checks, multi-format upload, VirusTotal scan, optional OpenAI coach at `/analyzer`
 - **Resume Comparison** — side-by-side PDF view at `/compare`
 - **Versions API** — JSON at `/api/versions`
 - **Static Firebase build** — `npm run build` pre-renders pages for hosting
@@ -86,13 +86,22 @@ npm run test:all
 ## Quick start
 
 ```bash
-git clone https://github.com/ben-git-code/Online-PDF-CV.git
+git clone https://github.com/benmed00/Online-PDF-CV.git
 cd Online-PDF-CV
 npm install
 npm start
 ```
 
 Open http://localhost:3000
+
+### Analyzer API keys (optional)
+
+Copy `.env.example` to `.env` and set:
+
+- `VIRUSTOTAL_API_KEY` — malware scan on uploaded files (Word, PDF, images, …)
+- `OPENAI_API_KEY` — AI Coach tab with strengths, ATS tips, and improvements
+
+Restart the server after changing `.env`. Never commit `.env` to git.
 
 ### Add your resume
 

@@ -22,4 +22,5 @@ Please do not report security issues through public GitHub issues.
 
 - Keep dependencies updated (`npm audit`, Dependabot).
 - Do not commit secrets, Firebase service account keys, or `.env` files.
+- Uploaded CV files on the analyzer are optionally scanned with [VirusTotal](https://www.virustotal.com/) when `VIRUSTOTAL_API_KEY` is set (see `.env.example`). Malicious or highly suspicious files are rejected before text extraction.
 - Resume PDFs in `public/` are intentionally public; do not store private data there.
