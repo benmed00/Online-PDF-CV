@@ -1,78 +1,61 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+/**
+ * Module dependencies.
+ */
+const express = require('express');
+const path = require('path');
+const fs = require('fs');
+const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
+const logger = require('./utils/logger');
+const AppError = require('./utils/AppError');
+const errorHandler = require('./utils/errorHandler');
+const { getResumeVersions, RESUMES_DIR } = require('./utils/getResumeVersions');
+const { isValidVersion } = require('./utils/validateVersion');
+const indexRouter = require('./routes/index');
 
-// Note: Routes from ./routes/index and ./routes/users are not used
-// due to the wildcard route below that serves the PDF directly
-
-var app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(logger('dev'));
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", 'data:'],
+        frameSrc: ["'self'"],
+      },
+    },
+  })
+);
+
+app.use((req, res, next) => {
+  logger.http(`${req.method} ${req.url}`);
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
-// API endpoint for resume versions
 app.get('/api/versions', function (req, res) {
-  const fs = require('fs');
-  const path = require('path');
+  const versions = getResumeVersions();
 
-  const resumesDir = path.join(__dirname, 'public/resumes');
-  let versions = [];
-
-  // Check if the directory exists
-  if (fs.existsSync(resumesDir)) {
-    // Read all files in the directory
-    const files = fs.readdirSync(resumesDir);
-
-    // Filter for PDF files and extract version names
-    versions = files
-      .filter(file => file.toLowerCase().endsWith('.pdf'))
-      .map(file => file.replace('.pdf', ''));
-  }
-
-  // Always include default version
-  if (!versions.includes('default')) {
-    versions.unshift('default');
-  }
-
-  // Return JSON response
   res.json({
-    versions: versions,
+    versions,
     count: versions.length,
     baseUrl: `${req.protocol}://${req.get('host')}/resume/`,
   });
 });
 
-// Documentation route
 app.get('/docs', function (req, res) {
-  // Get versions dynamically
-  const fs = require('fs');
-  const path = require('path');
-
-  const resumesDir = path.join(__dirname, 'public/resumes');
-  let versions = ['default'];
-
-  if (fs.existsSync(resumesDir)) {
-    const files = fs.readdirSync(resumesDir);
-    const fileVersions = files
-      .filter(file => file.toLowerCase().endsWith('.pdf'))
-      .map(file => file.replace('.pdf', ''));
-
-    // Combine versions, ensuring default is first and no duplicates
-    versions = [...new Set([...versions, ...fileVersions])];
-  }
-
   res.render('docs', {
     title: 'Resume API Documentation',
-    versions: versions,
+    versions: getResumeVersions(),
     metaDescription:
       'API documentation for accessing different versions of the resume in PDF format',
     metaKeywords: 'resume API, PDF API, resume versions, resume documentation',
@@ -80,7 +63,6 @@ app.get('/docs', function (req, res) {
   });
 });
 
-// Resume analyzer route
 app.get('/analyzer', function (req, res) {
   res.render('analyzer', {
     title: 'Resume Analyzer Tool',
@@ -90,73 +72,53 @@ app.get('/analyzer', function (req, res) {
   });
 });
 
-// Resume comparison tool route
 app.get('/compare', function (req, res) {
-  // Get versions dynamically
-  const fs = require('fs');
-  const path = require('path');
-
-  const resumesDir = path.join(__dirname, 'public/resumes');
-  let versions = ['default'];
-
-  if (fs.existsSync(resumesDir)) {
-    const files = fs.readdirSync(resumesDir);
-    const fileVersions = files
-      .filter(file => file.toLowerCase().endsWith('.pdf'))
-      .map(file => file.replace('.pdf', ''));
-
-    // Combine versions, ensuring default is first and no duplicates
-    versions = [...new Set([...versions, ...fileVersions])];
-  }
-
   res.render('compare', {
     title: 'Resume Comparison Tool',
-    versions: versions,
+    versions: getResumeVersions(),
     metaDescription: 'Tool to compare different versions of your resume side by side',
     metaKeywords: 'resume comparison, resume versions, compare resumes, resume tool',
     metaUrl: `${req.protocol}://${req.get('host')}/compare`,
   });
 });
 
-// Serve different resume versions based on URL parameter
-app.get('/resume/:version?', function (req, res) {
+function serveResume(req, res, next) {
   const version = req.params.version || 'default';
-  const resumePath = path.join(__dirname, `public/resumes/${version}.pdf`);
 
-  // Check if the requested version exists
-  const fs = require('fs');
-  if (fs.existsSync(resumePath)) {
-    res.sendFile(resumePath);
-  } else {
-    // Fallback to default resume if requested version doesn't exist
-    res.sendFile(path.join(__dirname, 'public/resume.pdf'));
+  if (!isValidVersion(version)) {
+    return next(new AppError('Invalid resume version', 400));
   }
+
+  const resumePath = path.join(RESUMES_DIR, `${version}.pdf`);
+  const defaultPdf = path.join(__dirname, 'public', 'resume.pdf');
+
+  if (fs.existsSync(resumePath)) {
+    return res.sendFile(resumePath);
+  }
+
+  if (fs.existsSync(defaultPdf)) {
+    return res.sendFile(defaultPdf);
+  }
+
+  next(new AppError('Resume not found', 404));
+}
+
+app.get('/resume', serveResume);
+app.get('/resume/:version', serveResume);
+
+app.use('/', indexRouter);
+
+app.use(express.static(path.join(__dirname, 'public'), { index: false }));
+
+app.use((req, res, next) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
-// Serve the default PDF for the root route and any other routes
-app.get('*', function (req, res) {
-  res.sendFile(path.join(__dirname, 'public/resume.pdf'));
-});
-
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404));
-});
-
-// error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+app.use(errorHandler);
 
 module.exports = app;
 
-// If this file is run directly (not required), start the server
+/* istanbul ignore next */
 if (require.main === module) {
   const port = process.env.PORT || 3000;
 
@@ -177,7 +139,6 @@ if (require.main === module) {
     console.log('Press Ctrl+C to stop the server');
   });
 
-  // Handle server errors
   server.on('error', function (error) {
     if (error.code === 'EADDRINUSE') {
       console.error('🚫 Error: Port ' + port + ' is already in use');
