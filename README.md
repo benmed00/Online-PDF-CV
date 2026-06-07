@@ -1,219 +1,158 @@
 # Online-PDF-CV
 
-A simple and elegant way to host your PDF resume online with Firebase.  
-Live demo: [https://benyakoub-cv.firebaseapp.com/](https://benyakoub-cv.firebaseapp.com/)
+A simple and elegant way to host your PDF resume online with Express and Firebase.
 
-## Technologies Used
+**Live demo:** [https://benyakoub-cv.firebaseapp.com/](https://benyakoub-cv.firebaseapp.com/)
 
-- **JavaScript**: [https://www.javascript.com/](https://www.javascript.com/)
-- **Node.js**: [https://nodejs.org](https://nodejs.org)
-- **Express.js**: [https://expressjs.com](https://expressjs.com)
-- **Git**: [https://git-scm.com](https://git-scm.com)
-- **Firebase**: [https://firebase.google.com](https://firebase.google.com)
-- **Firebase CLI**: [https://www.npmjs.com/package/firebase-tools](https://www.npmjs.com/package/firebase-tools)
+**Documentation wiki:** see the [`wiki/`](wiki/Home.md) folder (GitHub Wiki–compatible). Start with [Home](wiki/Home.md) · [Getting Started](wiki/Getting-Started.md) · [Testing & Usability](wiki/Testing-and-Usability.md)
 
-## Code Quality Tools
+---
 
-This project uses the following tools to ensure code quality and consistent formatting:
+## Screenshots
 
-- **ESLint**: JavaScript linting tool to identify and report on patterns in the code
-- **Prettier**: Code formatter that enforces a consistent style
+Captured by Playwright usability tests (desktop, 1280×720).
 
-### Available Scripts
+### Home page
+
+Embedded PDF resume with primary navigation.
+
+![Home page — PDF resume viewer](docs/assets/screenshots/01-home-desktop.png)
+
+### API documentation
+
+![API documentation page](docs/assets/screenshots/02-docs-page.png)
+
+### Resume analyzer
+
+| Input | Results |
+|-------|---------|
+| ![Analyzer — paste resume text](docs/assets/screenshots/03-analyzer-before.png) | ![Analyzer — keyword scores and suggestions](docs/assets/screenshots/04-analyzer-results.png) |
+
+### Resume comparison
+
+| Select versions | Side-by-side PDFs |
+|-----------------|-------------------|
+| ![Compare — version selectors](docs/assets/screenshots/05-compare-before.png) | ![Compare — side-by-side view](docs/assets/screenshots/06-compare-side-by-side.png) |
+
+### Navigation flow
+
+![Navigate to API docs](docs/assets/screenshots/08-nav-docs.png)
+
+![Navigate to analyzer](docs/assets/screenshots/09-nav-analyzer.png)
+
+![Navigate to compare tool](docs/assets/screenshots/10-nav-compare.png)
+
+![Return to home](docs/assets/screenshots/11-nav-home.png)
+
+---
+
+## Usability videos
+
+WebM recordings from Playwright (desktop and mobile). Stored in [`docs/assets/videos/`](docs/assets/videos/).
+
+| Video | Description |
+|-------|-------------|
+| [home-desktop.webm](docs/assets/videos/home-desktop.webm) | Home page load (desktop) |
+| [analyzer-desktop.webm](docs/assets/videos/analyzer-desktop.webm) | Analyzer workflow (desktop) |
+| [compare-desktop.webm](docs/assets/videos/compare-desktop.webm) | Compare tool (desktop) |
+| [navigation-desktop.webm](docs/assets/videos/navigation-desktop.webm) | Full navigation tour (desktop) |
+| [home-mobile.webm](docs/assets/videos/home-mobile.webm) | Home page load (mobile) |
+| [navigation-mobile.webm](docs/assets/videos/navigation-mobile.webm) | Full navigation tour (mobile) |
+
+Regenerate screenshots and videos:
 
 ```bash
-# Install dependencies
-npm install
-
-# Start the development server
-npm start
-
-# Run tests
-npm test
-
-# Run tests with coverage report
-npm run test:coverage
-
-# Run tests in watch mode
-npm run test:watch
-
-# Lint code
-npm run lint
-
-# Fix linting issues
-npm run lint:fix
-
-# Format code with Prettier
-npm run format
-
-# Check code formatting
-npm run format:check
-
-# Deploy to Firebase
-npm run deploy
+npm run test:all
 ```
+
+---
 
 ## Features
 
-- **Multiple Resume Versions**: Host different versions of your resume (technical, executive, creative) accessible via different URLs
-- **API Documentation**: Interactive documentation page at `/docs` explaining how to use the resume API
-- **Resume Analyzer**: Tool at `/analyzer` to analyze resume content and provide improvement suggestions
-- **Resume Comparison**: Tool at `/compare` to compare different resume versions side by side
-- **Resume Templates**: HTML templates for creating different resume versions
-- **Format Export**: Export your resume to different formats (JSON, TXT, Markdown)
-- **Testing**: Jest testing framework with test coverage reporting
-- **CI/CD**: GitHub Actions workflows for continuous integration and deployment
+- **Multiple Resume Versions** — `/resume/:version` (technical, executive, creative, …)
+- **API Documentation** — interactive page at `/docs`
+- **Resume Analyzer** — keyword coverage and suggestions at `/analyzer`
+- **Resume Comparison** — side-by-side PDF view at `/compare`
+- **Versions API** — JSON at `/api/versions`
+- **Static Firebase build** — `npm run build` pre-renders pages for hosting
+- **Testing** — Jest unit tests + Playwright usability tests with screenshots and video
+- **CI/CD** — GitHub Actions for lint, test, build, and Firebase deploy
 
-## How to Use
+## Technologies
 
-Follow these steps to host your own PDF resume:
+- Node.js · Express 5 · Pug · Firebase Hosting
+- Jest · Playwright · ESLint · Prettier · Winston · Helmet
 
-1. Clone this repository
-2. Navigate to the `public` folder
-3. Replace the existing `resume.pdf` with your own PDF file (make sure to name it `resume.pdf`)
-4. Add different versions of your resume to the `public/resumes` folder (e.g., `technical.pdf`, `executive.pdf`)
-5. Customize the title and navigation in the layout template if desired
-6. Deploy to Firebase (see deployment instructions below)
-
-### Creating Resume Templates
-
-You can create HTML templates for different resume versions:
+## Quick start
 
 ```bash
-# Create a new resume template
-npm run create-template -- version-name
-
-# Examples:
-npm run create-template -- technical
-npm run create-template -- executive
-npm run create-template -- creative
-```
-
-This will create an HTML template in the `templates` directory that you can customize and then convert to PDF.
-
-### Adding Resume Versions
-
-You can add different versions of your resume using the provided script:
-
-```bash
-# Add a new resume version
-npm run add-version -- /path/to/your/resume.pdf version-name
-
-# Examples:
-npm run add-version -- ~/Documents/technical-resume.pdf technical
-npm run add-version -- ~/Documents/executive-resume.pdf executive
-```
-
-This will copy your PDF file to the `public/resumes` directory with the specified version name, making it accessible at `/resume/version-name`.
-
-### Generating a Sitemap
-
-To improve SEO, you can generate a sitemap.xml file for your resume site:
-
-```bash
-# Generate sitemap.xml
-npm run generate-sitemap -- https://yourdomain.com
-
-# Example:
-npm run generate-sitemap -- https://resume.example.com
-```
-
-This will create a `sitemap.xml` file in the `public` directory that includes:
-
-- The main resume page
-- All resume versions
-- The documentation page
-- The resume analyzer tool
-
-The sitemap will help search engines discover and index all pages of your resume site.
-
-### Exporting to Different Formats
-
-You can export your resume to different formats for various use cases:
-
-```bash
-# Export a resume version to a different format
-npm run export -- <version-name> <format>
-
-# Examples:
-npm run export -- technical json
-npm run export -- executive txt
-npm run export -- creative markdown
-```
-
-Supported formats:
-
-- `json`: Structured data format for programmatic use
-- `txt`: Plain text format for simple viewing
-- `markdown` (or `md`): Markdown format for easy editing and GitHub display
-
-The exported files will be saved in the `exports` directory.
-
-## Development
-
-```bash
-# Install dependencies
+git clone https://github.com/ben-git-code/Online-PDF-CV.git
+cd Online-PDF-CV
 npm install
-
-# Start local development server
 npm start
 ```
 
-## Code Quality
+Open http://localhost:3000
+
+### Add your resume
+
+1. Replace `public/resume.pdf` with your PDF
+2. Add versions to `public/resumes/` (e.g. `technical.pdf`)
+3. Or use: `npm run add-version -- /path/to/file.pdf technical`
+
+## Scripts
 
 ```bash
-# Run ESLint to check code quality
-npm run lint
-
-# Fix ESLint issues automatically
-npm run lint:fix
-
-# Format code with Prettier
-npm run format
+npm start              # Start server (bin/www)
+npm run dev            # Start server (app.js)
+npm run build          # Build static HTML for Firebase
+npm test               # Jest unit tests
+npm run test:coverage  # Jest with coverage
+npm run test:e2e       # Playwright usability tests
+npm run test:all       # test → build → e2e → publish docs/assets
+npm run test:e2e:report  # Open Playwright HTML report
+npm run lint           # ESLint
+npm run format         # Prettier
+npm run deploy         # firebase deploy
+npm run add-version    # Add a resume PDF version
+npm run generate-sitemap -- https://yourdomain.com
+npm run export         # Export resume to json/txt/markdown
 ```
 
 ## Deployment
 
-### Prerequisites
+```bash
+npm run build
+firebase login
+npm run deploy
+```
 
-- Firebase account
-- Firebase CLI installed (`npm install -g firebase-tools`)
+See [wiki/Deployment.md](wiki/Deployment.md) for CI/CD and rewrite rules.
 
-### Steps
+## Documentation
 
-1. Login to Firebase: `firebase login`
-2. Initialize Firebase (first time only): `firebase init hosting`
-3. Deploy to Firebase: `npm run deploy`
-
-### Continuous Deployment
-
-This project is configured with GitHub Actions for continuous deployment:
-
-- Pushes to the master branch automatically deploy to Firebase
-- Pull requests create preview deployments
-
-## Firebase Setup
-
-Firebase offers free hosting for small applications:
-
-1. Create a Firebase project at [https://console.firebase.google.com/](https://console.firebase.google.com/)
-2. Follow the setup instructions to connect your local project to Firebase
-3. Update the `.firebaserc` file with your project ID
-
-## Resources
-
-- **Create a professional CV online**: [CVmaker](https://www.cvmaker.fr/)
-- **Firebase Documentation**: [Firebase Hosting](https://firebase.google.com/docs/hosting)
-- **Express.js Documentation**: [Express Guide](https://expressjs.com/en/guide/routing.html)
+| Wiki page | Topic |
+|-----------|-------|
+| [Home](wiki/Home.md) | Overview |
+| [Getting Started](wiki/Getting-Started.md) | Install and first deploy |
+| [Development](wiki/Development.md) | Architecture and scripts |
+| [Testing and Usability](wiki/Testing-and-Usability.md) | Jest, Playwright, media assets |
+| [Deployment](wiki/Deployment.md) | Firebase Hosting |
+| [API Reference](wiki/API-Reference.md) | HTTP endpoints |
+| [Troubleshooting](wiki/Troubleshooting.md) | Common issues |
+| [Sync Wiki](wiki/Sync-Wiki.md) | Publish to GitHub Wiki |
 
 ## Contributing
 
 1. Fork the repository
-2. Create your feature branch: `git checkout -b feature/my-new-feature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin feature/my-new-feature`
-5. Submit a pull request
+2. Create a feature branch: `git checkout -b feature/my-feature`
+3. Run `npm run test:all` before submitting
+4. Open a pull request
 
 ## License
 
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+Apache License 2.0 — see [LICENSE](LICENSE).
+
+## Author
+
+Jacob Son — [ben94med@gmail.com](mailto:ben94med@gmail.com)
