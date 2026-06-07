@@ -33,6 +33,13 @@ logs/*.log
 # Coverage directory used by tools like istanbul
 coverage/
 
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+e2e/artifacts/screenshots/
+e2e/artifacts/videos/
+
 # Temporary files
 tmp/
 temp/
