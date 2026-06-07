@@ -185,7 +185,7 @@ function ensureMilestone() {
   return created.number;
 }
 
-function createIssue(issue, milestoneNumber) {
+function createIssue(issue) {
   const labels = issue.labels.join(',');
   const args = [
     'issue',
@@ -215,8 +215,8 @@ function createIssue(issue, milestoneNumber) {
 
 function main() {
   LABELS.forEach(ensureLabel);
-  const milestoneNumber = ensureMilestone();
-  const issueNumbers = ISSUES.map(issue => createIssue(issue, milestoneNumber));
+  ensureMilestone();
+  const issueNumbers = ISSUES.map(issue => createIssue(issue));
   console.log(`Created/updated ${issueNumbers.length} issues in ${REPO}`);
 }
 

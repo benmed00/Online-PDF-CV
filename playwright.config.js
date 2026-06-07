@@ -6,9 +6,9 @@ module.exports = defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   workers: 1,
-  timeout: 60_000,
+  timeout: 60000,
   expect: {
-    timeout: 10_000,
+    timeout: 10000,
   },
   reporter: [['list'], ['html', { open: 'never', outputFolder: 'playwright-report' }]],
   outputDir: 'test-results',
@@ -17,8 +17,8 @@ module.exports = defineConfig({
     trace: 'on-first-retry',
     video: 'on',
     screenshot: 'on',
-    actionTimeout: 10_000,
-    navigationTimeout: 15_000,
+    actionTimeout: 10000,
+    navigationTimeout: 15000,
   },
   projects: [
     {
@@ -39,6 +39,6 @@ module.exports = defineConfig({
     command: 'npm start',
     url: 'http://127.0.0.1:3000',
     reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    timeout: 120000,
   },
 });
