@@ -11,6 +11,7 @@ const AppError = require('./utils/AppError');
 const errorHandler = require('./utils/errorHandler');
 const { getResumeVersions, RESUMES_DIR } = require('./utils/getResumeVersions');
 const { isValidVersion } = require('./utils/validateVersion');
+const { analyzeResume, TARGET_ROLES } = require('./utils/resumeAnalyzer');
 const indexRouter = require('./routes/index');
 
 const app = express();
@@ -50,6 +51,33 @@ app.get('/api/versions', function (req, res) {
     count: versions.length,
     baseUrl: `${req.protocol}://${req.get('host')}/resume/`,
   });
+});
+
+app.post('/api/analyze', function (req, res, next) {
+  try {
+    const text = typeof req.body?.text === 'string' ? req.body.text : '';
+    const targetRole = req.body?.targetRole;
+
+    if (targetRole && !Object.prototype.hasOwnProperty.call(TARGET_ROLES, targetRole)) {
+      return next(
+        new AppError('Invalid target role. Use: engineering, management, or general.', 400)
+      );
+    }
+
+    const analysis = analyzeResume(text, { targetRole: targetRole || 'general' });
+
+    if (!analysis.success) {
+      return res.status(400).json({
+        success: false,
+        error: analysis.error,
+        validation: analysis.validation,
+      });
+    }
+
+    res.json(analysis);
+  } catch (err) {
+    next(err);
+  }
 });
 
 app.get('/docs', function (req, res) {

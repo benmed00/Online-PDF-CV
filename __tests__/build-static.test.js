@@ -20,10 +20,12 @@ describe('build-static script', () => {
     expect(fs.existsSync(path.join(publicDir, relativePath))).toBe(true);
   });
 
-  test('should generate home page with BEN-YAKOUB title', () => {
+  test('should generate home page with full-screen resume viewer', () => {
     const html = fs.readFileSync(path.join(publicDir, 'index.html'), 'utf8');
     expect(html).toContain('BEN-YAKOUB');
-    expect(html).toContain('/resume.pdf');
+    expect(html).toContain('resume.pdf');
+    expect(html).toContain('resume-page');
+    expect(html).not.toContain('main-header');
   });
 
   test('should generate versions API payload', () => {

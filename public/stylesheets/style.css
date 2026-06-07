@@ -112,11 +112,37 @@ a:hover {
   text-decoration: underline;
 }
 
-/* PDF viewer styles */
+/* Full-screen resume viewer (home page) */
+html.resume-page,
+body.resume-page {
+  height: 100%;
+  overflow: hidden;
+}
+
+body.resume-page {
+  background: #525659;
+}
+
+.resume-viewport {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: #525659;
+}
+
+.resume-viewport iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #525659;
+}
+
+/* Embedded PDF viewers on helper pages */
 iframe {
   border: none;
   width: 100%;
-  height: 100vh;
   background: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

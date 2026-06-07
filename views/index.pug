@@ -1,4 +1,9 @@
-extends layout
+extends resume-layout
 
 block content
-  iframe(src="/resume.pdf", style="width:100%; height:100vh;", frameborder="0")
+  .resume-viewport
+    iframe(
+      src="/resume.pdf#navpanes=0&toolbar=0&view=FitH",
+      title=title,
+      frameborder="0"
+    )

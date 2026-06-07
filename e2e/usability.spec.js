@@ -10,24 +10,28 @@ function screenshotPath(name) {
 }
 
 test.describe('Online PDF CV usability', () => {
-  test('home page displays resume viewer and primary navigation', async ({ page }, testInfo) => {
+  test('home page displays full-screen resume viewer', async ({ page }, testInfo) => {
     await page.goto('/');
     await expect(page).toHaveTitle(/BEN-YAKOUB CV/i);
-    await expect(page.locator('.site-title')).toContainText('BEN-YAKOUB');
-    await expect(page.locator('iframe[src="/resume.pdf"]')).toBeVisible();
+    await expect(page.locator('iframe[src*="resume.pdf"]')).toBeVisible();
+    await expect(page.locator('.main-header')).toHaveCount(0);
+    await expect(page.locator('.main-footer')).toHaveCount(0);
+
+    const viewport = page.locator('.resume-viewport');
+    await expect(viewport).toBeVisible();
+
+    const box = await viewport.boundingBox();
+    const viewportSize = page.viewportSize();
+    expect(box.width).toBeCloseTo(viewportSize.width, 0);
+    expect(box.height).toBeCloseTo(viewportSize.height, 0);
 
     await page.screenshot({
       path: screenshotPath('01-home-desktop'),
-      fullPage: true,
+      fullPage: false,
     });
 
-    await expect(page.getByRole('link', { name: 'View Resume' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'API Docs' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Resume Analyzer' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Compare Versions' })).toBeVisible();
-
     await testInfo.attach('home-page', {
-      body: await page.screenshot({ fullPage: true }),
+      body: await page.screenshot({ fullPage: false }),
       contentType: 'image/png',
     });
   });
@@ -35,7 +39,7 @@ test.describe('Online PDF CV usability', () => {
   test('API documentation page explains resume endpoints', async ({ page }, testInfo) => {
     await page.goto('/docs');
     await expect(page.getByRole('main').getByRole('heading', { level: 1 })).toContainText(
-      'Resume API Documentation',
+      'Resume API Documentation'
     );
     await expect(page.getByText('GET /resume', { exact: true }).first()).toBeVisible();
     await expect(page.getByText('GET /api/versions', { exact: true })).toBeVisible();
@@ -54,7 +58,7 @@ test.describe('Online PDF CV usability', () => {
   test('resume analyzer accepts input and shows results', async ({ page }, testInfo) => {
     await page.goto('/analyzer');
     await expect(page.getByRole('main').getByRole('heading', { level: 1 })).toContainText(
-      'Resume Analyzer Tool',
+      'Resume Analyzer Tool'
     );
 
     const sampleResume =
@@ -86,7 +90,7 @@ test.describe('Online PDF CV usability', () => {
   test('compare tool loads resume versions side by side', async ({ page }, testInfo) => {
     await page.goto('/compare');
     await expect(page.getByRole('main').getByRole('heading', { level: 1 })).toContainText(
-      'Resume Comparison Tool',
+      'Resume Comparison Tool'
     );
     await expect(page.locator('#version1')).toBeVisible();
     await expect(page.locator('#version2')).toBeVisible();
@@ -143,11 +147,12 @@ test.describe('Online PDF CV usability', () => {
     });
   });
 
-  test('primary navigation flow across all main sections', async ({ page }, testInfo) => {
-    await page.goto('/');
-
-    await page.getByRole('link', { name: 'API Docs' }).click();
-    await expect(page).toHaveURL(/\/docs$/);
+  test('helper pages navigation and return to CV', async ({ page }, testInfo) => {
+    await page.goto('/docs');
+    await expect(page.getByRole('link', { name: 'View CV' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'API Docs' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Resume Analyzer' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Compare Versions' })).toBeVisible();
     await page.screenshot({ path: screenshotPath('08-nav-docs'), fullPage: true });
 
     await page.getByRole('link', { name: 'Resume Analyzer' }).click();
@@ -158,12 +163,13 @@ test.describe('Online PDF CV usability', () => {
     await expect(page).toHaveURL(/\/compare$/);
     await page.screenshot({ path: screenshotPath('10-nav-compare'), fullPage: true });
 
-    await page.getByRole('link', { name: 'View Resume' }).click();
+    await page.getByRole('link', { name: 'View CV' }).click();
     await expect(page).toHaveURL(/\/$/);
-    await page.screenshot({ path: screenshotPath('11-nav-home'), fullPage: true });
+    await expect(page.locator('.main-header')).toHaveCount(0);
+    await page.screenshot({ path: screenshotPath('11-nav-home'), fullPage: false });
 
     await testInfo.attach('navigation-flow-final', {
-      body: await page.screenshot({ fullPage: true }),
+      body: await page.screenshot({ fullPage: false }),
       contentType: 'image/png',
     });
   });

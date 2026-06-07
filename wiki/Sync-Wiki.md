@@ -61,12 +61,12 @@ Commit those folders in the main repository, then refresh wiki pages if paths ch
 
 ## Wiki syntax notes
 
-| Feature | Syntax |
-|---------|--------|
+| Feature       | Syntax                                  |
+| ------------- | --------------------------------------- |
 | Internal link | `[[Page-Name]]` or `[Label](Page-Name)` |
-| Sidebar | `_Sidebar.md` |
-| Footer | `_Footer.md` (optional) |
-| Home page | `Home.md` |
+| Sidebar       | `_Sidebar.md`                           |
+| Footer        | `_Footer.md` (optional)                 |
+| Home page     | `Home.md`                               |
 
 ## Keep wiki in sync
 

@@ -24,14 +24,14 @@ Embedded PDF resume with primary navigation.
 
 ### Resume analyzer
 
-| Input | Results |
-|-------|---------|
+| Input                                                                           | Results                                                                                       |
+| ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | ![Analyzer — paste resume text](docs/assets/screenshots/03-analyzer-before.png) | ![Analyzer — keyword scores and suggestions](docs/assets/screenshots/04-analyzer-results.png) |
 
 ### Resume comparison
 
-| Select versions | Side-by-side PDFs |
-|-----------------|-------------------|
+| Select versions                                                               | Side-by-side PDFs                                                                   |
+| ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | ![Compare — version selectors](docs/assets/screenshots/05-compare-before.png) | ![Compare — side-by-side view](docs/assets/screenshots/06-compare-side-by-side.png) |
 
 ### Navigation flow
@@ -50,14 +50,14 @@ Embedded PDF resume with primary navigation.
 
 WebM recordings from Playwright (desktop and mobile). Stored in [`docs/assets/videos/`](docs/assets/videos/).
 
-| Video | Description |
-|-------|-------------|
-| [home-desktop.webm](docs/assets/videos/home-desktop.webm) | Home page load (desktop) |
-| [analyzer-desktop.webm](docs/assets/videos/analyzer-desktop.webm) | Analyzer workflow (desktop) |
-| [compare-desktop.webm](docs/assets/videos/compare-desktop.webm) | Compare tool (desktop) |
+| Video                                                                 | Description                    |
+| --------------------------------------------------------------------- | ------------------------------ |
+| [home-desktop.webm](docs/assets/videos/home-desktop.webm)             | Home page load (desktop)       |
+| [analyzer-desktop.webm](docs/assets/videos/analyzer-desktop.webm)     | Analyzer workflow (desktop)    |
+| [compare-desktop.webm](docs/assets/videos/compare-desktop.webm)       | Compare tool (desktop)         |
 | [navigation-desktop.webm](docs/assets/videos/navigation-desktop.webm) | Full navigation tour (desktop) |
-| [home-mobile.webm](docs/assets/videos/home-mobile.webm) | Home page load (mobile) |
-| [navigation-mobile.webm](docs/assets/videos/navigation-mobile.webm) | Full navigation tour (mobile) |
+| [home-mobile.webm](docs/assets/videos/home-mobile.webm)               | Home page load (mobile)        |
+| [navigation-mobile.webm](docs/assets/videos/navigation-mobile.webm)   | Full navigation tour (mobile)  |
 
 Regenerate screenshots and videos:
 
@@ -131,16 +131,16 @@ See [wiki/Deployment.md](wiki/Deployment.md) for CI/CD and rewrite rules.
 
 ## Documentation
 
-| Wiki page | Topic |
-|-----------|-------|
-| [Home](wiki/Home.md) | Overview |
-| [Getting Started](wiki/Getting-Started.md) | Install and first deploy |
-| [Development](wiki/Development.md) | Architecture and scripts |
+| Wiki page                                              | Topic                          |
+| ------------------------------------------------------ | ------------------------------ |
+| [Home](wiki/Home.md)                                   | Overview                       |
+| [Getting Started](wiki/Getting-Started.md)             | Install and first deploy       |
+| [Development](wiki/Development.md)                     | Architecture and scripts       |
 | [Testing and Usability](wiki/Testing-and-Usability.md) | Jest, Playwright, media assets |
-| [Deployment](wiki/Deployment.md) | Firebase Hosting |
-| [API Reference](wiki/API-Reference.md) | HTTP endpoints |
-| [Troubleshooting](wiki/Troubleshooting.md) | Common issues |
-| [Sync Wiki](wiki/Sync-Wiki.md) | Publish to GitHub Wiki |
+| [Deployment](wiki/Deployment.md)                       | Firebase Hosting               |
+| [API Reference](wiki/API-Reference.md)                 | HTTP endpoints                 |
+| [Troubleshooting](wiki/Troubleshooting.md)             | Common issues                  |
+| [Sync Wiki](wiki/Sync-Wiki.md)                         | Publish to GitHub Wiki         |
 
 ## Contributing
 

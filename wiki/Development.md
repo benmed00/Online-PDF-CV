@@ -2,17 +2,17 @@
 
 ## Project layout
 
-| Path | Purpose |
-|------|---------|
-| `app.js` | Express application and routes |
-| `bin/www` | HTTP server entrypoint |
-| `routes/` | Page routers |
-| `views/` | Pug templates |
-| `utils/` | Logging, errors, resume helpers |
-| `public/` | Static assets and generated HTML |
-| `scripts/` | CLI utilities and static build |
-| `e2e/` | Playwright usability tests |
-| `__tests__/` | Jest unit/integration tests |
+| Path         | Purpose                          |
+| ------------ | -------------------------------- |
+| `app.js`     | Express application and routes   |
+| `bin/www`    | HTTP server entrypoint           |
+| `routes/`    | Page routers                     |
+| `views/`     | Pug templates                    |
+| `utils/`     | Logging, errors, resume helpers  |
+| `public/`    | Static assets and generated HTML |
+| `scripts/`   | CLI utilities and static build   |
+| `e2e/`       | Playwright usability tests       |
+| `__tests__/` | Jest unit/integration tests      |
 
 ## Common scripts
 
@@ -48,10 +48,10 @@ Firebase rewrites map `/resume/:version` to PDF files.
 
 ## Environment variables
 
-| Variable | Purpose |
-|----------|---------|
-| `PORT` | Server port (default `3000`) |
-| `NODE_ENV` | `development` or `production` |
+| Variable   | Purpose                               |
+| ---------- | ------------------------------------- |
+| `PORT`     | Server port (default `3000`)          |
+| `NODE_ENV` | `development` or `production`         |
 | `SITE_URL` | Canonical URL used by `npm run build` |
 
 Example:

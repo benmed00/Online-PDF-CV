@@ -65,10 +65,7 @@ describe('API Endpoints', () => {
     });
 
     test('should add default version if not in directory', async () => {
-      // Mock fs.existsSync to return true (directory exists)
       fs.existsSync.mockReturnValue(true);
-
-      // Mock fs.readdirSync to return sample files without default
       fs.readdirSync.mockReturnValue(['technical.pdf', 'executive.pdf']);
 
       const response = await request(app).get('/api/versions');
@@ -78,6 +75,40 @@ describe('API Endpoints', () => {
       expect(response.body.versions).toContain('technical');
       expect(response.body.versions).toContain('executive');
       expect(response.body.count).toBe(3);
+    });
+  });
+
+  describe('POST /api/analyze', () => {
+    const validText =
+      'Experienced software engineer with JavaScript, React, Node.js, AWS, Docker, and CI/CD. ' +
+      'Strong leadership, communication, teamwork, and project management skills. ' +
+      'Built scalable APIs and managed cross-functional teams from 2020 – Present.';
+
+    test('should analyze valid resume text', async () => {
+      const response = await request(app)
+        .post('/api/analyze')
+        .send({ text: validText, targetRole: 'engineering' });
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.results.technicalScore).toBeGreaterThan(0);
+      expect(response.body.suggestions.length).toBeGreaterThan(0);
+    });
+
+    test('should reject empty text', async () => {
+      const response = await request(app).post('/api/analyze').send({ text: '' });
+
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+      expect(response.body.error).toBeTruthy();
+    });
+
+    test('should reject invalid target role', async () => {
+      const response = await request(app)
+        .post('/api/analyze')
+        .send({ text: validText, targetRole: 'invalid-role' });
+
+      expect(response.status).toBe(400);
     });
   });
 });

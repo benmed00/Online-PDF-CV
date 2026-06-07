@@ -49,8 +49,8 @@ GET /resume/:version
 
 ### Parameters
 
-| Name | Type | Rules |
-|------|------|-------|
+| Name      | Type   | Rules                                                        |
+| --------- | ------ | ------------------------------------------------------------ |
 | `version` | string | Lowercase letters, numbers, hyphens only (`a-z`, `0-9`, `-`) |
 
 ### Examples
@@ -62,31 +62,31 @@ curl -O http://localhost:3000/resume/executive
 
 ### Errors
 
-| Status | Meaning |
-|--------|---------|
-| `400` | Invalid version slug |
-| `404` | PDF not found |
+| Status | Meaning              |
+| ------ | -------------------- |
+| `400`  | Invalid version slug |
+| `404`  | PDF not found        |
 
 ---
 
 ## HTML pages
 
-| Route | Description |
-|-------|-------------|
-| `/` | Home page with embedded PDF |
-| `/docs` | API documentation |
-| `/analyzer` | Resume keyword analyzer |
-| `/compare` | Side-by-side version comparison |
+| Route       | Description                     |
+| ----------- | ------------------------------- |
+| `/`         | Home page with embedded PDF     |
+| `/docs`     | API documentation               |
+| `/analyzer` | Resume keyword analyzer         |
+| `/compare`  | Side-by-side version comparison |
 
 ---
 
 ## Static assets
 
-| Path | Type |
-|------|------|
-| `/resume.pdf` | Default PDF |
-| `/resumes/*.pdf` | Version PDFs |
-| `/stylesheets/style.css` | Styles |
+| Path                              | Type                   |
+| --------------------------------- | ---------------------- |
+| `/resume.pdf`                     | Default PDF            |
+| `/resumes/*.pdf`                  | Version PDFs           |
+| `/stylesheets/style.css`          | Styles                 |
 | `/javascripts/resume-analyzer.js` | Analyzer client script |
 
 ## Related pages

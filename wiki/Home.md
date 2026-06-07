@@ -27,14 +27,14 @@ Open http://localhost:3000
 
 ## Documentation map
 
-| Page | Description |
-|------|-------------|
-| [[Getting-Started]] | Install, configure, and publish your first resume |
-| [[Development]] | Local workflow, scripts, and architecture |
-| [[Testing-and-Usability]] | Jest, Playwright, screenshots, and videos |
-| [[Deployment]] | Firebase Hosting and static build |
-| [[API-Reference]] | HTTP endpoints and JSON payloads |
-| [[Troubleshooting]] | Common issues and fixes |
+| Page                      | Description                                       |
+| ------------------------- | ------------------------------------------------- |
+| [[Getting-Started]]       | Install, configure, and publish your first resume |
+| [[Development]]           | Local workflow, scripts, and architecture         |
+| [[Testing-and-Usability]] | Jest, Playwright, screenshots, and videos         |
+| [[Deployment]]            | Firebase Hosting and static build                 |
+| [[API-Reference]]         | HTTP endpoints and JSON payloads                  |
+| [[Troubleshooting]]       | Common issues and fixes                           |
 
 ## Screenshots
 

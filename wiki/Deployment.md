@@ -20,10 +20,10 @@ npm run deploy
 
 `firebase.json` defines:
 
-| Rewrite | Target |
-|---------|--------|
-| `/api/versions` | `/api/versions.json` |
-| `/resume` | `/resume.pdf` |
+| Rewrite            | Target                  |
+| ------------------ | ----------------------- |
+| `/api/versions`    | `/api/versions.json`    |
+| `/resume`          | `/resume.pdf`           |
 | `/resume/:version` | `/resumes/:version.pdf` |
 
 Static files in `public/` are served directly when they exist.
@@ -32,11 +32,11 @@ Static files in `public/` are served directly when they exist.
 
 GitHub Actions workflows:
 
-| Workflow | Trigger | Action |
-|----------|---------|--------|
-| `ci.yml` | Push/PR to `master` | Lint, test, build, coverage |
-| `firebase-hosting-merge.yml` | Push to `master` | Deploy to live channel |
-| `firebase-hosting-pull-request.yml` | Pull requests | Preview deployment |
+| Workflow                            | Trigger             | Action                      |
+| ----------------------------------- | ------------------- | --------------------------- |
+| `ci.yml`                            | Push/PR to `master` | Lint, test, build, coverage |
+| `firebase-hosting-merge.yml`        | Push to `master`    | Deploy to live channel      |
+| `firebase-hosting-pull-request.yml` | Pull requests       | Preview deployment          |
 
 ## Custom domain
 

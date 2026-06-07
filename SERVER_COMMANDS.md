@@ -90,15 +90,15 @@ SET PORT=3001 && npm run dev
 
 Once the server is running, you can access:
 
-| Endpoint | Description |
-|----------|-------------|
-| `http://localhost:3000/` | Main resume PDF |
-| `http://localhost:3000/docs` | API documentation |
-| `http://localhost:3000/analyzer` | Resume analyzer tool |
-| `http://localhost:3000/compare` | Resume comparison tool |
-| `http://localhost:3000/api/versions` | JSON API for resume versions |
-| `http://localhost:3000/resume/default` | Default resume version |
-| `http://localhost:3000/resume/{version}` | Specific resume version |
+| Endpoint                                 | Description                  |
+| ---------------------------------------- | ---------------------------- |
+| `http://localhost:3000/`                 | Main resume PDF              |
+| `http://localhost:3000/docs`             | API documentation            |
+| `http://localhost:3000/analyzer`         | Resume analyzer tool         |
+| `http://localhost:3000/compare`          | Resume comparison tool       |
+| `http://localhost:3000/api/versions`     | JSON API for resume versions |
+| `http://localhost:3000/resume/default`   | Default resume version       |
+| `http://localhost:3000/resume/{version}` | Specific resume version      |
 
 ## Error Handling
 
@@ -133,13 +133,13 @@ If you see:
 
 ## Differences Between Commands
 
-| Feature | `npm start` | `npm run dev` |
-|---------|-------------|---------------|
-| Setup | Uses `bin/www` (Express standard) | Direct `app.js` execution |
-| Error Handling | More robust HTTP server error handling | Basic Express error handling |
-| Production Ready | ✅ Yes | ⚠️ Development only |
-| Debug Support | ✅ Built-in debug module | ❌ Basic logging |
-| Recommended For | Production, deployment | Quick development testing |
+| Feature          | `npm start`                            | `npm run dev`                |
+| ---------------- | -------------------------------------- | ---------------------------- |
+| Setup            | Uses `bin/www` (Express standard)      | Direct `app.js` execution    |
+| Error Handling   | More robust HTTP server error handling | Basic Express error handling |
+| Production Ready | ✅ Yes                                 | ⚠️ Development only          |
+| Debug Support    | ✅ Built-in debug module               | ❌ Basic logging             |
+| Recommended For  | Production, deployment                 | Quick development testing    |
 
 ## Troubleshooting
 

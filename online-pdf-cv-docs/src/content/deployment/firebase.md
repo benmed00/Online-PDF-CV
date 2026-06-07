@@ -55,9 +55,9 @@ Pour déployer votre application, exécutez les commandes suivantes dans votre t
 
 Après un déploiement réussi, vous pouvez accéder à votre application à l'URL fournie par Firebase Hosting, généralement sous la forme :
 
-   ```url
-   https://<your-project-id>.firebaseapp.com/
-   ```
+```url
+https://<your-project-id>.firebaseapp.com/
+```
 
 ## Résolution des problèmes
 

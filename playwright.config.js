@@ -10,10 +10,7 @@ module.exports = defineConfig({
   expect: {
     timeout: 10_000,
   },
-  reporter: [
-    ['list'],
-    ['html', { open: 'never', outputFolder: 'playwright-report' }],
-  ],
+  reporter: [['list'], ['html', { open: 'never', outputFolder: 'playwright-report' }]],
   outputDir: 'test-results',
   use: {
     baseURL: 'http://127.0.0.1:3000',

@@ -17,8 +17,16 @@ const LABELS = [
   { name: 'type: testing', color: 'bfd4f2', description: 'Tests and quality assurance' },
   { name: 'type: ci/cd', color: '5319e7', description: 'Continuous integration and deployment' },
   { name: 'type: security', color: 'e11d21', description: 'Security-related change' },
-  { name: 'type: refactor', color: 'd4c5f9', description: 'Code restructuring without behavior change' },
-  { name: 'type: infrastructure', color: 'fbca04', description: 'Logging, errors, tooling, runtime' },
+  {
+    name: 'type: refactor',
+    color: 'd4c5f9',
+    description: 'Code restructuring without behavior change',
+  },
+  {
+    name: 'type: infrastructure',
+    color: 'fbca04',
+    description: 'Logging, errors, tooling, runtime',
+  },
   { name: 'type: deployment', color: '006b75', description: 'Firebase and hosting' },
   { name: 'priority: critical', color: 'b60205', description: 'Must fix before release' },
   { name: 'priority: high', color: 'd93f0b', description: 'Important for release' },
@@ -133,7 +141,18 @@ function ghJson(args) {
 
 function ensureLabel(label) {
   try {
-    gh(['label', 'create', label.name, '--repo', REPO, '--color', label.color, '--description', label.description, '--force']);
+    gh([
+      'label',
+      'create',
+      label.name,
+      '--repo',
+      REPO,
+      '--color',
+      label.color,
+      '--description',
+      label.description,
+      '--force',
+    ]);
     console.log(`Label: ${label.name}`);
   } catch (error) {
     console.error(`Label failed: ${label.name}`, error.message);
@@ -180,7 +199,7 @@ function createIssue(issue, milestoneNumber) {
     '--label',
     labels,
     '--milestone',
-    String(milestoneNumber),
+    'v3.6.2 — Platform Hardening',
   ];
 
   const url = gh(args);
