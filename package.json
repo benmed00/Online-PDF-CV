@@ -8,10 +8,10 @@
   "homepage": "https://benyakoub-cv.firebaseapp.com/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ben-git-code/Online-PDF-CV.git"
+    "url": "git+https://github.com/benmed00/Online-PDF-CV.git"
   },
   "bugs": {
-    "url": "https://github.com/ben-git-code/Online-PDF-CV/issues",
+    "url": "https://github.com/benmed00/Online-PDF-CV/issues",
     "email": "ben94med@gmail.com"
   },
   "keywords": [
