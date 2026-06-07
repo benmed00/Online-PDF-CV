@@ -25,7 +25,7 @@ Active short-term tasks. For the full prioritized queue see [backlog.md](backlog
 ## Documentation
 
 - [x] Add maintainer docs under `docs/` (roadmap, backlog, how-it-works, …)
-- [ ] Link `docs/` index from root README
+- [x] Link `docs/` index from root README
 - [ ] Retire or redirect outdated French content in old docs pages
 
 ---
