@@ -25,7 +25,7 @@ concurrency:
 jobs:
   sync-version:
     runs-on: ubuntu-latest
-    if: github.repository == 'benmed00/Online-PDF-CV'
+    if: github.repository == 'benmed00/Online-PDF-CV' && !contains(github.event.head_commit.message, '[skip ci]')
 
     steps:
       - uses: actions/checkout@v4
@@ -33,10 +33,10 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Use Node.js 20.x
+      - name: Use Node.js 22.x
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
           cache: npm
 
       - name: Install dependencies
@@ -44,7 +44,7 @@ jobs:
 
       - name: Sync package.json version from conventional commits
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.bump }}" != "auto" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.bump }}" != "auto" ] && [ -n "${{ inputs.bump }}" ]; then
             npm run "version:${{ inputs.bump }}"
           else
             npm run version:sync

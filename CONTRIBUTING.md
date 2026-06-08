@@ -4,7 +4,7 @@ Thank you for considering contributing to Online-PDF-CV! This document outlines 
 
 ## Code of Conduct
 
-By participating in this project, you agree to maintain a respectful and inclusive environment for everyone.
+By participating in this project, you agree to abide by our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## How Can I Contribute?
 

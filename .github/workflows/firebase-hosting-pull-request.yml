@@ -10,17 +10,38 @@ permissions:
   pull-requests: write
 
 jobs:
-  build_and_preview:
+  build:
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
       - run: npm ci && npm run build
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+
+  build_and_preview:
+    needs: build
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+      - run: npm ci && npm run build
+      - name: Deploy Firebase preview
+        if: github.actor != 'dependabot[bot]'
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_BENYAKOUB_CV }}
           projectId: benyakoub-cv
+      - name: Preview skipped (Dependabot PR)
+        if: github.actor == 'dependabot[bot]'
+        run: echo "Firebase preview skipped — repository secrets are not available to Dependabot pull requests."
 
   fork_pr_notice:
     if: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
