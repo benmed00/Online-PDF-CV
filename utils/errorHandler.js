@@ -1,4 +1,5 @@
 const logger = require('./logger');
+const { formatApiError } = require('./apiErrors');
 
 const errorHandler = (err, req, res, next) => {
   logger.error(err.message, { stack: err.stack });
@@ -10,18 +11,18 @@ const errorHandler = (err, req, res, next) => {
     req.originalUrl.startsWith('/api/') || (req.accepts('json') && !req.accepts('html'));
 
   if (wantsJson) {
-    return res.status(statusCode).json({
-      status: 'error',
-      statusCode,
-      message,
-      ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
-    });
+    return res.status(statusCode).json(formatApiError(err));
   }
+
+  const isProduction = process.env.NODE_ENV === 'production';
+  const isOperational = err.isOperational !== false;
+  const displayMessage =
+    !isOperational && isProduction && statusCode === 500 ? 'Something went wrong' : message;
 
   res.status(statusCode);
   res.render('error', {
     title: `Error ${statusCode}`,
-    message,
+    message: displayMessage,
     error: process.env.NODE_ENV === 'development' ? err : { status: statusCode },
   });
 };

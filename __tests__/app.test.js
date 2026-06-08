@@ -51,9 +51,22 @@ describe('Express App', () => {
     expect(response.text).toContain('Resume API Documentation');
   });
 
+  test('GET /validate should render the job matcher page', async () => {
+    const response = await request(app).get('/validate');
+
+    expect(response.status).toBe(200);
+    expect(response.text).toContain('Resume Job Matcher');
+  });
+
   test('GET /unknown should return 404', async () => {
     const response = await request(app).get('/does-not-exist');
 
     expect(response.status).toBe(404);
+  });
+
+  test('GET /analyzer/ should redirect to /analyzer', async () => {
+    const response = await request(app).get('/analyzer/');
+    expect(response.status).toBe(301);
+    expect(response.headers.location).toBe('/analyzer');
   });
 });

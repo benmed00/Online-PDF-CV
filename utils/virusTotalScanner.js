@@ -59,7 +59,14 @@ function buildSecurityReport(hash, stats, meta = {}) {
 async function vtRequest(path, options = {}) {
   const apiKey = process.env.VIRUSTOTAL_API_KEY;
   const headers = { ...options.headers, 'x-apikey': apiKey };
-  const response = await fetch(`${VT_API_BASE}${path}`, { ...options, headers });
+
+  let response;
+  try {
+    response = await fetch(`${VT_API_BASE}${path}`, { ...options, headers });
+  } catch (err) {
+    logger.warn('VirusTotal network error', { message: err.message });
+    throw new AppError('Security scan service is unreachable. Please try again in a moment.', 503);
+  }
 
   if (response.status === 429) {
     throw new AppError('VirusTotal rate limit reached. Please wait a minute and try again.', 503);

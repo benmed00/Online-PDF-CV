@@ -39,8 +39,11 @@ describe('Error Handler', () => {
 
     expect(response.status).toBe(404);
     expect(response.type).toMatch(/json/);
-    expect(response.body.status).toBe('error');
+    expect(response.body.success).toBe(false);
+    expect(response.body.status).toBe('fail');
+    expect(response.body.statusCode).toBe(404);
     expect(response.body.message).toBe('Not found');
+    expect(response.body.error).toBe('Not found');
   });
 
   test('should render HTML error page for browser routes', async () => {

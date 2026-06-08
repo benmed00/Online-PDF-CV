@@ -7,38 +7,16 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const cookieParser = require('cookie-parser');
-const multer = require('multer');
 const helmet = require('helmet');
-const swaggerUi = require('swagger-ui-express');
-const yaml = require('yaml');
 const logger = require('./utils/logger');
 const AppError = require('./utils/AppError');
 const errorHandler = require('./utils/errorHandler');
 const { getResumeVersions, RESUMES_DIR } = require('./utils/getResumeVersions');
 const { isValidVersion } = require('./utils/validateVersion');
-const { analyzeResume, TARGET_ROLES } = require('./utils/resumeAnalyzer');
-const {
-  extractResumeText,
-  MAX_FILE_SIZE,
-  SUPPORTED_EXTENSIONS,
-} = require('./utils/extractResumeText');
-const {
-  scanUploadedFile,
-  isConfigured: isVirusTotalConfigured,
-} = require('./utils/virusTotalScanner');
-const {
-  getAiResumeInsights,
-  isConfigured: isOpenAiConfigured,
-} = require('./utils/openAiResumeInsights');
+const apiRouter = require('./routes/api');
+const { multerErrorHandler } = require('./routes/api');
 const indexRouter = require('./routes/index');
-
-const OPENAPI_PATH = path.join(__dirname, 'openapi', 'openapi.yaml');
-const openapiDocument = yaml.parse(fs.readFileSync(OPENAPI_PATH, 'utf8'));
-
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: MAX_FILE_SIZE },
-});
+const { registerProcessHandlers } = require('./utils/processHandlers');
 
 const app = express();
 
@@ -61,6 +39,14 @@ app.use(
 );
 
 app.use((req, res, next) => {
+  if (req.path.startsWith('/api/')) return next();
+  if (req.path.length > 1 && req.path.endsWith('/')) {
+    return res.redirect(301, req.path.slice(0, -1));
+  }
+  next();
+});
+
+app.use((req, res, next) => {
   logger.http(`${req.method} ${req.url}`);
   next();
 });
@@ -69,111 +55,23 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.get('/api/versions', function (req, res) {
-  const versions = getResumeVersions();
+app.use('/api', apiRouter);
 
-  res.json({
-    versions,
-    count: versions.length,
-    baseUrl: `${req.protocol}://${req.get('host')}/resume/`,
-  });
-});
+app.use(multerErrorHandler);
 
-app.get('/api/analyzer/config', function (req, res) {
-  res.json({
-    openAi: isOpenAiConfigured(),
-    virusTotal: isVirusTotalConfigured(),
-    maxUploadMb: MAX_FILE_SIZE / (1024 * 1024),
-    supportedUploads: SUPPORTED_EXTENSIONS,
-  });
-});
-
-app.post('/api/analyze', async function (req, res, next) {
+app.get('/docs', function (req, res, next) {
   try {
-    const text = typeof req.body?.text === 'string' ? req.body.text : '';
-    const targetRole = req.body?.targetRole;
-    const useAi = req.body?.useAi !== false;
-
-    if (targetRole && !Object.prototype.hasOwnProperty.call(TARGET_ROLES, targetRole)) {
-      return next(
-        new AppError('Invalid target role. Use: engineering, management, or general.', 400)
-      );
-    }
-
-    const analysis = analyzeResume(text, { targetRole: targetRole || 'general' });
-
-    if (!analysis.success) {
-      return res.status(400).json({
-        success: false,
-        error: analysis.error,
-        validation: analysis.validation,
-      });
-    }
-
-    let aiInsights = { available: false, skipped: true, reason: 'disabled' };
-    if (useAi) {
-      try {
-        aiInsights = await getAiResumeInsights(text, targetRole || 'general');
-      } catch (aiErr) {
-        aiInsights = { available: false, error: aiErr.message };
-      }
-    }
-
-    res.json({ ...analysis, aiInsights });
+    res.render('docs', {
+      title: 'Resume API Documentation',
+      versions: getResumeVersions(),
+      metaDescription:
+        'API documentation for accessing different versions of the resume in PDF format',
+      metaKeywords: 'resume API, PDF API, resume versions, resume documentation',
+      metaUrl: `${req.protocol}://${req.get('host')}/docs`,
+    });
   } catch (err) {
     next(err);
   }
-});
-
-app.post('/api/extract-resume', upload.single('file'), function (req, res, next) {
-  if (!req.file) {
-    return next(new AppError('No file uploaded.', 400));
-  }
-
-  scanUploadedFile(req.file.buffer, req.file.originalname)
-    .then(security =>
-      extractResumeText(req.file.buffer, req.file.originalname).then(result => ({
-        result,
-        security,
-      }))
-    )
-    .then(({ result, security }) => {
-      res.json({ success: true, ...result, security });
-    })
-    .catch(next);
-});
-
-app.get('/api/openapi.yaml', function (req, res) {
-  res.type('application/yaml').sendFile(OPENAPI_PATH);
-});
-
-app.use(
-  '/api/docs',
-  swaggerUi.serve,
-  swaggerUi.setup(openapiDocument, {
-    customSiteTitle: 'Online-PDF-CV API',
-  })
-);
-
-app.use(function (err, req, res, next) {
-  if (err instanceof multer.MulterError) {
-    if (err.code === 'LIMIT_FILE_SIZE') {
-      return next(new AppError(`File exceeds the ${MAX_FILE_SIZE / (1024 * 1024)} MB limit.`, 400));
-    }
-    return next(new AppError(err.message, 400));
-  }
-  next(err);
-});
-
-app.get('/docs', function (req, res) {
-  res.render('docs', {
-    title: 'Resume API Documentation',
-    versions: getResumeVersions(),
-    metaDescription:
-      'API documentation for accessing different versions of the resume in PDF format',
-    metaKeywords: 'resume API, PDF API, resume versions, resume documentation',
-    metaUrl: `${req.protocol}://${req.get('host')}/docs`,
-  });
 });
 
 app.get('/analyzer', function (req, res) {
@@ -185,13 +83,26 @@ app.get('/analyzer', function (req, res) {
   });
 });
 
-app.get('/compare', function (req, res) {
-  res.render('compare', {
-    title: 'Resume Comparison Tool',
-    versions: getResumeVersions(),
-    metaDescription: 'Tool to compare different versions of your resume side by side',
-    metaKeywords: 'resume comparison, resume versions, compare resumes, resume tool',
-    metaUrl: `${req.protocol}://${req.get('host')}/compare`,
+app.get('/compare', function (req, res, next) {
+  try {
+    res.render('compare', {
+      title: 'Resume Comparison Tool',
+      versions: getResumeVersions(),
+      metaDescription: 'Tool to compare different versions of your resume side by side',
+      metaKeywords: 'resume comparison, resume versions, compare resumes, resume tool',
+      metaUrl: `${req.protocol}://${req.get('host')}/compare`,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get('/validate', function (req, res) {
+  res.render('validate', {
+    title: 'Resume Job Matcher',
+    metaDescription: 'Validate your resume against a job description to improve keyword alignment',
+    metaKeywords: 'resume validation, job matcher, resume tailoring, ATS keywords',
+    metaUrl: `${req.protocol}://${req.get('host')}/validate`,
   });
 });
 
@@ -205,12 +116,18 @@ function serveResume(req, res, next) {
   const resumePath = path.join(RESUMES_DIR, `${version}.pdf`);
   const defaultPdf = path.join(__dirname, 'public', 'resume.pdf');
 
+  const sendWithError = filePath => {
+    res.sendFile(filePath, err => {
+      if (err) next(err);
+    });
+  };
+
   if (fs.existsSync(resumePath)) {
-    return res.sendFile(resumePath);
+    return sendWithError(resumePath);
   }
 
   if (fs.existsSync(defaultPdf)) {
-    return res.sendFile(defaultPdf);
+    return sendWithError(defaultPdf);
   }
 
   next(new AppError('Resume not found', 404));
@@ -225,6 +142,13 @@ app.use(express.static(path.join(__dirname, 'public'), { index: false }));
 
 app.use((req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
+app.use((err, req, res, next) => {
+  if (err.type === 'entity.parse.failed') {
+    return next(new AppError('Invalid JSON body', 400));
+  }
+  next(err);
 });
 
 app.use(errorHandler);
@@ -245,14 +169,14 @@ if (require.main === module) {
     console.log('🌍 Local URL: http://localhost:' + port);
     console.log('📄 Your resume is available at: http://localhost:' + port);
     console.log('📚 API documentation: http://localhost:' + port + '/docs');
-    console.log('📋 OpenAPI spec: http://localhost:' + port + '/api/openapi.yaml');
-    console.log('🔧 Swagger UI: http://localhost:' + port + '/api/docs');
     console.log('🔍 Resume analyzer: http://localhost:' + port + '/analyzer');
     console.log('⚖️  Resume comparison: http://localhost:' + port + '/compare');
     console.log('📊 API versions: http://localhost:' + port + '/api/versions');
     console.log('');
     console.log('Press Ctrl+C to stop the server');
   });
+
+  registerProcessHandlers(server);
 
   server.on('error', function (error) {
     if (error.code === 'EADDRINUSE') {

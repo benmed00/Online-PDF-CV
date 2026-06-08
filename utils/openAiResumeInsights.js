@@ -1,3 +1,4 @@
+const AppError = require('./AppError');
 const logger = require('./logger');
 
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
@@ -112,14 +113,14 @@ async function getAiResumeInsights(text, targetRole = 'general') {
       /* keep default message */
     }
 
-    throw new Error(userMessage);
+    throw new AppError(userMessage, 503);
   }
 
   const payload = await response.json();
   const content = payload?.choices?.[0]?.message?.content;
 
   if (!content) {
-    throw new Error('AI analysis returned an empty response.');
+    throw new AppError('AI analysis returned an empty response.', 503);
   }
 
   const insights = parseJsonContent(content);

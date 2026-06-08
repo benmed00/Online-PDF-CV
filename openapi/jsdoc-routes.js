@@ -64,8 +64,8 @@
  *     operationId: getAnalyzerConfig
  *     tags: [Analyzer]
  *     summary: Analyzer capability flags
- *     description: Reports which optional server features are configured. Requires Express server.
- *     x-express-only: true
+ *     description: Reports which optional server features are configured. Requires Node runtime (Express locally or Cloud Function on Firebase).
+ *     x-node-runtime: true
  *     responses:
  *       200:
  *         description: Analyzer configuration
@@ -74,7 +74,7 @@
  *             schema:
  *               $ref: '#/components/schemas/AnalyzerConfigResponse'
  *       404:
- *         description: Not available on Firebase static hosting (Express only)
+ *         description: Node runtime not available (deploy Cloud Function or run Express locally)
  *         content:
  *           application/json:
  *             schema:
@@ -88,8 +88,8 @@
  *     operationId: analyzeResume
  *     tags: [Analyzer]
  *     summary: Analyze resume text
- *     description: Runs keyword scoring, best-practice checks, and suggestions. Optionally calls OpenAI when OPENAI_API_KEY is set and useAi is true. Requires Express server.
- *     x-express-only: true
+ *     description: Runs keyword scoring, best-practice checks, and suggestions. Optionally calls OpenAI when OPENAI_API_KEY is set and useAi is true. Requires Node runtime (Express locally or Cloud Function on Firebase).
+ *     x-node-runtime: true
  *     requestBody:
  *       required: true
  *       content:
@@ -120,8 +120,8 @@
  *     operationId: extractResumeFromUpload
  *     tags: [Analyzer]
  *     summary: Upload and extract resume text
- *     description: Accepts a CV file (max 10 MB), optionally scans with VirusTotal, then extracts plain text. Requires Express server.
- *     x-express-only: true
+ *     description: Accepts a CV file (max 10 MB), optionally scans with VirusTotal, then extracts plain text. Requires Node runtime (Express locally or Cloud Function on Firebase).
+ *     x-node-runtime: true
  *     requestBody:
  *       required: true
  *       content:

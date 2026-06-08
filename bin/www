@@ -9,13 +9,7 @@ require('dotenv').config();
 const app = require('../app');
 const debug = require('debug')('cv:server');
 const http = require('http');
-const logger = require('../utils/logger');
-
-process.on('uncaughtException', err => {
-  logger.error('UNCAUGHT EXCEPTION! 💥 Shutting down...');
-  logger.error(err.name, err.message);
-  process.exit(1);
-});
+const { registerProcessHandlers } = require('../utils/processHandlers');
 
 /**
  * Get port from environment and store in Express.
@@ -118,10 +112,4 @@ function onListening() {
   debug('Listening on ' + bind);
 }
 
-process.on('unhandledRejection', err => {
-  logger.error('UNHANDLED REJECTION! 💥 Shutting down...');
-  logger.error(err.name, err.message);
-  server.close(() => {
-    process.exit(1);
-  });
-});
+registerProcessHandlers(server);

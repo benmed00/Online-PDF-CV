@@ -37,14 +37,14 @@ describe('OpenAPI specification', () => {
     expect(Object.keys(spec.paths).sort()).toEqual(EXPECTED_PATHS.sort());
   });
 
-  test('marks analyzer operations as Express-only', () => {
+  test('marks analyzer operations as Node-runtime (Express or Cloud Function)', () => {
     const analyzerOps = [
       spec.paths['/api/analyzer/config'].get,
       spec.paths['/api/analyze'].post,
       spec.paths['/api/extract-resume'].post,
     ];
     analyzerOps.forEach(op => {
-      expect(op['x-express-only']).toBe(true);
+      expect(op['x-node-runtime']).toBe(true);
     });
   });
 });

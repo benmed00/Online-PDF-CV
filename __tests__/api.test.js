@@ -138,6 +138,26 @@ describe('API Endpoints', () => {
         .send({ text: validText, targetRole: 'invalid-role' });
 
       expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toContain('Invalid target role');
+    });
+
+    test('should reject malformed JSON body', async () => {
+      const response = await request(app)
+        .post('/api/analyze')
+        .set('Content-Type', 'application/json')
+        .send('{ not-json');
+
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toContain('JSON');
+    });
+
+    test('GET /api/unknown returns unified 404 JSON', async () => {
+      const response = await request(app).get('/api/unknown-route');
+      expect(response.status).toBe(404);
+      expect(response.body.success).toBe(false);
+      expect(response.body.statusCode).toBe(404);
     });
   });
 
