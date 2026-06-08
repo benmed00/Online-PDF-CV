@@ -1,0 +1,21 @@
+{
+  "name": "Online PDF Resume",
+  "short_name": "Resume",
+  "description": "Online resume in PDF format with multiple versions for different purposes",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3498db",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "32x32",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/images/resume-preview.svg",
+      "sizes": "1200x630",
+      "type": "image/svg+xml"
+    }
+  ]
+}

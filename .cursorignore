@@ -1,0 +1,12 @@
+﻿node_modules/
+functions/node_modules/
+coverage/
+test-results/
+playwright-report/
+blob-report/
+logs/
+.firebase/
+*.traineddata
+.env
+.env.*
+!.env.example

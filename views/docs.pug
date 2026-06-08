@@ -1,0 +1,148 @@
+extends layout
+
+block content
+  h1= title
+  
+  section.intro
+    p This API allows you to access different versions of the resume in PDF format.
+    p The resume is available in multiple formats tailored for different purposes.
+  
+  section.usage
+    h2 Usage
+    
+    h3 Default Resume
+    pre
+      code GET /
+      code GET /resume
+      code GET /resume/default
+    p Returns the default resume in PDF format.
+    
+    h3 Specific Resume Versions
+    p The following versions are available:
+    ul
+      each version in versions
+        li
+          a(href=`/resume/${version}` target="_blank")= version
+          |  - 
+          code GET /resume/#{version}
+    
+    p If a requested version doesn't exist, the default resume will be served.
+  
+  section.api-endpoints
+    h2 API Endpoints
+    
+    h3 Resume Versions API
+    pre
+      code GET /api/versions
+    p Returns a JSON object with information about all available resume versions.
+    
+    h4 Response Format
+    pre
+      code.
+        {
+          "versions": ["default", "technical", "executive", "creative"],
+          "count": 4,
+          "baseUrl": "https://yourdomain.com/resume/"
+        }
+    
+    p You can use this endpoint to programmatically discover available resume versions.
+  
+  section.examples
+    h2 Examples
+    
+    h3 cURL
+    pre
+      code curl -O https://yourdomain.com/resume/technical
+    
+    h3 JavaScript - Download Resume
+    pre
+      code.
+        fetch('https://yourdomain.com/resume/executive')
+          .then(response => response.blob())
+          .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'executive-resume.pdf';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+          });
+    
+    h3 JavaScript - Get Available Versions
+    pre
+      code.
+        fetch('/api/versions')
+          .then(response => response.json())
+          .then(data => {
+            console.log('Available versions:', data.versions);
+            console.log('Total versions:', data.count);
+            
+            // Example: Create links for each version
+            const container = document.getElementById('versions-container');
+            data.versions.forEach(version => {
+              const link = document.createElement('a');
+              link.href = data.baseUrl + version;
+              link.textContent = version;
+              link.target = '_blank';
+              container.appendChild(link);
+            });
+          });
+  
+  section.adding-versions
+    h2 Adding New Versions
+    p To add a new resume version:
+    ol
+      li Create a PDF file with your resume version
+      li Name it according to its purpose (e.g., technical.pdf, creative.pdf)
+      li Place it in the /public/resumes directory
+      li The new version will be automatically available at /resume/[filename-without-extension]
+
+  style.
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      color: #2c3e50;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+    }
+    h2 {
+      color: #3498db;
+      margin-top: 30px;
+    }
+    h3 {
+      color: #2980b9;
+    }
+    pre {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+    code {
+      font-family: Consolas, Monaco, 'Andale Mono', monospace;
+      background: #f5f5f5;
+      padding: 2px 5px;
+      border-radius: 3px;
+      display: block;
+      margin: 5px 0;
+    }
+    section {
+      margin-bottom: 40px;
+    }
+    ul, ol {
+      padding-left: 25px;
+    }
+    a {
+      color: #3498db;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }

@@ -1,0 +1,28 @@
+doctype html
+html(lang="en")
+  head
+    title= title
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    meta(name="description" content=metaDescription || "Online resume in PDF format")
+    meta(name="keywords" content=metaKeywords || "resume, CV, PDF, online resume, professional resume")
+    meta(name="author" content=metaAuthor || "Resume Owner")
+
+    meta(property="og:title" content=title)
+    meta(property="og:description" content=metaDescription || "Online resume in PDF format")
+    meta(property="og:type" content="website")
+    meta(property="og:url" content=metaUrl || "https://yourdomain.com")
+    meta(property="og:image" content=metaImage || "/images/resume-preview.png")
+
+    meta(name="twitter:card" content="summary_large_image")
+    meta(name="twitter:title" content=title)
+    meta(name="twitter:description" content=metaDescription || "Online resume in PDF format")
+    meta(name="twitter:image" content=metaImage || "/images/resume-preview.png")
+
+    link(rel="icon" href="/favicon.ico")
+    link(rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png")
+    link(rel="stylesheet" href="/stylesheets/style.css")
+
+  body.resume-page
+    block content
+
+    block scripts

@@ -2,20 +2,25 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
-
 | Version | Supported          |
 | ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| 3.6.x   | :white_check_mark: |
+| 3.5.x   | :x:                |
+| < 3.5   | :x:                |
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+If you discover a security issue, please report it privately rather than opening a public issue.
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+1. Email the maintainer with a description of the vulnerability and steps to reproduce it.
+2. Allow up to 7 days for an initial response.
+3. Allow reasonable time for a fix before public disclosure.
+
+Please do not report security issues through public GitHub issues.
+
+## Security Practices
+
+- Keep dependencies updated (`npm audit`, Dependabot).
+- Do not commit secrets, Firebase service account keys, or `.env` files.
+- Uploaded CV files on the analyzer are optionally scanned with [VirusTotal](https://www.virustotal.com/) when `VIRUSTOTAL_API_KEY` is set (see `.env.example`). Malicious or highly suspicious files are rejected before text extraction.
+- Resume PDFs in `public/` are intentionally public; do not store private data there.

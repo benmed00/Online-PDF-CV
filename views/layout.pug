@@ -1,0 +1,52 @@
+doctype html
+html
+  head
+    title= title
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    meta(name="description" content=metaDescription || "Online resume in PDF format with multiple versions for different purposes")
+    meta(name="keywords" content=metaKeywords || "resume, CV, PDF, online resume, professional resume")
+    meta(name="author" content=metaAuthor || "Resume Owner")
+    
+    //- Open Graph meta tags for social sharing
+    meta(property="og:title" content=title)
+    meta(property="og:description" content=metaDescription || "Online resume in PDF format with multiple versions for different purposes")
+    meta(property="og:type" content="website")
+    meta(property="og:url" content=metaUrl || "https://yourdomain.com")
+    meta(property="og:image" content=metaImage || "/images/resume-preview.png")
+    
+    //- Twitter Card meta tags
+    meta(name="twitter:card" content="summary_large_image")
+    meta(name="twitter:title" content=title)
+    meta(name="twitter:description" content=metaDescription || "Online resume in PDF format with multiple versions for different purposes")
+    meta(name="twitter:image" content=metaImage || "/images/resume-preview.png")
+    
+    //- Favicon
+    link(rel="icon" href="/favicon.ico")
+    link(rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png")
+    
+    //- Stylesheet
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    block styles
+  body
+    header.main-header
+      .container
+        h1.site-title #{title}
+        nav.main-nav
+          ul
+            li
+              a(href="/") View CV
+            li
+              a(href="/docs") API Docs
+            li
+              a(href="/analyzer") Resume Analyzer
+            li
+              a(href="/compare") Compare Versions
+    
+    main.container
+      block content
+    
+    footer.main-footer
+      .container
+        p &copy; #{new Date().getFullYear()} - #{title}
+    
+    block scripts

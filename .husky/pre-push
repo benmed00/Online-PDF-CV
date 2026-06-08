@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+set -e
+
+echo "pre-push: running CI parity checks (validate)..."
+npm run validate
+
+echo "pre-push: quality gate passed."

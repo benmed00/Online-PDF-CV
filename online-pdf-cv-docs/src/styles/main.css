@@ -1,0 +1,58 @@
+/* Ce fichier contient les styles CSS pour la documentation, définissant l'apparence et la mise en page des éléments HTML. */
+
+body {
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
+h1,
+h2,
+h3 {
+  color: #333;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.container {
+  width: 80%;
+  margin: auto;
+  overflow: hidden;
+}
+
+.header {
+  background: #35424a;
+  color: #ffffff;
+  padding: 10px 0;
+  text-align: center;
+}
+
+.sidebar {
+  float: left;
+  width: 25%;
+  background: #e2e2e2;
+  padding: 15px;
+}
+
+.content {
+  float: right;
+  width: 70%;
+  padding: 15px;
+}
+
+.footer {
+  clear: both;
+  text-align: center;
+  padding: 10px 0;
+  background: #35424a;
+  color: #ffffff;
+}

@@ -1,0 +1,76 @@
+name: Release version
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Optional explicit bump (patch, minor, major). Leave empty to infer from commits since last tag.
+        required: false
+        type: choice
+        options:
+          - auto
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-version-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  sync-version:
+    runs-on: ubuntu-latest
+    if: github.repository == 'benmed00/Online-PDF-CV'
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sync package.json version from conventional commits
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.bump }}" != "auto" ]; then
+            npm run "version:${{ inputs.bump }}"
+          else
+            npm run version:sync
+          fi
+
+      - name: Commit and tag release when version changed
+        id: release
+        run: |
+          if git diff --quiet package.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No version change required."
+            exit 0
+          fi
+
+          VERSION=$(node -p "require('./package.json').version")
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json
+          git commit -m "chore(release): v${VERSION} [skip ci]"
+          git tag -a "v${VERSION}" -m "Release v${VERSION}"
+
+      - name: Push release commit and tag
+        if: steps.release.outputs.changed == 'true'
+        run: |
+          git push origin master
+          git push origin "v${{ steps.release.outputs.version }}"

@@ -1,0 +1,13 @@
+node_modules
+.firebase
+public/resume.pdf
+public/resumes
+coverage
+test-results
+playwright-report
+blob-report
+logs
+e2e/artifacts
+*.traineddata
+eng.traineddata
+.husky/_

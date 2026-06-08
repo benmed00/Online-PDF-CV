@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+set -e
+
+echo "pre-commit: formatting staged files (lint-staged)..."
+npx lint-staged
+
+echo "pre-commit: verifying repository formatting (format:check)..."
+npm run format:check
+
+echo "pre-commit: running ESLint..."
+npm run lint
+
+echo "pre-commit: quality gate passed."
