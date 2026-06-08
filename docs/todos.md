@@ -8,7 +8,7 @@ Active short-term tasks. For the full prioritized queue see [backlog.md](backlog
 
 - [x] **Create GitHub Project board** — [Project #7](https://github.com/users/benmed00/projects/7) (issues #13–#30 + PR #32)
 - [x] **Canonical repo** — `benmed00/Online-PDF-CV` (Issues enabled)
-- [ ] **Merge PR #32** — explicit approval required before merge
+- [x] **Merge PR #32** — merged to `master` 2026-06-08 ([#32](https://github.com/benmed00/Online-PDF-CV/pull/32))
 - [x] **Analyzer Playwright workflow** — `e2e/analyzer-workflow.spec.js` + `npm run test:e2e:analyzer`
 
 ---
