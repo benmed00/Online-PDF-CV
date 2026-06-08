@@ -41,7 +41,7 @@ See [docs/openapi.md](https://github.com/benmed00/Online-PDF-CV/blob/master/docs
 
 ```bash
 npm run test:e2e
-npm run test:e2e:analyzer   # full /analyzer workflow (SEO, upload, VT, AI tabs, edge cases)
+npm run test:e2e:analyzer   # full /analyzer workflow (stepper, hosted CV, job match, export, VT, AI)
 npm run test:e2e:ui      # interactive runner
 npm run test:e2e:report  # HTML report with traces
 ```

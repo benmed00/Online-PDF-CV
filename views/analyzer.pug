@@ -7,96 +7,167 @@ block content
   .analyzer-page
     h1= title
     p.analyzer-hero
-      | Paste or upload your resume text for instant keyword coverage, ATS-friendly checks,
-      | and actionable suggestions powered by industry best practices.
+      | Improve your hosted CV with keyword coverage, job-description matching, ATS checks,
+      | and optional AI coach insights.
+
+    #capability-strip.capability-strip.hidden(role='status', aria-live='polite')
+
+    #toast-container.toast-container(aria-live='polite')
 
     #alert-banner.alert-banner(role='alert', aria-live='polite')
       span#alert-message
       button.alert-close(type='button', aria-label='Dismiss') ×
 
-    .analyzer-grid
-      section.analyzer-card.input-panel
-        h2 Your Resume
-        .analyzer-toolbar
-          label(for='target-role') Target role
-          select#target-role.analyzer-select(name='targetRole')
-            option(value='general', selected) General / Mixed
-            option(value='engineering') Software Engineering
-            option(value='management') Management / Leadership
-          label#ai-toggle-label.ai-toggle.hidden(for='use-ai')
-            input#use-ai(type='checkbox', checked)
-            | AI coach insights
+    nav.analyzer-stepper(role='navigation', aria-label='Analyzer steps')
+      button.stepper-btn.active(type='button', data-step='1', aria-current='step')
+        span.stepper-num 1
+        span.stepper-label Source CV
+      button.stepper-btn(type='button', data-step='2')
+        span.stepper-num 2
+        span.stepper-label Target job
+      button.stepper-btn.stepper-results(type='button', data-step='3', disabled)
+        span.stepper-num 3
+        span.stepper-label Results
 
-        #drop-zone.drop-zone
-          .drop-zone-inner
-            span.drop-zone-icon(aria-hidden='true') ↑
-            p.drop-zone-label Drag & drop your CV here
-            p.drop-zone-formats HTML · Markdown · Word · ODT · Excel · PowerPoint · PDF · Images · TXT
-          input#file-upload.file-upload-input(
-            type='file',
-            accept='.txt,.md,.markdown,.html,.htm,.csv,.rtf,.doc,.docx,.xlsx,.odt,.ods,.odp,.pptx,.pdf,.png,.jpg,.jpeg,.webp,.gif,.bmp,.tif,.tiff',
-            aria-label='Upload resume file',
-            tabindex='-1'
+    .analyzer-layout
+      section.analyzer-card.workflow-panel
+        #step-panel-1.step-panel.active
+          h2 Step 1 — Your resume source
+          .source-tabs(role='tablist')
+            button.source-tab.active(
+              type='button',
+              role='tab',
+              data-source='paste',
+              aria-selected='true'
+            ) Paste
+            button.source-tab(
+              type='button',
+              role='tab',
+              data-source='upload',
+              aria-selected='false'
+            ) Upload
+            button.source-tab(
+              type='button',
+              role='tab',
+              data-source='hosted',
+              aria-selected='false'
+            ) My CV
+
+          #source-paste.source-panel.active
+            #drop-zone.drop-zone
+              .drop-zone-inner
+                span.drop-zone-icon(aria-hidden='true') ↑
+                p.drop-zone-label Drag & drop your CV here
+                p.drop-zone-formats HTML · Markdown · Word · PDF · Images · TXT
+              input#file-upload.file-upload-input(
+                type='file',
+                accept='.txt,.md,.markdown,.html,.htm,.csv,.rtf,.doc,.docx,.xlsx,.odt,.ods,.odp,.pptx,.pdf,.png,.jpg,.jpeg,.webp,.gif,.bmp,.tif,.tiff',
+                aria-label='Upload resume file',
+                tabindex='-1'
+              )
+              textarea#resume-text(
+                rows='12',
+                placeholder='Paste your resume text here, or upload / drop a file…',
+                aria-describedby='text-stats live-hints',
+                spellcheck='true'
+              )
+
+          #source-upload.source-panel.hidden
+            p.source-hint Upload Word, PDF, Excel, PowerPoint, ODT, or scanned images. Server formats are VirusTotal-scanned before extraction.
+            button#upload-btn.btn-upload(type='button')
+              span.upload-spinner(aria-hidden='true')
+              span.upload-label Choose file
+            #upload-progress.upload-progress.hidden(role='status', aria-live='polite')
+              span#upload-step-scan.upload-progress-step Scanning
+              span#upload-step-extract.upload-progress-step Extracting
+              span#upload-step-ready.upload-progress-step Ready
+
+          #source-hosted.source-panel.hidden
+            p.source-hint Load text from a PDF version hosted on this site.
+            label(for='cv-version') Resume version
+            select#cv-version.analyzer-select
+              option(value='') Loading versions…
+            button#load-cv-btn.btn-secondary(type='button') Load hosted CV
+
+          #text-stats.text-stats
+            span#stat-chars.stat-pill 0 characters
+            span#stat-words.stat-pill 0 words
+            span#stat-status.stat-pill Ready
+
+          #live-hints.live-hints(role='status', aria-live='polite')
+          #upload-status.upload-status.hidden(role='status', aria-live='polite')
+
+          .step-actions
+            button#sample-btn.btn-secondary(type='button') Load sample
+            button#clear-btn.btn-secondary(type='button') Clear
+            button#goto-step-2.btn-analyze(type='button') Continue to target →
+
+        #step-panel-2.step-panel.hidden
+          h2 Step 2 — Target role & job
+          .analyzer-toolbar
+            label(for='target-role') Target role
+            select#target-role.analyzer-select(name='targetRole')
+              option(value='general', selected) General / Mixed
+              option(value='engineering') Software Engineering
+              option(value='management') Management / Leadership
+            label#ai-toggle-label.ai-toggle.hidden(for='use-ai')
+              input#use-ai(type='checkbox', checked)
+              | AI coach insights
+
+          label(for='job-description') Job description
+            span.field-optional (optional — enables job match tab)
+          textarea#job-description(
+            rows='6',
+            placeholder='Paste the job posting here to see requirement match scores…',
+            aria-describedby='job-description-hint'
           )
-          textarea#resume-text(
-            rows='12',
-            placeholder='Paste your resume text here, or upload / drop a file…',
-            aria-describedby='text-stats live-hints',
-            spellcheck='true'
-          )
+          p#job-description-hint.field-hint Tailor analysis to a specific posting. Max 8,000 characters.
 
-        #text-stats.text-stats
-          span#stat-chars.stat-pill 0 characters
-          span#stat-words.stat-pill 0 words
-          span#stat-status.stat-pill Ready
-
-        #live-hints.live-hints(role='status', aria-live='polite')
-
-        #upload-status.upload-status.hidden(role='status', aria-live='polite')
-
-        .analyzer-actions
-          button#upload-btn.btn-upload(type='button')
-            span.upload-spinner(aria-hidden='true')
-            span.upload-label Upload CV
-          button#analyze-btn.btn-analyze(type='button')
-            span.btn-spinner(aria-hidden='true')
-            span.btn-label Analyze Resume
-          button#sample-btn.btn-secondary(type='button') Load sample
-          button#clear-btn.btn-secondary(type='button') Clear
-
-        p(style='margin-top: 0.75rem; font-size: 0.75rem; color: #94a3b8')
-          | Tip: Press Ctrl+Enter to analyze · Supports Word, Excel, PowerPoint, ODT, PDF, images & more
+          .step-actions
+            button#back-step-1.btn-secondary(type='button') ← Back
+            button#analyze-btn.btn-analyze(type='button')
+              span.btn-spinner(aria-hidden='true')
+              span.btn-label Analyze Resume
+            p.step-tip Tip: Press Ctrl+Enter to analyze
 
       aside.analyzer-card.tips-sidebar
-        h2 Best Practices
-        .tip-item
-          span.tip-icon ✦
-          span Use strong action verbs (Led, Built, Delivered) at the start of bullet points.
-        .tip-item
-          span.tip-icon #
-          span Quantify impact with numbers, percentages, and dollar amounts.
-        .tip-item
-          span.tip-icon §
-          span Include clear sections: Summary, Experience, Skills, Education.
-        .tip-item
-          span.tip-icon @
-          span Add contact info: email, phone, and LinkedIn URL.
-        .tip-item
-          span.tip-icon ✓
-          span Tailor keywords to each job posting — ATS systems scan for matches.
-        .tip-item
-          span.tip-icon ↑
-          span Upload Word, Excel, PowerPoint, ODT, PDF, or scanned images — files are VirusTotal-scanned on the server before extraction.
+        button#tips-toggle.tips-toggle(type='button', aria-expanded='true') Best practices
+        #tips-drawer.tips-drawer
+          .tip-item
+            span.tip-icon ✦
+            span Use strong action verbs (Led, Built, Delivered) at the start of bullet points.
+          .tip-item
+            span.tip-icon #
+            span Quantify impact with numbers, percentages, and dollar amounts.
+          .tip-item
+            span.tip-icon §
+            span Include clear sections: Summary, Experience, Skills, Education.
+          .tip-item
+            span.tip-icon @
+            span Add contact info: email, phone, and LinkedIn URL.
+          .tip-item
+            span.tip-icon ✓
+            span Paste the job description in step 2 for requirement matching.
+          .tip-item
+            span.tip-icon ↑
+            span Use My CV to analyze a version already hosted on this platform.
 
     section#results.results-area.hidden(aria-live='polite')
       .results-header
         h2 Analysis Results
+        .results-header-actions
+          button#download-report-btn.btn-secondary(type='button') Download report (.md)
+          button#analyze-again-btn.btn-secondary(type='button') Analyze again
         .overall-badge
           .overall-score-ring
             span#overall-score 0%
           div
             .overall-label Overall Score
             #overall-grade.overall-grade —
+
+      #action-plan.action-plan-card.hidden
+        h3 Priority action plan
+        #action-plan-list.action-plan-list
 
       .score-cards
         .score-card
@@ -140,10 +211,23 @@ block content
               aria-valuemax='100'
             )
 
+      #next-steps.next-steps-panel.hidden
+        h3 What's next?
+        .next-steps-links
+          a#next-compare.next-step-link(href='/compare') Compare PDF versions
+          a#next-resume.next-step-link(href='/resume/default') View live PDF
+          a.next-step-link(href='/docs') API documentation
+
       .results-tabs(role='tablist')
         button.tab-btn.active(type='button', role='tab', data-tab='checks', aria-selected='true') Checks
         button.tab-btn(type='button', role='tab', data-tab='keywords', aria-selected='false') Keywords
         button.tab-btn(type='button', role='tab', data-tab='suggestions', aria-selected='false') Suggestions
+        button#job-tab-btn.tab-btn.hidden(
+          type='button',
+          role='tab',
+          data-tab='job',
+          aria-selected='false'
+        ) Job match
         button#ai-tab-btn.tab-btn.hidden(
           type='button',
           role='tab',
@@ -169,11 +253,16 @@ block content
       #tab-suggestions.tab-panel(role='tabpanel')
         ul#suggestions-list.suggestions-list
 
+      #tab-job.tab-panel(role='tabpanel')
+        #job-match-panel.job-match-panel
+          p.job-match-placeholder Paste a job description in step 2 to see requirement matching.
+
       #tab-ai.tab-panel(role='tabpanel')
         #ai-insights-panel.ai-insights
           p.ai-placeholder AI insights appear here when OpenAI is configured on the server.
 
 block scripts
   script(src='/javascripts/api-client.js')
+  script(src='/javascripts/job-description-matcher.js')
   script(src='/javascripts/resume-analyzer.js')
   script(src='/javascripts/analyzer-app.js')

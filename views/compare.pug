@@ -105,6 +105,23 @@ block scripts
         version2Select.selectedIndex = 1;
       }
 
+      const params = new URLSearchParams(window.location.search);
+      const q1 = params.get('v1');
+      const q2 = params.get('v2');
+      if (q1) {
+        for (const opt of version1Select.options) {
+          if (opt.value === q1) version1Select.value = q1;
+        }
+      }
+      if (q2) {
+        for (const opt of version2Select.options) {
+          if (opt.value === q2) version2Select.value = q2;
+        }
+      }
+      if (q1 && q2 && q1 !== q2) {
+        compareBtn.click();
+      }
+
       compareBtn.addEventListener('click', function () {
         const version1 = version1Select.value;
         const version2 = version2Select.value;

@@ -11,9 +11,9 @@ Online-PDF-CV is a lightweight platform for publishing a professional resume as 
 - multiple resume versions (`/resume/:version`)
 - API discovery (`/api/versions`)
 - interactive documentation (`/docs`)
-- resume keyword analysis (`/analyzer`)
+- guided resume analyzer (`/analyzer` — hosted CV, job match, export)
 - side-by-side version comparison (`/compare`)
-- job description matching (`/validate`)
+- job description matching (`/analyzer` step 2 — Job match tab)
 
 ## Quick start
 

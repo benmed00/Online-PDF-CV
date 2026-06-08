@@ -21,6 +21,13 @@ const {
   getAiResumeInsights,
   isConfigured: isOpenAiConfigured,
 } = require('../utils/openAiResumeInsights');
+const { extractHostedResumeVersion } = require('../utils/extractResumeVersion');
+const { MAX_JOB_DESCRIPTION_CHARS } = require('../utils/jobDescriptionMatcher');
+
+function detectApiMode() {
+  if (process.env.K_SERVICE || process.env.FUNCTION_TARGET) return 'functions';
+  return 'express';
+}
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -60,10 +67,17 @@ router.get('/versions', function (req, res, next) {
 router.get('/analyzer/config', function (req, res, next) {
   try {
     res.json({
+      mode: detectApiMode(),
       openAi: isOpenAiConfigured(),
       virusTotal: isVirusTotalConfigured(),
       maxUploadMb: MAX_FILE_SIZE / (1024 * 1024),
       supportedUploads: SUPPORTED_EXTENSIONS,
+      features: {
+        uploadExtraction: true,
+        hostedCvExtract: true,
+        jobMatch: true,
+        aiCoach: isOpenAiConfigured(),
+      },
     });
   } catch (err) {
     next(err);
@@ -75,6 +89,8 @@ router.post('/analyze', async function (req, res, next) {
     const text = typeof req.body?.text === 'string' ? req.body.text : '';
     const targetRole = req.body?.targetRole;
     const useAi = req.body?.useAi !== false;
+    const jobDescription =
+      typeof req.body?.jobDescription === 'string' ? req.body.jobDescription.trim() : '';
 
     if (targetRole && !Object.prototype.hasOwnProperty.call(TARGET_ROLES, targetRole)) {
       return next(
@@ -82,7 +98,19 @@ router.post('/analyze', async function (req, res, next) {
       );
     }
 
-    const analysis = analyzeResume(text, { targetRole: targetRole || 'general' });
+    if (jobDescription.length > MAX_JOB_DESCRIPTION_CHARS) {
+      return next(
+        new AppError(
+          `Job description exceeds ${MAX_JOB_DESCRIPTION_CHARS.toLocaleString()} characters.`,
+          400
+        )
+      );
+    }
+
+    const analysis = analyzeResume(text, {
+      targetRole: targetRole || 'general',
+      jobDescription,
+    });
 
     if (!analysis.success) {
       return next(
@@ -93,13 +121,29 @@ router.post('/analyze', async function (req, res, next) {
     let aiInsights = { available: false, skipped: true, reason: 'disabled' };
     if (useAi) {
       try {
-        aiInsights = await getAiResumeInsights(text, targetRole || 'general');
+        aiInsights = await getAiResumeInsights(text, targetRole || 'general', jobDescription);
       } catch (aiErr) {
         aiInsights = { available: false, error: aiErr.message };
       }
     }
 
     res.json({ ...analysis, aiInsights });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/extract-resume-version', async function (req, res, next) {
+  try {
+    const version = typeof req.body?.version === 'string' ? req.body.version.trim() : 'default';
+    const hostingBaseUrl =
+      req.body?.hostingBaseUrl ||
+      process.env.HOSTING_URL ||
+      process.env.SITE_URL ||
+      `${req.protocol}://${req.get('host')}`;
+
+    const payload = await extractHostedResumeVersion(version, { hostingBaseUrl });
+    res.json(payload);
   } catch (err) {
     next(err);
   }

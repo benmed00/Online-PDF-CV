@@ -13,7 +13,8 @@ test.describe('Online PDF CV usability', () => {
   test('home page displays full-screen resume viewer', async ({ page }, testInfo) => {
     await page.goto('/');
     await expect(page).toHaveTitle(/BEN-YAKOUB CV/i);
-    await expect(page.locator('iframe[src*="resume.pdf"]')).toBeVisible();
+    await expect(page.locator('#resume-frame')).toBeVisible();
+    await expect(page.locator('#resume-frame')).toHaveAttribute('src', /\/resume/);
     await expect(page.locator('.main-header')).toHaveCount(0);
     await expect(page.locator('.main-footer')).toHaveCount(0);
 
@@ -71,6 +72,7 @@ test.describe('Online PDF CV usability', () => {
       fullPage: true,
     });
 
+    await page.locator('#goto-step-2').click();
     await page.locator('#analyze-btn').click();
     await expect(page.locator('#results')).toBeVisible();
     await expect(page.locator('#technical-score')).not.toHaveText('0%');
@@ -99,6 +101,17 @@ test.describe('Online PDF CV usability', () => {
       path: screenshotPath('05-compare-before'),
       fullPage: true,
     });
+
+    const version2Count = await page.locator('#version2 option').count();
+    if (version2Count < 2) {
+      test.skip(true, 'Need at least two resume versions to compare');
+    }
+    if (
+      (await page.locator('#version1').inputValue()) ===
+      (await page.locator('#version2').inputValue())
+    ) {
+      await page.locator('#version2').selectOption({ index: 1 });
+    }
 
     await page.locator('#compare-btn').click();
     await expect(page.locator('#comparison')).toBeVisible();

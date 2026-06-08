@@ -1,6 +1,6 @@
 # Known issues
 
-Documented limitations and bugs as of v4.1.0.
+Documented limitations and bugs as of v4.2.0.
 
 ---
 
@@ -24,21 +24,33 @@ Documented limitations and bugs as of v4.1.0.
 
 ---
 
-### Analyzer APIs need Cloud Functions on Firebase
+### Analyzer APIs on Firebase (Cloud Functions)
 
-**Symptom:** On production Firebase, analyzer upload/AI features fail if only Hosting is deployed.
+**Symptom:** Capability strip shows “Basic scores only” or upload/AI/hosted-CV extract fails on production.
 
-**Cause:** `POST /api/analyze`, `POST /api/extract-resume`, and `GET /api/analyzer/config` are served by the `api` Cloud Function (`functions/src/index.ts`), not static files.
+**Cause:** Analyzer APIs are served by the `api` Cloud Function, not static Hosting files:
+
+- `GET /api/analyzer/config`
+- `POST /api/analyze`
+- `POST /api/extract-resume`
+- `POST /api/extract-resume-version`
 
 **Fix:** Deploy functions with secrets configured:
 
 ```bash
+npm run build
 firebase deploy --only functions,hosting
 ```
 
-Set `OPENAI_API_KEY` and `VIRUSTOTAL_API_KEY` in Firebase Functions environment (or `.env` for local emulators). See [functions/README.md](../functions/README.md).
+Set `OPENAI_API_KEY` and `VIRUSTOTAL_API_KEY` via Firebase Secret Manager (or `.env` for local emulators). Set `HOSTING_URL` / `SITE_URL` so hosted-CV extraction can fetch PDFs from Hosting. See [functions/README.md](../functions/README.md).
 
-**Status:** Resolved when Functions are deployed with API rewrites in `firebase.json`.
+**Verification checklist (preview or production):**
+
+1. `/api/analyzer/config` returns `mode: "functions"` with `openAi` / `virusTotal` flags
+2. Upload `.docx` on `/analyzer` completes scan + extraction
+3. My CV tab loads text via `POST /api/extract-resume-version`
+4. Analyze with job description shows Job match tab
+5. AI Coach tab when OpenAI billing is active
 
 ---
 

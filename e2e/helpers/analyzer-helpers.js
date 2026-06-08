@@ -78,12 +78,26 @@ function mockAnalyzeResponse(overrides = {}) {
 
 function mockConfigResponse(overrides = {}) {
   return {
+    mode: 'express',
     openAi: true,
     virusTotal: true,
     maxUploadMb: 10,
     supportedUploads: ['.txt', '.docx', '.pdf'],
+    features: {
+      uploadExtraction: true,
+      hostedCvExtract: true,
+      jobMatch: true,
+      aiCoach: true,
+    },
     ...overrides,
   };
+}
+
+/** Fill sample resume and open step 2 for analyze actions. */
+async function goToAnalyzeStep(page) {
+  await page.locator('#sample-btn').click();
+  await page.locator('#goto-step-2').click();
+  await expect(page.locator('#step-panel-2')).toBeVisible();
 }
 
 function mockExtractResponse(overrides = {}) {
@@ -148,4 +162,5 @@ module.exports = {
   mockExtractResponse,
   collectConsoleErrors,
   expectStableLayout,
+  goToAnalyzeStep,
 };

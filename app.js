@@ -98,12 +98,7 @@ app.get('/compare', function (req, res, next) {
 });
 
 app.get('/validate', function (req, res) {
-  res.render('validate', {
-    title: 'Resume Job Matcher',
-    metaDescription: 'Validate your resume against a job description to improve keyword alignment',
-    metaKeywords: 'resume validation, job matcher, resume tailoring, ATS keywords',
-    metaUrl: `${req.protocol}://${req.get('host')}/validate`,
-  });
+  res.redirect(301, '/analyzer#target');
 });
 
 function serveResume(req, res, next) {

@@ -9,6 +9,7 @@ const {
   mockExtractResponse,
   collectConsoleErrors,
   expectStableLayout,
+  goToAnalyzeStep,
 } = require('./helpers/analyzer-helpers');
 
 test.describe.configure({ mode: 'serial', timeout: 120_000 });
@@ -63,12 +64,14 @@ test.describe('Resume Analyzer — full workflow', () => {
       await expect(page.getByRole('main').getByRole('heading', { level: 1 })).toContainText(
         'Resume Analyzer Tool'
       );
-      await expect(page.getByRole('navigation')).toBeVisible();
+      await expect(page.locator('nav.main-nav')).toBeVisible();
+      await expect(page.getByRole('navigation', { name: 'Analyzer steps' })).toBeVisible();
     });
 
     await test.step('layout stability after load', async () => {
       await expectStableLayout(page, '#resume-text');
-      await expectStableLayout(page, '.analyzer-toolbar');
+      await expectStableLayout(page, '.analyzer-stepper');
+      await expect(page.locator('#capability-strip')).toBeVisible();
     });
 
     await page.screenshot({ path: screenshotPath('01-seo-and-shell'), fullPage: true });
@@ -84,6 +87,7 @@ test.describe('Resume Analyzer — full workflow', () => {
     const configBody = await config.json();
     expect(configBody).toHaveProperty('openAi');
     expect(configBody).toHaveProperty('virusTotal');
+    expect(configBody).toHaveProperty('mode');
     expect(configBody.maxUploadMb).toBe(10);
     expect(Array.isArray(configBody.supportedUploads)).toBe(true);
 
@@ -94,11 +98,16 @@ test.describe('Resume Analyzer — full workflow', () => {
     const configResponse = await configRequest;
     const uiConfig = await configResponse.json();
 
+    await expect(page.locator('#capability-strip')).toBeVisible();
+    expect(uiConfig.mode).toBeTruthy();
+
     if (uiConfig.openAi) {
+      await page.locator('#sample-btn').click();
+      await page.locator('#goto-step-2').click();
       await expect(page.locator('#ai-toggle-label')).toBeVisible();
       await expect(page.locator('#use-ai')).toBeChecked();
     } else {
-      await expect(page.locator('#ai-toggle-label')).toBeHidden();
+      await expect(page.locator('#ai-toggle-label')).toHaveClass(/hidden/);
     }
   });
 
@@ -134,6 +143,7 @@ test.describe('Resume Analyzer — full workflow', () => {
     });
 
     await test.step('target role selector changes value', async () => {
+      await page.locator('#goto-step-2').click();
       await page.locator('#target-role').selectOption('engineering');
       await expect(page.locator('#target-role')).toHaveValue('engineering');
     });
@@ -141,6 +151,7 @@ test.describe('Resume Analyzer — full workflow', () => {
     await test.step('clear resets form and hides results', async () => {
       await page.locator('#analyze-btn').click();
       await expect(page.locator('#results')).toBeVisible({ timeout: 15_000 });
+      await page.locator('.stepper-btn[data-step="1"]').click();
       await page.locator('#clear-btn').click();
       await expect(page.locator('#resume-text')).toHaveValue('');
       await expect(page.locator('#results')).toBeHidden();
@@ -151,16 +162,17 @@ test.describe('Resume Analyzer — full workflow', () => {
 
   test('empty analyze shows error alert', async ({ page }) => {
     await page.goto('/analyzer');
-    await page.locator('#analyze-btn').click();
+    await expect(page.locator('#goto-step-2')).toBeDisabled();
+    await page.locator('#resume-text').focus();
+    await page.keyboard.press('Control+Enter');
     await expect(page.locator('#alert-banner')).toHaveClass(/visible/);
-    await expect(page.locator('#alert-message')).toContainText(/paste your resume/i);
+    await expect(page.locator('#alert-message')).toContainText(/resume/i);
     await page.getByRole('button', { name: 'Dismiss' }).click();
     await expect(page.locator('#alert-banner')).not.toHaveClass(/visible/);
   });
 
   test('upload .txt locally via file input', async ({ page }) => {
     await page.goto('/analyzer');
-    await page.locator('#upload-btn').click();
     await page.locator('#file-upload').setInputFiles(fixturePath('sample-resume.txt'));
     await expect(page.locator('#resume-text')).not.toHaveValue('');
     await expect(page.locator('#upload-status')).toBeVisible();
@@ -214,7 +226,7 @@ test.describe('Resume Analyzer — full workflow', () => {
     });
 
     await page.goto('/analyzer');
-    await page.locator('#sample-btn').click();
+    await goToAnalyzeStep(page);
     await page.locator('#target-role').selectOption('engineering');
     await expect(page.locator('#ai-toggle-label')).toBeVisible();
 
@@ -248,11 +260,15 @@ test.describe('Resume Analyzer — full workflow', () => {
       await expect(page.locator('#tab-suggestions')).toHaveClass(/active/);
       await expect(page.locator('#suggestions-list li')).not.toHaveCount(0);
 
-      await page.getByRole('tab', { name: 'AI Coach' }).click();
+      await page.locator('.results-tabs').scrollIntoViewIfNeeded();
+      await page.locator('#ai-tab-btn').click();
       await expect(page.locator('#tab-ai')).toHaveClass(/active/);
       await expect(page.locator('#ai-insights-panel')).toContainText(/Solid engineering resume/i);
       await expect(page.locator('.ai-list.strengths li')).not.toHaveCount(0);
     });
+
+    await expect(page.locator('#action-plan')).toBeVisible();
+    await expect(page.locator('#next-steps')).toBeVisible();
 
     await page.screenshot({ path: screenshotPath('04-analyze-results-tabs'), fullPage: true });
   });
@@ -270,7 +286,7 @@ test.describe('Resume Analyzer — full workflow', () => {
     });
 
     await page.goto('/analyzer');
-    await page.locator('#sample-btn').click();
+    await goToAnalyzeStep(page);
     await page.locator('#use-ai').uncheck();
     await page.locator('#analyze-btn').click();
     await expect(page.locator('#results')).toBeVisible({ timeout: 15_000 });
@@ -298,7 +314,8 @@ test.describe('Resume Analyzer — full workflow', () => {
     });
 
     await page.goto('/analyzer');
-    await page.locator('#resume-text').fill('short text');
+    await page.locator('#resume-text').fill(SAMPLE_RESUME.slice(0, 90));
+    await page.locator('#goto-step-2').click();
     await page.locator('#analyze-btn').click();
     await expect(page.locator('#alert-banner')).toHaveClass(/visible/);
     await expect(page.locator('#alert-message')).toContainText(/too short/i);
@@ -363,7 +380,7 @@ test.describe('Resume Analyzer — full workflow', () => {
     test.skip(!openAi, 'OPENAI_API_KEY not set — skipping live AI test');
 
     await page.goto('/analyzer');
-    await page.locator('#sample-btn').click();
+    await goToAnalyzeStep(page);
     await page.locator('#target-role').selectOption('engineering');
     await expect(page.locator('#ai-toggle-label')).toBeVisible();
 
@@ -396,7 +413,7 @@ test.describe('Resume Analyzer — full workflow', () => {
     });
 
     await page.goto('/analyzer');
-    await page.locator('#sample-btn').click();
+    await goToAnalyzeStep(page);
     await page.locator('#analyze-btn').click();
     await expect(page.locator('#results')).toBeVisible({ timeout: 15_000 });
 
@@ -499,14 +516,13 @@ test.describe('Resume Analyzer — edge cases', () => {
   test('network failure falls back to local analysis', async ({ page }) => {
     await page.route('**/api/analyze', async route => route.abort('failed'));
     await page.goto('/analyzer');
-    await page.locator('#sample-btn').click();
+    await goToAnalyzeStep(page);
     await page.locator('#analyze-btn').click();
 
     await expect(page.locator('#results')).toBeVisible({ timeout: 15_000 });
     await expect(page.locator('#technical-score')).not.toHaveText('0%');
     await expect(page.locator('#ai-tab-btn')).toBeHidden();
-    await expect(page.locator('#alert-banner')).toHaveClass(/visible/);
-    await expect(page.locator('#alert-message')).toContainText(/offline analysis/i);
+    await expect(page.locator('.toast-warning')).toContainText(/offline/i);
   });
 
   test('tab switching keeps layout stable (no flicker jump)', async ({ page }) => {
@@ -515,7 +531,7 @@ test.describe('Resume Analyzer — edge cases', () => {
     });
 
     await page.goto('/analyzer');
-    await page.locator('#sample-btn').click();
+    await goToAnalyzeStep(page);
     await page.locator('#analyze-btn').click();
     await expect(page.locator('#results')).toBeVisible({ timeout: 15_000 });
 
@@ -548,5 +564,98 @@ test.describe('Resume Analyzer — edge cases', () => {
       data: { text: SAMPLE_RESUME, targetRole: 'invalid-role' },
     });
     expect(response.status()).toBe(400);
+  });
+
+  test('stepper navigates between source, target, and results', async ({ page }) => {
+    await page.goto('/analyzer');
+    await expect(page.locator('#step-panel-1')).toBeVisible();
+    await expect(page.locator('#goto-step-2')).toBeDisabled();
+
+    await page.locator('#sample-btn').click();
+    await page.locator('#goto-step-2').click();
+    await expect(page.locator('#step-panel-2')).toBeVisible();
+    await expect(page.locator('#job-description')).toBeVisible();
+  });
+
+  test('My CV tab loads hosted version text (mocked)', async ({ page }) => {
+    await page.route('**/api/versions', async route => {
+      await route.fulfill({
+        json: { versions: ['default'] },
+      });
+    });
+    await page.route('**/api/extract-resume-version', async route => {
+      await route.fulfill({
+        json: {
+          success: true,
+          text: SAMPLE_RESUME,
+          source: { version: 'default', filename: 'resume.pdf' },
+          security: { scanned: false, verdict: 'skipped' },
+        },
+      });
+    });
+
+    await page.goto('/analyzer');
+    await page.getByRole('tab', { name: 'My CV' }).click();
+    await page.locator('#cv-version').selectOption('default');
+    await page.locator('#load-cv-btn').click();
+    await expect(page.locator('#resume-text')).toHaveValue(SAMPLE_RESUME);
+    await expect(page.locator('#upload-status')).toContainText(/Imported from/i);
+  });
+
+  test('job match tab appears when job description provided', async ({ page }) => {
+    await page.route('**/api/analyze', async route => {
+      await route.fulfill({
+        json: mockAnalyzeResponse({
+          jobMatch: {
+            overallScore: 65,
+            requirementCount: 4,
+            foundRequirements: ['JavaScript', 'React'],
+            missingRequirements: ['AWS'],
+            suggestions: ['Add AWS experience examples.'],
+          },
+        }),
+      });
+    });
+
+    await page.goto('/analyzer');
+    await goToAnalyzeStep(page);
+    await page.locator('#job-description').fill('Must have JavaScript, React, and AWS experience.');
+    await page.locator('#analyze-btn').click();
+    await expect(page.locator('#results')).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('#job-tab-btn')).toBeVisible();
+    await page.locator('#job-tab-btn').click();
+    await expect(page.locator('.job-match-value')).not.toHaveText('0%');
+    await expect(page.locator('.job-match-list.found li')).not.toHaveCount(0);
+  });
+
+  test('download report triggers markdown file', async ({ page }) => {
+    await page.route('**/api/analyze', async route => {
+      await route.fulfill({ json: mockAnalyzeResponse() });
+    });
+
+    await page.goto('/analyzer');
+    await goToAnalyzeStep(page);
+    await page.locator('#analyze-btn').click();
+    await expect(page.locator('#results')).toBeVisible({ timeout: 15_000 });
+
+    const downloadPromise = page.waitForEvent('download');
+    await page.locator('#download-report-btn').click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toMatch(/resume-analysis.*\.md$/i);
+  });
+
+  test('analyze API includes jobMatch when jobDescription sent', async ({ request }) => {
+    const response = await request.post('/api/analyze', {
+      data: {
+        text: SAMPLE_RESUME,
+        targetRole: 'engineering',
+        useAi: false,
+        jobDescription: 'Required skills: JavaScript, React, AWS, and Docker experience.',
+      },
+    });
+    expect(response.ok()).toBeTruthy();
+    const body = await response.json();
+    expect(body.jobMatch).toBeDefined();
+    expect(body.jobMatch.overallScore).toBeGreaterThan(0);
   });
 });

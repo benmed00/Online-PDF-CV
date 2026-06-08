@@ -39,9 +39,9 @@ Deploy: `npm run build` → `npm run deploy` ([details](wiki/Deployment.md)).
 | `/api/openapi.yaml` | OpenAPI 3.1 spec (JSDoc-generated; see [docs/openapi.md](docs/openapi.md)) |
 | `/api/docs`         | Swagger UI (Express server only)                                           |
 | `/docs`             | Human-readable API documentation                                           |
-| `/analyzer`         | Keyword scoring, upload extraction, optional VirusTotal + OpenAI coach     |
-| `/compare`          | Side-by-side PDF comparison                                                |
-| `/validate`         | Job Matcher — resume vs job description (client-side scaffold)             |
+| `/analyzer`         | 3-step workflow: hosted CV, job match, upload, VirusTotal, OpenAI coach    |
+| `/compare`          | Side-by-side PDF comparison (deep-link `?v1=&v2=`)                         |
+| `/validate`         | Redirects to `/analyzer#target` (job matching integrated in analyzer)      |
 
 **Stack:** Node.js · Express 5 · Pug · Firebase · Jest · Playwright · Winston · Helmet
 

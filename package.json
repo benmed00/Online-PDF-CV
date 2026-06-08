@@ -1,6 +1,6 @@
 {
   "name": "benyakoub-cv",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "description": "Host your PDF resume online with Express and Firebase Hosting, including multi-version delivery, API docs, and analysis tools.",
   "private": true,
   "author": "Jacob Son <ben94med@gmail.com>",

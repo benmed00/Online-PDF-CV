@@ -3,6 +3,13 @@
     "site": "benyakoub-cv",
     "public": "public",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "redirects": [
+      {
+        "source": "/validate",
+        "destination": "/analyzer",
+        "type": 301
+      }
+    ],
     "rewrites": [
       {
         "source": "/api/analyze",
@@ -10,6 +17,10 @@
       },
       {
         "source": "/api/extract-resume",
+        "function": "api"
+      },
+      {
+        "source": "/api/extract-resume-version",
         "function": "api"
       },
       {

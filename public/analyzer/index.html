@@ -42,7 +42,7 @@
             <li><a href="/docs">API Docs</a></li>
             <li><a href="/analyzer">Resume Analyzer</a></li>
             <li><a href="/compare">Compare Versions</a></li>
-            <li><a href="/validate">Job Matcher</a></li>
+            <li><a href="/analyzer#target">Job Matcher</a></li>
           </ul>
         </nav>
       </div>
@@ -51,113 +51,212 @@
       <div class="analyzer-page">
         <h1>Resume Analyzer Tool</h1>
         <p class="analyzer-hero">
-          Paste or upload your resume text for instant keyword coverage, ATS-friendly checks, and
-          actionable suggestions powered by industry best practices.
+          Improve your hosted CV with keyword coverage, job-description matching, ATS checks, and
+          optional AI coach insights.
         </p>
+        <div
+          class="capability-strip hidden"
+          id="capability-strip"
+          role="status"
+          aria-live="polite"
+        ></div>
+        <div class="toast-container" id="toast-container" aria-live="polite"></div>
         <div class="alert-banner" id="alert-banner" role="alert" aria-live="polite">
           <span id="alert-message"></span
           ><button class="alert-close" type="button" aria-label="Dismiss">×</button>
         </div>
-        <div class="analyzer-grid">
-          <section class="analyzer-card input-panel">
-            <h2>Your Resume</h2>
-            <div class="analyzer-toolbar">
-              <label for="target-role">Target role</label
-              ><select class="analyzer-select" id="target-role" name="targetRole">
-                <option value="general" selected>General / Mixed</option>
-                <option value="engineering">Software Engineering</option>
-                <option value="management">Management / Leadership</option></select
-              ><label class="ai-toggle hidden" id="ai-toggle-label" for="use-ai"
-                ><input id="use-ai" type="checkbox" checked />AI coach insights</label
-              >
-            </div>
-            <div class="drop-zone" id="drop-zone">
-              <div class="drop-zone-inner">
-                <span class="drop-zone-icon" aria-hidden="true">↑</span>
-                <p class="drop-zone-label">Drag & drop your CV here</p>
-                <p class="drop-zone-formats">
-                  HTML · Markdown · Word · ODT · Excel · PowerPoint · PDF · Images · TXT
-                </p>
+        <nav class="analyzer-stepper" role="navigation" aria-label="Analyzer steps">
+          <button class="stepper-btn active" type="button" data-step="1" aria-current="step">
+            <span class="stepper-num">1</span><span class="stepper-label">Source CV</span></button
+          ><button class="stepper-btn" type="button" data-step="2">
+            <span class="stepper-num">2</span><span class="stepper-label">Target job</span></button
+          ><button class="stepper-btn stepper-results" type="button" data-step="3" disabled>
+            <span class="stepper-num">3</span><span class="stepper-label">Results</span>
+          </button>
+        </nav>
+        <div class="analyzer-layout">
+          <section class="analyzer-card workflow-panel">
+            <div class="step-panel active" id="step-panel-1">
+              <h2>Step 1 — Your resume source</h2>
+              <div class="source-tabs" role="tablist">
+                <button
+                  class="source-tab active"
+                  type="button"
+                  role="tab"
+                  data-source="paste"
+                  aria-selected="true"
+                >
+                  Paste</button
+                ><button
+                  class="source-tab"
+                  type="button"
+                  role="tab"
+                  data-source="upload"
+                  aria-selected="false"
+                >
+                  Upload</button
+                ><button
+                  class="source-tab"
+                  type="button"
+                  role="tab"
+                  data-source="hosted"
+                  aria-selected="false"
+                >
+                  My CV
+                </button>
               </div>
-              <input
-                class="file-upload-input"
-                id="file-upload"
-                type="file"
-                accept=".txt,.md,.markdown,.html,.htm,.csv,.rtf,.doc,.docx,.xlsx,.odt,.ods,.odp,.pptx,.pdf,.png,.jpg,.jpeg,.webp,.gif,.bmp,.tif,.tiff"
-                aria-label="Upload resume file"
-                tabindex="-1"
-              /><textarea
-                id="resume-text"
-                rows="12"
-                placeholder="Paste your resume text here, or upload / drop a file…"
-                aria-describedby="text-stats live-hints"
-                spellcheck="true"
+              <div class="source-panel active" id="source-paste">
+                <div class="drop-zone" id="drop-zone">
+                  <div class="drop-zone-inner">
+                    <span class="drop-zone-icon" aria-hidden="true">↑</span>
+                    <p class="drop-zone-label">Drag & drop your CV here</p>
+                    <p class="drop-zone-formats">HTML · Markdown · Word · PDF · Images · TXT</p>
+                  </div>
+                  <input
+                    class="file-upload-input"
+                    id="file-upload"
+                    type="file"
+                    accept=".txt,.md,.markdown,.html,.htm,.csv,.rtf,.doc,.docx,.xlsx,.odt,.ods,.odp,.pptx,.pdf,.png,.jpg,.jpeg,.webp,.gif,.bmp,.tif,.tiff"
+                    aria-label="Upload resume file"
+                    tabindex="-1"
+                  /><textarea
+                    id="resume-text"
+                    rows="12"
+                    placeholder="Paste your resume text here, or upload / drop a file…"
+                    aria-describedby="text-stats live-hints"
+                    spellcheck="true"
+                  ></textarea>
+                </div>
+              </div>
+              <div class="source-panel hidden" id="source-upload">
+                <p class="source-hint">
+                  Upload Word, PDF, Excel, PowerPoint, ODT, or scanned images. Server formats are
+                  VirusTotal-scanned before extraction.
+                </p>
+                <button class="btn-upload" id="upload-btn" type="button">
+                  <span class="upload-spinner" aria-hidden="true"></span
+                  ><span class="upload-label">Choose file</span>
+                </button>
+                <div
+                  class="upload-progress hidden"
+                  id="upload-progress"
+                  role="status"
+                  aria-live="polite"
+                >
+                  <span class="upload-progress-step" id="upload-step-scan">Scanning</span
+                  ><span class="upload-progress-step" id="upload-step-extract">Extracting</span
+                  ><span class="upload-progress-step" id="upload-step-ready">Ready</span>
+                </div>
+              </div>
+              <div class="source-panel hidden" id="source-hosted">
+                <p class="source-hint">Load text from a PDF version hosted on this site.</p>
+                <label for="cv-version">Resume version</label
+                ><select class="analyzer-select" id="cv-version">
+                  <option value="">Loading versions…</option></select
+                ><button class="btn-secondary" id="load-cv-btn" type="button">
+                  Load hosted CV
+                </button>
+              </div>
+              <div class="text-stats" id="text-stats">
+                <span class="stat-pill" id="stat-chars">0 characters</span
+                ><span class="stat-pill" id="stat-words">0 words</span
+                ><span class="stat-pill" id="stat-status">Ready</span>
+              </div>
+              <div class="live-hints" id="live-hints" role="status" aria-live="polite"></div>
+              <div
+                class="upload-status hidden"
+                id="upload-status"
+                role="status"
+                aria-live="polite"
+              ></div>
+              <div class="step-actions">
+                <button class="btn-secondary" id="sample-btn" type="button">Load sample</button
+                ><button class="btn-secondary" id="clear-btn" type="button">Clear</button
+                ><button class="btn-analyze" id="goto-step-2" type="button">
+                  Continue to target →
+                </button>
+              </div>
+            </div>
+            <div class="step-panel hidden" id="step-panel-2">
+              <h2>Step 2 — Target role & job</h2>
+              <div class="analyzer-toolbar">
+                <label for="target-role">Target role</label
+                ><select class="analyzer-select" id="target-role" name="targetRole">
+                  <option value="general" selected>General / Mixed</option>
+                  <option value="engineering">Software Engineering</option>
+                  <option value="management">Management / Leadership</option></select
+                ><label class="ai-toggle hidden" id="ai-toggle-label" for="use-ai"
+                  ><input id="use-ai" type="checkbox" checked />AI coach insights</label
+                >
+              </div>
+              <label for="job-description"
+                >Job description<span class="field-optional"
+                  >(optional — enables job match tab)</span
+                ></label
+              ><textarea
+                id="job-description"
+                rows="6"
+                placeholder="Paste the job posting here to see requirement match scores…"
+                aria-describedby="job-description-hint"
               ></textarea>
+              <p class="field-hint" id="job-description-hint">
+                Tailor analysis to a specific posting. Max 8,000 characters.
+              </p>
+              <div class="step-actions">
+                <button class="btn-secondary" id="back-step-1" type="button">← Back</button
+                ><button class="btn-analyze" id="analyze-btn" type="button">
+                  <span class="btn-spinner" aria-hidden="true"></span
+                  ><span class="btn-label">Analyze Resume</span>
+                </button>
+                <p class="step-tip">Tip: Press Ctrl+Enter to analyze</p>
+              </div>
             </div>
-            <div class="text-stats" id="text-stats">
-              <span class="stat-pill" id="stat-chars">0 characters</span
-              ><span class="stat-pill" id="stat-words">0 words</span
-              ><span class="stat-pill" id="stat-status">Ready</span>
-            </div>
-            <div class="live-hints" id="live-hints" role="status" aria-live="polite"></div>
-            <div
-              class="upload-status hidden"
-              id="upload-status"
-              role="status"
-              aria-live="polite"
-            ></div>
-            <div class="analyzer-actions">
-              <button class="btn-upload" id="upload-btn" type="button">
-                <span class="upload-spinner" aria-hidden="true"></span
-                ><span class="upload-label">Upload CV</span></button
-              ><button class="btn-analyze" id="analyze-btn" type="button">
-                <span class="btn-spinner" aria-hidden="true"></span
-                ><span class="btn-label">Analyze Resume</span></button
-              ><button class="btn-secondary" id="sample-btn" type="button">Load sample</button
-              ><button class="btn-secondary" id="clear-btn" type="button">Clear</button>
-            </div>
-            <p style="margin-top: 0.75rem; font-size: 0.75rem; color: #94a3b8">
-              Tip: Press Ctrl+Enter to analyze · Supports Word, Excel, PowerPoint, ODT, PDF, images
-              & more
-            </p>
           </section>
           <aside class="analyzer-card tips-sidebar">
-            <h2>Best Practices</h2>
-            <div class="tip-item">
-              <span class="tip-icon">✦</span
-              ><span
-                >Use strong action verbs (Led, Built, Delivered) at the start of bullet
-                points.</span
-              >
-            </div>
-            <div class="tip-item">
-              <span class="tip-icon">#</span
-              ><span>Quantify impact with numbers, percentages, and dollar amounts.</span>
-            </div>
-            <div class="tip-item">
-              <span class="tip-icon">§</span
-              ><span>Include clear sections: Summary, Experience, Skills, Education.</span>
-            </div>
-            <div class="tip-item">
-              <span class="tip-icon">@</span
-              ><span>Add contact info: email, phone, and LinkedIn URL.</span>
-            </div>
-            <div class="tip-item">
-              <span class="tip-icon">✓</span
-              ><span>Tailor keywords to each job posting — ATS systems scan for matches.</span>
-            </div>
-            <div class="tip-item">
-              <span class="tip-icon">↑</span
-              ><span
-                >Upload Word, Excel, PowerPoint, ODT, PDF, or scanned images — files are
-                VirusTotal-scanned on the server before extraction.</span
-              >
+            <button class="tips-toggle" id="tips-toggle" type="button" aria-expanded="true">
+              Best practices
+            </button>
+            <div class="tips-drawer" id="tips-drawer">
+              <div class="tip-item">
+                <span class="tip-icon">✦</span
+                ><span
+                  >Use strong action verbs (Led, Built, Delivered) at the start of bullet
+                  points.</span
+                >
+              </div>
+              <div class="tip-item">
+                <span class="tip-icon">#</span
+                ><span>Quantify impact with numbers, percentages, and dollar amounts.</span>
+              </div>
+              <div class="tip-item">
+                <span class="tip-icon">§</span
+                ><span>Include clear sections: Summary, Experience, Skills, Education.</span>
+              </div>
+              <div class="tip-item">
+                <span class="tip-icon">@</span
+                ><span>Add contact info: email, phone, and LinkedIn URL.</span>
+              </div>
+              <div class="tip-item">
+                <span class="tip-icon">✓</span
+                ><span>Paste the job description in step 2 for requirement matching.</span>
+              </div>
+              <div class="tip-item">
+                <span class="tip-icon">↑</span
+                ><span>Use My CV to analyze a version already hosted on this platform.</span>
+              </div>
             </div>
           </aside>
         </div>
         <section class="results-area hidden" id="results" aria-live="polite">
           <div class="results-header">
             <h2>Analysis Results</h2>
+            <div class="results-header-actions">
+              <button class="btn-secondary" id="download-report-btn" type="button">
+                Download report (.md)</button
+              ><button class="btn-secondary" id="analyze-again-btn" type="button">
+                Analyze again
+              </button>
+            </div>
             <div class="overall-badge">
               <div class="overall-score-ring"><span id="overall-score">0%</span></div>
               <div>
@@ -165,6 +264,10 @@
                 <div class="overall-grade" id="overall-grade">—</div>
               </div>
             </div>
+          </div>
+          <div class="action-plan-card hidden" id="action-plan">
+            <h3>Priority action plan</h3>
+            <div class="action-plan-list" id="action-plan-list"></div>
           </div>
           <div class="score-cards">
             <div class="score-card">
@@ -224,6 +327,14 @@
               </div>
             </div>
           </div>
+          <div class="next-steps-panel hidden" id="next-steps">
+            <h3>What's next?</h3>
+            <div class="next-steps-links">
+              <a class="next-step-link" id="next-compare" href="/compare">Compare PDF versions</a
+              ><a class="next-step-link" id="next-resume" href="/resume/default">View live PDF</a
+              ><a class="next-step-link" href="/docs">API documentation</a>
+            </div>
+          </div>
           <div class="results-tabs" role="tablist">
             <button
               class="tab-btn active"
@@ -249,6 +360,15 @@
               aria-selected="false"
             >
               Suggestions</button
+            ><button
+              class="tab-btn hidden"
+              id="job-tab-btn"
+              type="button"
+              role="tab"
+              data-tab="job"
+              aria-selected="false"
+            >
+              Job match</button
             ><button
               class="tab-btn hidden"
               id="ai-tab-btn"
@@ -282,6 +402,13 @@
           <div class="tab-panel" id="tab-suggestions" role="tabpanel">
             <ul class="suggestions-list" id="suggestions-list"></ul>
           </div>
+          <div class="tab-panel" id="tab-job" role="tabpanel">
+            <div class="job-match-panel" id="job-match-panel">
+              <p class="job-match-placeholder">
+                Paste a job description in step 2 to see requirement matching.
+              </p>
+            </div>
+          </div>
           <div class="tab-panel" id="tab-ai" role="tabpanel">
             <div class="ai-insights" id="ai-insights-panel">
               <p class="ai-placeholder">
@@ -296,6 +423,7 @@
       <div class="container"><p>&copy; 2026 - Resume Analyzer Tool</p></div>
     </footer>
     <script src="/javascripts/api-client.js"></script>
+    <script src="/javascripts/job-description-matcher.js"></script>
     <script src="/javascripts/resume-analyzer.js"></script>
     <script src="/javascripts/analyzer-app.js"></script>
   </body>

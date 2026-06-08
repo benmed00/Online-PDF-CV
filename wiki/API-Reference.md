@@ -48,9 +48,17 @@ GET /api/analyzer/config
   "openAi": true,
   "virusTotal": true,
   "maxUploadMb": 10,
-  "supportedUploads": [".txt", ".docx", "..."]
+  "supportedUploads": [".txt", ".docx", "..."],
+  "mode": "express",
+  "features": {
+    "hostedCvExtract": true,
+    "jobMatch": true,
+    "aiCoach": true
+  }
 }
 ```
+
+`mode` is `express` (local), `functions` (Firebase Cloud Function), or `static` (client fallback).
 
 ### Analyze resume text
 
@@ -63,11 +71,12 @@ Content-Type: application/json
 {
   "text": "Resume plain text…",
   "targetRole": "engineering",
-  "useAi": true
+  "useAi": true,
+  "jobDescription": "Optional job posting text (max 8,000 chars)…"
 }
 ```
 
-Returns keyword scores, best-practice checks, suggestions, and optional `aiInsights` when `OPENAI_API_KEY` is set.
+Returns keyword scores, best-practice checks, suggestions, optional `jobMatch` when `jobDescription` is set, and optional `aiInsights` when `OPENAI_API_KEY` is set.
 
 ### Upload and extract text
 
@@ -86,6 +95,23 @@ Runs **VirusTotal** scan when `VIRUSTOTAL_API_KEY` is set, then extracts text fr
 | ------ | --------------------------------- |
 | `403`  | File flagged malicious/suspicious |
 | `422`  | Could not extract text            |
+
+### Extract text from hosted CV version
+
+```http
+POST /api/extract-resume-version
+Content-Type: application/json
+```
+
+```json
+{
+  "version": "default"
+}
+```
+
+Reads `public/resumes/:version.pdf` (or `public/resume.pdf` for `default`) on Express. On Firebase, fetches the PDF from the hosting URL (`HOSTING_URL` / `SITE_URL`).
+
+Returns `{ success, text, source, security }` with the same VirusTotal scan behavior as upload extraction.
 
 ---
 
@@ -133,13 +159,13 @@ curl -O http://localhost:3000/resume/executive
 
 ## HTML pages
 
-| Route       | Description                             |
-| ----------- | --------------------------------------- |
-| `/`         | Home page with embedded PDF             |
-| `/docs`     | API documentation                       |
-| `/analyzer` | Resume keyword analyzer                 |
-| `/compare`  | Side-by-side version comparison         |
-| `/validate` | Job Matcher — resume vs job description |
+| Route       | Description                                   |
+| ----------- | --------------------------------------------- |
+| `/`         | Home page with embedded PDF                   |
+| `/docs`     | API documentation                             |
+| `/analyzer` | 3-step analyzer: hosted CV, job match, export |
+| `/compare`  | Side-by-side version comparison (`?v1=&v2=`)  |
+| `/validate` | 301 redirect to `/analyzer#target`            |
 
 ---
 

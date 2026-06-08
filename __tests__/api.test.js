@@ -121,7 +121,23 @@ describe('API Endpoints', () => {
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('openAi');
       expect(response.body).toHaveProperty('virusTotal');
+      expect(response.body).toHaveProperty('mode');
+      expect(response.body).toHaveProperty('features');
       expect(response.body.maxUploadMb).toBe(10);
+    });
+
+    test('should include jobMatch when jobDescription provided', async () => {
+      const response = await request(app).post('/api/analyze').send({
+        text: validText,
+        targetRole: 'engineering',
+        jobDescription:
+          'Required skills: JavaScript and React. Qualifications include AWS experience.',
+        useAi: false,
+      });
+
+      expect(response.status).toBe(200);
+      expect(response.body.jobMatch).toBeDefined();
+      expect(response.body.jobMatch.overallScore).toBeGreaterThanOrEqual(0);
     });
 
     test('should reject empty text', async () => {
@@ -186,6 +202,35 @@ describe('API Endpoints', () => {
       const response = await request(app)
         .post('/api/extract-resume')
         .attach('file', Buffer.from('data'), 'resume.xyz');
+
+      expect(response.status).toBe(400);
+    });
+  });
+
+  describe('POST /api/extract-resume-version', () => {
+    test('should extract text from hosted default version when PDF exists', async () => {
+      const { resolveResumePdfPath } = require('../utils/extractResumeVersion');
+      if (!resolveResumePdfPath('default')) return;
+
+      const response = await request(app)
+        .post('/api/extract-resume-version')
+        .send({ version: 'default' });
+
+      if (response.status === 422) {
+        expect(response.body.error).toMatch(/read|extract|corrupt/i);
+        return;
+      }
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.text.length).toBeGreaterThan(10);
+      expect(response.body.source.version).toBe('default');
+    });
+
+    test('should reject invalid version slug', async () => {
+      const response = await request(app)
+        .post('/api/extract-resume-version')
+        .send({ version: 'bad slug!' });
 
       expect(response.status).toBe(400);
     });

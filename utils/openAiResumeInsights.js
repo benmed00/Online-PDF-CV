@@ -58,9 +58,10 @@ function parseJsonContent(content) {
  * Optional OpenAI-powered resume insights (requires OPENAI_API_KEY).
  * @param {string} text
  * @param {string} targetRole
+ * @param {string} [jobDescription]
  * @returns {Promise<object>}
  */
-async function getAiResumeInsights(text, targetRole = 'general') {
+async function getAiResumeInsights(text, targetRole = 'general', jobDescription = '') {
   if (!isConfigured()) {
     return { available: false, skipped: true, reason: 'OPENAI_API_KEY not configured' };
   }
@@ -83,7 +84,13 @@ async function getAiResumeInsights(text, targetRole = 'general') {
         { role: 'system', content: buildSystemPrompt() },
         {
           role: 'user',
-          content: `Target role: ${roleLabel}\n\nResume text:\n${resumeText}`,
+          content: [
+            `Target role: ${roleLabel}`,
+            jobDescription.trim()
+              ? `\nJob description:\n${jobDescription.trim().slice(0, 8000)}`
+              : '',
+            `\nResume text:\n${resumeText}`,
+          ].join(''),
         },
       ],
     }),

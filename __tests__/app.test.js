@@ -51,11 +51,11 @@ describe('Express App', () => {
     expect(response.text).toContain('Resume API Documentation');
   });
 
-  test('GET /validate should render the job matcher page', async () => {
+  test('GET /validate should redirect to analyzer target step', async () => {
     const response = await request(app).get('/validate');
 
-    expect(response.status).toBe(200);
-    expect(response.text).toContain('Resume Job Matcher');
+    expect(response.status).toBe(301);
+    expect(response.headers.location).toBe('/analyzer#target');
   });
 
   test('GET /unknown should return 404', async () => {

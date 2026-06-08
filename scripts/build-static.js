@@ -57,12 +57,26 @@ function buildStaticSite() {
     metaUrl: `${SITE_URL}/compare`,
   });
 
-  writePage(path.join('validate', 'index.html'), 'validate.pug', {
-    title: 'Resume Job Matcher',
-    metaDescription: 'Validate your resume against a job description to improve keyword alignment',
-    metaKeywords: 'resume validation, job matcher, resume tailoring, ATS keywords',
-    metaUrl: `${SITE_URL}/validate`,
-  });
+  const validateRedirectPath = path.join(PUBLIC_DIR, 'validate', 'index.html');
+  fs.mkdirSync(path.dirname(validateRedirectPath), { recursive: true });
+  fs.writeFileSync(
+    validateRedirectPath,
+    `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting to Resume Analyzer</title>
+  <meta http-equiv="refresh" content="0;url=/analyzer#target">
+  <link rel="canonical" href="${SITE_URL}/analyzer">
+</head>
+<body>
+  <p>Job matching moved to the <a href="/analyzer#target">Resume Analyzer</a>.</p>
+</body>
+</html>
+`,
+    'utf8'
+  );
+  console.log('Built validate/index.html (redirect)');
 
   writePage('404.html', '404.pug', {
     title: 'Page Not Found',

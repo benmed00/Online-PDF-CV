@@ -6,11 +6,12 @@ Production analyzer APIs on Firebase Hosting are served by the **`api`** HTTPS C
 
 `functions/src/index.ts` exports `api`, which wraps the shared Express API app from `api-server.js` (synced into `functions/shared/` at build time).
 
-| Route                  | Method | Purpose                          |
-| ---------------------- | ------ | -------------------------------- |
-| `/api/analyzer/config` | GET    | Capability flags (OpenAI, VT, …) |
-| `/api/analyze`         | POST   | Keyword scoring + optional AI    |
-| `/api/extract-resume`  | POST   | Upload, VirusTotal scan, extract |
+| Route                         | Method | Purpose                                 |
+| ----------------------------- | ------ | --------------------------------------- |
+| `/api/analyzer/config`        | GET    | Capability flags (OpenAI, VT, …)        |
+| `/api/analyze`                | POST   | Keyword scoring + optional AI           |
+| `/api/extract-resume`         | POST   | Upload, VirusTotal scan, extract        |
+| `/api/extract-resume-version` | POST   | Extract text from hosted PDF by version |
 
 `firebase.json` rewrites these paths from Hosting to the function.
 
@@ -67,11 +68,12 @@ cd functions && npm run deploy
 
 Set in Firebase (Console → Functions → environment, or CLI secrets):
 
-| Variable             | Purpose                       |
-| -------------------- | ----------------------------- |
-| `OPENAI_API_KEY`     | AI Coach on `/api/analyze`    |
-| `VIRUSTOTAL_API_KEY` | Scan on `/api/extract-resume` |
-| `OPENAI_MODEL`       | Optional model override       |
+| Variable             | Purpose                                                                |
+| -------------------- | ---------------------------------------------------------------------- |
+| `OPENAI_API_KEY`     | AI Coach on `/api/analyze`                                             |
+| `VIRUSTOTAL_API_KEY` | Scan on `/api/extract-resume`                                          |
+| `OPENAI_MODEL`       | Optional model override                                                |
+| `HOSTING_URL`        | Base URL for hosted-CV PDF fetch on Functions (defaults to `SITE_URL`) |
 
 Local Express and the emulator use root `.env` via `dotenv` in `api-server.js`.
 

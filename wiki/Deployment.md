@@ -28,14 +28,16 @@ npm run deploy
 
 `firebase.json` defines:
 
-| Rewrite                | Target                  |
-| ---------------------- | ----------------------- |
-| `/api/analyze`         | Cloud Function `api`    |
-| `/api/extract-resume`  | Cloud Function `api`    |
-| `/api/analyzer/config` | Cloud Function `api`    |
-| `/api/versions`        | `/api/versions.json`    |
-| `/resume`              | `/resume.pdf`           |
-| `/resume/:version`     | `/resumes/:version.pdf` |
+| Rewrite                       | Target                     |
+| ----------------------------- | -------------------------- |
+| `/api/analyze`                | Cloud Function `api`       |
+| `/api/extract-resume`         | Cloud Function `api`       |
+| `/api/extract-resume-version` | Cloud Function `api`       |
+| `/api/analyzer/config`        | Cloud Function `api`       |
+| `/api/versions`               | `/api/versions.json`       |
+| `/resume`                     | `/resume.pdf`              |
+| `/resume/:version`            | `/resumes/:version.pdf`    |
+| `/validate`                   | `/analyzer` (301 redirect) |
 
 Static files in `public/` are served directly when they exist (including `/api/openapi.yaml` after build).
 

@@ -360,10 +360,12 @@ function scoreGrade(score) {
   return 'needs-work';
 }
 
+const { matchResumeToJob, MAX_JOB_DESCRIPTION_CHARS } = require('./jobDescriptionMatcher');
+
 /**
  * Analyze resume text.
  * @param {string} text
- * @param {{ targetRole?: string }} [options]
+ * @param {{ targetRole?: string, jobDescription?: string }} [options]
  * @returns {Object}
  */
 function analyzeResume(text, options = {}) {
@@ -405,15 +407,24 @@ function analyzeResume(text, options = {}) {
 
   const suggestions = generateSuggestions(results, checks, options.targetRole);
 
+  let jobMatch = null;
+  const jobDescription =
+    typeof options.jobDescription === 'string' ? options.jobDescription.trim() : '';
+  if (jobDescription.length > 0) {
+    jobMatch = matchResumeToJob(trimmed, jobDescription.slice(0, MAX_JOB_DESCRIPTION_CHARS));
+  }
+
   return {
     success: true,
     validation,
     results,
     checks,
     suggestions,
+    jobMatch,
     meta: {
       analyzedAt: new Date().toISOString(),
       targetRole: options.targetRole || 'general',
+      hasJobDescription: Boolean(jobDescription),
     },
   };
 }
