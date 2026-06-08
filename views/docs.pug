@@ -2,40 +2,52 @@ extends layout
 
 block content
   h1= title
-  
+
   section.intro
     p This API allows you to access different versions of the resume in PDF format.
     p The resume is available in multiple formats tailored for different purposes.
-  
+    p
+      strong OpenAPI:
+      |
+      a(href='/api/openapi.yaml') Machine-readable spec
+      |
+      | ·
+      a(href='/api/docs') Interactive Swagger UI
+      |
+      | (Express server only — analyzer POST routes require
+      code npm start
+      | )
+
   section.usage
     h2 Usage
-    
+
     h3 Default Resume
     pre
       code GET /
       code GET /resume
       code GET /resume/default
     p Returns the default resume in PDF format.
-    
+
     h3 Specific Resume Versions
     p The following versions are available:
     ul
       each version in versions
         li
-          a(href=`/resume/${version}` target="_blank")= version
-          |  - 
-          code GET /resume/#{version}
-    
+          a(href=`/resume/${version}`, target='_blank')= version
+          |
+          | -
+          code GET /resume/#{ version }
+
     p If a requested version doesn't exist, the default resume will be served.
-  
+
   section.api-endpoints
     h2 API Endpoints
-    
+
     h3 Resume Versions API
     pre
       code GET /api/versions
     p Returns a JSON object with information about all available resume versions.
-    
+
     h4 Response Format
     pre
       code.
@@ -44,16 +56,27 @@ block content
           "count": 4,
           "baseUrl": "https://yourdomain.com/resume/"
         }
-    
+
     p You can use this endpoint to programmatically discover available resume versions.
-  
+
+    h3 OpenAPI Specification
+    pre
+      code GET /api/openapi.yaml
+    p Canonical API contract (OpenAPI 3.1). On Firebase, served statically after
+      |
+      code npm run build
+      | . On Express, also available at
+      a(href='/api/docs') /api/docs
+      |
+      | (Swagger UI).
+
   section.examples
     h2 Examples
-    
+
     h3 cURL
     pre
       code curl -O https://yourdomain.com/resume/technical
-    
+
     h3 JavaScript - Download Resume
     pre
       code.
@@ -68,7 +91,7 @@ block content
             a.click();
             a.remove();
           });
-    
+
     h3 JavaScript - Get Available Versions
     pre
       code.
@@ -77,7 +100,7 @@ block content
           .then(data => {
             console.log('Available versions:', data.versions);
             console.log('Total versions:', data.count);
-            
+
             // Example: Create links for each version
             const container = document.getElementById('versions-container');
             data.versions.forEach(version => {
@@ -88,7 +111,7 @@ block content
               container.appendChild(link);
             });
           });
-  
+
   section.adding-versions
     h2 Adding New Versions
     p To add a new resume version:
@@ -100,7 +123,7 @@ block content
 
   style.
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       line-height: 1.6;
       color: #333;
       max-width: 800px;
@@ -136,7 +159,8 @@ block content
     section {
       margin-bottom: 40px;
     }
-    ul, ol {
+    ul,
+    ol {
       padding-left: 25px;
     }
     a {

@@ -10,61 +10,61 @@ block content
       | Paste or upload your resume text for instant keyword coverage, ATS-friendly checks,
       | and actionable suggestions powered by industry best practices.
 
-    #alert-banner.alert-banner(role="alert" aria-live="polite")
+    #alert-banner.alert-banner(role='alert', aria-live='polite')
       span#alert-message
-      button.alert-close(type="button" aria-label="Dismiss") ×
+      button.alert-close(type='button', aria-label='Dismiss') ×
 
     .analyzer-grid
       section.analyzer-card.input-panel
         h2 Your Resume
         .analyzer-toolbar
-          label(for="target-role") Target role
-          select#target-role.analyzer-select(name="targetRole")
-            option(value="general" selected) General / Mixed
-            option(value="engineering") Software Engineering
-            option(value="management") Management / Leadership
-          label.ai-toggle.hidden(for="use-ai" id="ai-toggle-label")
-            input#use-ai(type="checkbox" checked)
+          label(for='target-role') Target role
+          select#target-role.analyzer-select(name='targetRole')
+            option(value='general', selected) General / Mixed
+            option(value='engineering') Software Engineering
+            option(value='management') Management / Leadership
+          label#ai-toggle-label.ai-toggle.hidden(for='use-ai')
+            input#use-ai(type='checkbox', checked)
             | AI coach insights
 
-        .drop-zone#drop-zone
+        #drop-zone.drop-zone
           .drop-zone-inner
-            span.drop-zone-icon(aria-hidden="true") ↑
+            span.drop-zone-icon(aria-hidden='true') ↑
             p.drop-zone-label Drag & drop your CV here
             p.drop-zone-formats HTML · Markdown · Word · ODT · Excel · PowerPoint · PDF · Images · TXT
           input#file-upload.file-upload-input(
-            type="file"
-            accept=".txt,.md,.markdown,.html,.htm,.csv,.rtf,.doc,.docx,.xlsx,.odt,.ods,.odp,.pptx,.pdf,.png,.jpg,.jpeg,.webp,.gif,.bmp,.tif,.tiff"
-            aria-label="Upload resume file"
-            tabindex="-1"
+            type='file',
+            accept='.txt,.md,.markdown,.html,.htm,.csv,.rtf,.doc,.docx,.xlsx,.odt,.ods,.odp,.pptx,.pdf,.png,.jpg,.jpeg,.webp,.gif,.bmp,.tif,.tiff',
+            aria-label='Upload resume file',
+            tabindex='-1'
           )
           textarea#resume-text(
-            rows="12"
-            placeholder="Paste your resume text here, or upload / drop a file…"
-            aria-describedby="text-stats live-hints"
-            spellcheck="true"
+            rows='12',
+            placeholder='Paste your resume text here, or upload / drop a file…',
+            aria-describedby='text-stats live-hints',
+            spellcheck='true'
           )
 
         #text-stats.text-stats
-          span.stat-pill#stat-chars 0 characters
-          span.stat-pill#stat-words 0 words
-          span.stat-pill#stat-status Ready
+          span#stat-chars.stat-pill 0 characters
+          span#stat-words.stat-pill 0 words
+          span#stat-status.stat-pill Ready
 
-        #live-hints.live-hints(role="status" aria-live="polite")
+        #live-hints.live-hints(role='status', aria-live='polite')
 
-        #upload-status.upload-status.hidden(role="status" aria-live="polite")
+        #upload-status.upload-status.hidden(role='status', aria-live='polite')
 
         .analyzer-actions
-          button#upload-btn.btn-upload(type="button")
-            span.upload-spinner(aria-hidden="true")
+          button#upload-btn.btn-upload(type='button')
+            span.upload-spinner(aria-hidden='true')
             span.upload-label Upload CV
-          button#analyze-btn.btn-analyze(type="button")
-            span.btn-spinner(aria-hidden="true")
+          button#analyze-btn.btn-analyze(type='button')
+            span.btn-spinner(aria-hidden='true')
             span.btn-label Analyze Resume
-          button#sample-btn.btn-secondary(type="button") Load sample
-          button#clear-btn.btn-secondary(type="button") Clear
+          button#sample-btn.btn-secondary(type='button') Load sample
+          button#clear-btn.btn-secondary(type='button') Clear
 
-        p(style="margin-top:0.75rem;font-size:0.75rem;color:#94a3b8")
+        p(style='margin-top: 0.75rem; font-size: 0.75rem; color: #94a3b8')
           | Tip: Press Ctrl+Enter to analyze · Supports Word, Excel, PowerPoint, ODT, PDF, images & more
 
       aside.analyzer-card.tips-sidebar
@@ -88,66 +88,91 @@ block content
           span.tip-icon ↑
           span Upload Word, Excel, PowerPoint, ODT, PDF, or scanned images — files are VirusTotal-scanned on the server before extraction.
 
-    section.results-area.hidden#results(aria-live="polite")
+    section#results.results-area.hidden(aria-live='polite')
       .results-header
         h2 Analysis Results
         .overall-badge
           .overall-score-ring
             span#overall-score 0%
           div
-            div.overall-label Overall Score
-            div.overall-grade#overall-grade —
+            .overall-label Overall Score
+            #overall-grade.overall-grade —
 
       .score-cards
         .score-card
           h3 Technical Skills
-          .score-value#technical-score 0%
+          #technical-score.score-value 0%
           .progress
-            .progress-bar#technical-bar(role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
+            #technical-bar.progress-bar(
+              role='progressbar',
+              aria-valuenow='0',
+              aria-valuemin='0',
+              aria-valuemax='100'
+            )
         .score-card
           h3 Soft Skills
-          .score-value#soft-score 0%
+          #soft-score.score-value 0%
           .progress
-            .progress-bar#soft-bar(role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
+            #soft-bar.progress-bar(
+              role='progressbar',
+              aria-valuenow='0',
+              aria-valuemin='0',
+              aria-valuemax='100'
+            )
         .score-card
           h3 Management Skills
-          .score-value#management-score 0%
+          #management-score.score-value 0%
           .progress
-            .progress-bar#management-bar(role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
+            #management-bar.progress-bar(
+              role='progressbar',
+              aria-valuenow='0',
+              aria-valuemin='0',
+              aria-valuemax='100'
+            )
         .score-card
           h3 Best Practices
-          .score-value#practices-score 0%
+          #practices-score.score-value 0%
           .progress
-            .progress-bar#practices-bar(role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100")
+            #practices-bar.progress-bar(
+              role='progressbar',
+              aria-valuenow='0',
+              aria-valuemin='0',
+              aria-valuemax='100'
+            )
 
-      .results-tabs(role="tablist")
-        button.tab-btn.active(type="button" role="tab" data-tab="checks" aria-selected="true") Checks
-        button.tab-btn(type="button" role="tab" data-tab="keywords" aria-selected="false") Keywords
-        button.tab-btn(type="button" role="tab" data-tab="suggestions" aria-selected="false") Suggestions
-        button.tab-btn.hidden#ai-tab-btn(type="button" role="tab" data-tab="ai" aria-selected="false") AI Coach
+      .results-tabs(role='tablist')
+        button.tab-btn.active(type='button', role='tab', data-tab='checks', aria-selected='true') Checks
+        button.tab-btn(type='button', role='tab', data-tab='keywords', aria-selected='false') Keywords
+        button.tab-btn(type='button', role='tab', data-tab='suggestions', aria-selected='false') Suggestions
+        button#ai-tab-btn.tab-btn.hidden(
+          type='button',
+          role='tab',
+          data-tab='ai',
+          aria-selected='false'
+        ) AI Coach
 
-      #tab-checks.tab-panel.active(role="tabpanel")
-        .practices-grid#practices-grid
+      #tab-checks.tab-panel.active(role='tabpanel')
+        #practices-grid.practices-grid
 
-      #tab-keywords.tab-panel(role="tabpanel")
+      #tab-keywords.tab-panel(role='tabpanel')
         .keyword-section
           .keyword-category
             h4 Technical Keywords
-            .keywords#technical-keywords
+            #technical-keywords.keywords
           .keyword-category
             h4 Soft Skills Keywords
-            .keywords#soft-keywords
+            #soft-keywords.keywords
           .keyword-category
             h4 Management Keywords
-            .keywords#management-keywords
+            #management-keywords.keywords
 
-      #tab-suggestions.tab-panel(role="tabpanel")
-        ul.suggestions-list#suggestions-list
+      #tab-suggestions.tab-panel(role='tabpanel')
+        ul#suggestions-list.suggestions-list
 
-      #tab-ai.tab-panel(role="tabpanel")
-        .ai-insights#ai-insights-panel
+      #tab-ai.tab-panel(role='tabpanel')
+        #ai-insights-panel.ai-insights
           p.ai-placeholder AI insights appear here when OpenAI is configured on the server.
 
 block scripts
-  script(src="/javascripts/resume-analyzer.js")
-  script(src="/javascripts/analyzer-app.js")
+  script(src='/javascripts/resume-analyzer.js')
+  script(src='/javascripts/analyzer-app.js')

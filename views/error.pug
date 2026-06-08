@@ -2,16 +2,16 @@ extends layout
 
 block content
   .error-container
-    h1.error-title Error: #{error.status || error.statusCode || 500}
+    h1.error-title Error: #{ error.status || error.statusCode || 500 }
     h2.error-message= message
     p.error-description Something went wrong. Please try again or return to the home page.
 
-    a.btn.error-home-btn(href="/") Return to Home
+    a.btn.error-home-btn(href='/') Return to Home
 
     if error.stack && process.env.NODE_ENV === 'development'
       .error-details
         h3 Error Details (Development Only)
-        pre.error-stack #{error.stack}
+        pre.error-stack #{ error.stack }
 
   style.
     .error-container {

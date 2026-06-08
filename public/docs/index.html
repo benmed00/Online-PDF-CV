@@ -48,9 +48,11 @@
         <p>This API allows you to access different versions of the resume in PDF format.</p>
         <p>The resume is available in multiple formats tailored for different purposes.</p>
         <p>
-          <strong>OpenAPI:</strong> <a href="/api/openapi.yaml">Machine-readable spec</a> ·
-          <a href="/api/docs">Interactive Swagger UI</a> (Express server only — analyzer POST routes
-          require <code>npm start</code>)
+          <strong>OpenAPI:</strong><a href="/api/openapi.yaml">Machine-readable spec</a> ·<a
+            href="/api/docs"
+            >Interactive Swagger UI</a
+          >
+          (Express server only — analyzer POST routes require<code>npm start</code>)
         </p>
       </section>
       <section class="usage">
@@ -62,7 +64,7 @@
         <p>The following versions are available:</p>
         <ul>
           <li>
-            <a href="/resume/default" target="_blank">default</a> - <code>GET /resume/default</code>
+            <a href="/resume/default" target="_blank">default</a> -<code>GET /resume/default</code>
           </li>
         </ul>
         <p>If a requested version doesn't exist, the default resume will be served.</p>
@@ -83,9 +85,9 @@
         <h3>OpenAPI Specification</h3>
         <pre><code>GET /api/openapi.yaml</code></pre>
         <p>
-          Canonical API contract (OpenAPI 3.1). On Firebase, served statically after
-          <code>npm run build</code>. On Express, also available at
-          <a href="/api/docs">/api/docs</a> (Swagger UI).
+          Canonical API contract (OpenAPI 3.1). On Firebase, served statically after<code
+            >npm run build</code
+          >. On Express, also available at<a href="/api/docs">/api/docs</a> (Swagger UI).
         </p>
       </section>
       <section class="examples">
@@ -111,7 +113,7 @@
   .then(data => {
     console.log('Available versions:', data.versions);
     console.log('Total versions:', data.count);
-    
+
     // Example: Create links for each version
     const container = document.getElementById('versions-container');
     data.versions.forEach(version => {
