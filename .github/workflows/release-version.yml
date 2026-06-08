@@ -44,7 +44,7 @@ jobs:
 
       - name: Sync package.json version from conventional commits
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.bump }}" != "auto" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.bump }}" != "auto" ] && [ -n "${{ inputs.bump }}" ]; then
             npm run "version:${{ inputs.bump }}"
           else
             npm run version:sync
