@@ -13,7 +13,8 @@ Index of tagged releases and major milestones for Online-PDF-CV.
 | [`working-messy-code`](https://github.com/benmed00/Online-PDF-CV/releases/tag/working-messy-code) | 2023-06-02 | Minimal Firebase PDF host; Express layer broken | [Release notes](working-messy-code.md) · [Archive branch](archive-branches.md#archivefirst-release-working-messy-code) |
 | 3.6.2 (maintenance)                                                                               | 2023–2024  | CV updates, dependency security patches         | [Project history](../project-history.md#phase-1--maintenance-only-oct-2023--jul-2024)                                  |
 | 4.0.0 (feature wave)                                                                              | 2025       | Analyzer, compare, docs, export, Jest           | [CHANGELOG](../../CHANGELOG.md)                                                                                        |
-| 3.6.2 (platform hardening)                                                                        | 2026       | Express 5, static build, Playwright, wiki       | [Platform hardening](platform-hardening-v3.6.2.md)                                                                     |
+| 3.6.2 (platform hardening) / `v4.0.0`                                                             | 2026       | Express 5, static build, Playwright, wiki       | [Platform hardening](platform-hardening-v3.6.2.md)                                                                     |
+| 4.1.0 (`v4.1.0`)                                                                                  | 2026       | Analyzer APIs, Cloud Functions, Husky, OpenAPI  | [CHANGELOG](../../CHANGELOG.md#version-410--analyzer--quality-gates-2026-06)                                           |
 
 For the full timeline — when refactors happened, why, and what changed — see [Project history](../project-history.md).
 

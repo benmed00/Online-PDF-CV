@@ -1,24 +1,6 @@
 # Known issues
 
-Documented limitations and bugs as of v3.6.2.
-
----
-
-## Platform & CI
-
-### Legacy `master` branch on GitHub
-
-**Symptom:** [benmed00/Online-PDF-CV `master`](https://github.com/benmed00/Online-PDF-CV) still shows the old README until `platform-hardening-and-docs` is merged.
-
-**Fix:** Merge [PR #31](https://github.com/benmed00/Online-PDF-CV/pull/31) or push `master` from local hardening branch.
-
----
-
-### Stale open PRs (Snyk / Dependabot)
-
-**Symptom:** Multiple open PRs target Express 4.x security bumps while the hardening branch uses Express 5.
-
-**Action:** Close superseded PRs after merging platform hardening to `master`.
+Documented limitations and bugs as of v4.1.0.
 
 ---
 
@@ -34,23 +16,29 @@ Documented limitations and bugs as of v3.6.2.
 
 ---
 
-### Static analyzer/compare require rebuild
+### Static pages require rebuild before deploy
 
 **Symptom:** Pug template changes not visible on Firebase until `npm run build`.
 
-**Fix:** Always run build before deploy.
+**Fix:** Always run `npm run build` before `firebase deploy`.
 
 ---
 
-### Analyzer APIs unavailable on Firebase static hosting
+### Analyzer APIs need Cloud Functions on Firebase
 
-**Symptom:** On production Firebase, `/analyzer` loads but upload scan, server extraction, and AI Coach do not work.
+**Symptom:** On production Firebase, analyzer upload/AI features fail if only Hosting is deployed.
 
-**Cause:** `POST /api/analyze`, `POST /api/extract-resume`, and `GET /api/analyzer/config` require the Express server. Firebase serves pre-built HTML only.
+**Cause:** `POST /api/analyze`, `POST /api/extract-resume`, and `GET /api/analyzer/config` are served by the `api` Cloud Function (`functions/src/index.ts`), not static files.
 
-**Workaround:** Run `npm start` locally with `.env` keys, or self-host Express behind a reverse proxy.
+**Fix:** Deploy functions with secrets configured:
 
-**Status:** Documented — full server-side analyzer is a local/self-hosted feature unless Cloud Functions are added later.
+```bash
+firebase deploy --only functions,hosting
+```
+
+Set `OPENAI_API_KEY` and `VIRUSTOTAL_API_KEY` in Firebase Functions environment (or `.env` for local emulators). See [functions/README.md](../functions/README.md).
+
+**Status:** Resolved when Functions are deployed with API rewrites in `firebase.json`.
 
 ---
 
@@ -62,11 +50,13 @@ Documented limitations and bugs as of v3.6.2.
 
 **Fix:** Add billing credits at [platform.openai.com](https://platform.openai.com/). Local keyword scores and checks still work without AI.
 
+---
+
 ## Development
 
 ### ESLint warnings on startup banner
 
-**Symptom:** `no-console` warnings in `app.js` lines 153–175.
+**Symptom:** `no-console` warnings in `app.js` startup logging.
 
 **Status:** Accepted — intentional startup logging. Not CI-blocking (warnings only).
 
@@ -77,28 +67,6 @@ Documented limitations and bugs as of v3.6.2.
 **Symptom:** Prettier may format `60000` with separators; ESLint parser rejects `60_000`.
 
 **Fix:** Use plain numbers in `playwright.config.js` and similar config files.
-
----
-
-## Dependencies
-
-### Fork default branch Dependabot alerts
-
-**Symptom:** GitHub reports vulnerabilities on fork `master` (legacy branch, not PR branch).
-
-**Note:** PR branch `platform-hardening-and-docs` audit was remediated to 0 vulnerabilities.
-
-**Action:** Merge PR or update fork default branch.
-
----
-
-## Documentation
-
-### Legacy French docs/README.md
-
-**Symptom:** Old French overview with outdated stack versions (Express 4, Jade).
-
-**Status:** Superseded by root README and new `docs/` set. Pending cleanup.
 
 ---
 
@@ -127,5 +95,5 @@ Documented limitations and bugs as of v3.6.2.
 ## Reporting new issues
 
 1. Check this list and [backlog.md](backlog.md).
-2. Open issue on fork with appropriate labels.
-3. Add entry here if it affects users or operators.
+2. Open an issue on [benmed00/Online-PDF-CV](https://github.com/benmed00/Online-PDF-CV/issues).
+3. Add an entry here if it affects users or operators.

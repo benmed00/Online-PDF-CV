@@ -2,18 +2,19 @@
 
 ## Project layout
 
-| Path         | Purpose                                         |
-| ------------ | ----------------------------------------------- |
-| `app.js`     | Express application and routes                  |
-| `bin/www`    | HTTP server entrypoint                          |
-| `routes/`    | Page routers                                    |
-| `views/`     | Pug templates                                   |
-| `utils/`     | Logging, errors, resume helpers                 |
-| `public/`    | Static assets and generated HTML                |
-| `scripts/`   | CLI utilities and static build                  |
-| `e2e/`       | Playwright usability tests                      |
-| `openapi/`   | OpenAPI base YAML, JSDoc routes, generated spec |
-| `__tests__/` | Jest unit/integration tests                     |
+| Path         | Purpose                                                  |
+| ------------ | -------------------------------------------------------- |
+| `app.js`     | Express application and routes                           |
+| `bin/www`    | HTTP server entrypoint                                   |
+| `routes/`    | Page routers                                             |
+| `views/`     | Pug templates                                            |
+| `utils/`     | Logging, errors, resume helpers                          |
+| `public/`    | Static assets and generated HTML                         |
+| `scripts/`   | CLI utilities and static build                           |
+| `e2e/`       | Playwright usability tests                               |
+| `openapi/`   | OpenAPI base YAML, JSDoc routes, generated spec          |
+| `functions/` | Firebase Cloud Function `api` (production analyzer APIs) |
+| `__tests__/` | Jest unit/integration tests                              |
 
 ## Common scripts
 
@@ -53,7 +54,9 @@ Firebase serves static files from `public/`. Run `npm run build` before deploy t
 - `public/api/versions.json`
 - `public/api/openapi.yaml` (copied from generated `openapi/openapi.yaml`)
 
-Firebase rewrites map `/resume/:version` to PDF files. `GET /api/openapi.yaml` is served directly from `public/api/` (no rewrite).
+Firebase rewrites map `/resume/:version` to PDF files and analyzer API paths to the **`api` Cloud Function**. `GET /api/openapi.yaml` is served directly from `public/api/` (no rewrite).
+
+Deploy hosting + functions for full analyzer features: `firebase deploy --only functions,hosting`. See [functions/README.md](https://github.com/benmed00/Online-PDF-CV/blob/master/functions/README.md).
 
 When changing API routes, update `openapi/jsdoc-routes.js` and run `npm run openapi:validate` — see [docs/openapi.md](https://github.com/benmed00/Online-PDF-CV/blob/master/docs/openapi.md).
 

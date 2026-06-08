@@ -41,6 +41,7 @@ Deploy: `npm run build` → `npm run deploy` ([details](wiki/Deployment.md)).
 | `/docs`             | Human-readable API documentation                                           |
 | `/analyzer`         | Keyword scoring, upload extraction, optional VirusTotal + OpenAI coach     |
 | `/compare`          | Side-by-side PDF comparison                                                |
+| `/validate`         | Job Matcher — resume vs job description (client-side scaffold)             |
 
 **Stack:** Node.js · Express 5 · Pug · Firebase · Jest · Playwright · Winston · Helmet
 
@@ -62,9 +63,9 @@ Deploy: `npm run build` → `npm run deploy` ([details](wiki/Deployment.md)).
 Full script list: [docs/how-to-use.md](docs/how-to-use.md).
 
 <details>
-<summary><strong>Analyzer API keys</strong> (optional — Express / local only)</summary>
+<summary><strong>Analyzer API keys</strong> (optional)</summary>
 
-Copy `.env.example` → `.env`:
+Copy `.env.example` → `.env` for local Express (`npm start`):
 
 | Variable             | Purpose                               |
 | -------------------- | ------------------------------------- |
@@ -73,7 +74,7 @@ Copy `.env.example` → `.env`:
 
 Restart after edits. Never commit `.env`.
 
-**Firebase vs Express:** [Production analyzer](https://benyakoub-cv.firebaseapp.com/analyzer) uses **client-side scoring only**. Run `npm start` locally for upload → VirusTotal → extract → AI Coach.
+**Production (Firebase):** Analyzer APIs (`POST /api/analyze`, `POST /api/extract-resume`) run on the **`api` Cloud Function** when functions are deployed with secrets. Without functions, the UI falls back to **client-side keyword scoring only**. See [functions/README.md](functions/README.md) and [wiki/Deployment.md](wiki/Deployment.md).
 
 </details>
 
@@ -89,6 +90,8 @@ Restart after edits. Never commit `.env`.
 | [Troubleshooting](wiki/Troubleshooting.md)           | Common issues                            |
 | [docs/ hub](docs/README.md)                          | Roadmap, backlog, architecture, releases |
 | [Project history](docs/project-history.md)           | Refactor timeline                        |
+| [Cloud Functions](functions/README.md)               | Production analyzer API deploy           |
+| [Server commands](SERVER_COMMANDS.md)                | Local startup URLs and endpoints         |
 | [Contributing](CONTRIBUTING.md)                      | Hooks, PR workflow                       |
 
 ---

@@ -1,37 +1,48 @@
 # Roadmap
 
-Release planning for Online-PDF-CV. Aligned with milestone **v3.6.2 — Platform Hardening**.
+Release planning for Online-PDF-CV. Current package version **4.1.0**.
+
+> **Version note:** Git milestone **v3.6.2 platform hardening** shipped as package/git tag **v4.0.0**. Analyzer wave is **v4.1.0**. See [CHANGELOG.md](../CHANGELOG.md).
 
 ---
 
-## Current release — v3.6.2 (Platform Hardening)
+## Shipped — v4.0.0 / v3.6.2 platform hardening (2026-06)
 
-**Target:** 2026-06-30  
-**Status:** In review ([PR #31](https://github.com/benmed00/Online-PDF-CV/pull/31))
+**Status:** Merged ([PR #31](https://github.com/benmed00/Online-PDF-CV/pull/31), tag `v4.0.0`)
 
-### Delivered
-
-| Area             | Outcome                                                  |
-| ---------------- | -------------------------------------------------------- |
-| Express 5        | Compatible routing, explicit 404, no merge conflicts     |
-| Security         | Helmet CSP, path validation, dependency audit clean      |
-| Infrastructure   | Winston logging, AppError, hybrid error handler          |
-| Firebase         | Static build pipeline, rewrites for tools and API        |
-| Testing          | Jest (22+ tests), Playwright (14 scenarios), CI workflow |
-| Documentation    | README media, wiki/, `docs/` maintainer guides           |
-| Package metadata | Author, license, repository, keywords                    |
+| Area             | Outcome                                              |
+| ---------------- | ---------------------------------------------------- |
+| Express 5        | Compatible routing, explicit 404, no merge conflicts |
+| Security         | Helmet CSP, path validation, dependency audit clean  |
+| Infrastructure   | Winston logging, AppError, hybrid error handler      |
+| Firebase         | Static build pipeline, rewrites for tools and API    |
+| Testing          | Jest + Playwright, CI workflow                       |
+| Documentation    | README media, wiki/, `docs/` maintainer guides       |
+| Package metadata | Author, license, repository, keywords                |
 
 ---
 
-## Phase 2 — Post-merge stabilization (Q3 2026)
+## Shipped — v4.1.0 analyzer & quality gates (2026-06)
 
-| Item                          | Priority | Notes                           |
-| ----------------------------- | -------- | ------------------------------- |
-| Enable upstream GitHub Issues | Medium   | Blocked on repo owner           |
-| Surface CI checks on fork PRs | High     | Upstream Actions settings       |
-| Firebase PDF fallback parity  | High     | Match Express fallback behavior |
-| Sync wiki to GitHub Wiki      | Medium   | Manual per `wiki/Sync-Wiki.md`  |
-| Codecov integration           | Low      | Add `CODECOV_TOKEN` secret      |
+**Status:** Merged ([PR #32](https://github.com/benmed00/Online-PDF-CV/pull/32), tag `v4.1.0`)
+
+| Area            | Outcome                                                       |
+| --------------- | ------------------------------------------------------------- |
+| Analyzer        | Upload extraction, VirusTotal, OpenAI coach                   |
+| Cloud Functions | `api` function for production analyzer APIs on Firebase       |
+| Quality         | Husky hooks, version sync, Dependabot, `npm audit` in CI      |
+| OpenAPI         | JSDoc-generated spec, Redocly lint, Swagger UI (Express only) |
+
+---
+
+## Phase 2 — Post-release stabilization (Q3 2026)
+
+| Item                          | Priority | Notes                                                                                                                                 |
+| ----------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Sync wiki to GitHub Wiki      | Done     | Live at [GitHub Wiki](https://github.com/benmed00/Online-PDF-CV/wiki); re-run `.\scripts\sync-wiki-to-github.ps1` after `wiki/` edits |
+| Firebase PDF fallback parity  | High     | Match Express fallback behavior                                                                                                       |
+| Surface CI checks on fork PRs | Medium   | Upstream Actions settings                                                                                                             |
+| Codecov integration           | Low      | Add `CODECOV_TOKEN` secret                                                                                                            |
 
 ---
 
@@ -39,10 +50,9 @@ Release planning for Online-PDF-CV. Aligned with milestone **v3.6.2 — Platform
 
 | Item                       | Priority | Notes                                    |
 | -------------------------- | -------- | ---------------------------------------- |
-| Job description matcher UI | Medium   | `validate.pug` scaffold exists           |
+| Job description matcher UI | Medium   | `/validate` scaffold exists              |
 | Resume export improvements | Medium   | JSON, TXT, Markdown via `npm run export` |
 | PWA / offline polish       | Low      | `manifest.json`, service worker present  |
-| i18n (EN/FR)               | Low      | Legacy French docs to consolidate        |
 | Automated wiki sync CI job | Low      | GitHub Action from `wiki/`               |
 
 ---
@@ -53,7 +63,7 @@ Release planning for Online-PDF-CV. Aligned with milestone **v3.6.2 — Platform
 | -------------------------------- | -------- | ----------------------------------------------------- |
 | Node.js 24 on GitHub Actions     | Medium   | Actions runner deprecation timeline                   |
 | Remove unused Firebase client TS | Low      | `src/lib/firebase.ts`, `public/js/firebase-config.js` |
-| Dependabot auto-merge policy     | Medium   | Reduce fork default-branch alerts                     |
+| Dependabot auto-merge policy     | Medium   | Reduce stale security PR noise                        |
 | Custom domain + SSL docs         | Low      | Firebase custom domain guide                          |
 | Analytics privacy review         | Low      | Google Analytics integration audit                    |
 
@@ -69,12 +79,12 @@ Release planning for Online-PDF-CV. Aligned with milestone **v3.6.2 — Platform
 
 ## Version history
 
-| Version                      | Theme                                                   |
-| ---------------------------- | ------------------------------------------------------- |
-| 3.6.2                        | Platform hardening, Express 5, Playwright, static build |
-| 4.0.0                        | Multi-version resumes, analyzer, compare, API docs      |
-| 3.6.2 (`working-messy-code`) | Minimal Firebase PDF host (2023-06-02 tag)              |
-| 1.x                          | Initial Express + Jade CV host                          |
+| Package | Milestone / theme                                           |
+| ------- | ----------------------------------------------------------- |
+| 4.1.0   | Analyzer APIs, Cloud Functions, Husky, OpenAPI              |
+| 4.0.0   | Platform hardening (milestone v3.6.2), Express 5, e2e       |
+| 3.6.2   | `working-messy-code` tag — minimal Firebase PDF host (2023) |
+| 1.x     | Initial Express + Jade CV host                              |
 
 See [CHANGELOG.md](../CHANGELOG.md) for detailed release notes.  
-See [project-history.md](project-history.md) and [releases/](releases/README.md) for the full timeline and tagged release documentation.
+See [project-history.md](project-history.md) and [releases/](releases/README.md) for the full timeline.

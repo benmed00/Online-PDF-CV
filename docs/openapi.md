@@ -4,12 +4,12 @@ Machine-readable API contract for Online-PDF-CV. Closes [GitHub issue #34](https
 
 ## Quick links
 
-| Resource     | URL (local)                                  | Purpose                                         |
-| ------------ | -------------------------------------------- | ----------------------------------------------- |
-| OpenAPI YAML | `/api/openapi.yaml`                          | Canonical contract (OpenAPI 3.1)                |
-| Swagger UI   | `/api/docs`                                  | Interactive Try it out / Execute (Express only) |
-| Human docs   | `/docs`                                      | Examples and version list                       |
-| Wiki         | [API-Reference.md](../wiki/API-Reference.md) | Narrative reference                             |
+| Resource     | URL (local)                                  | Purpose                                               |
+| ------------ | -------------------------------------------- | ----------------------------------------------------- |
+| OpenAPI YAML | `/api/openapi.yaml`                          | Canonical contract (OpenAPI 3.1)                      |
+| Swagger UI   | `/api/docs`                                  | Interactive Try it out / Execute (local Express only) |
+| Human docs   | `/docs`                                      | Examples and version list                             |
+| Wiki         | [API-Reference.md](../wiki/API-Reference.md) | Narrative reference                                   |
 
 ## Source-of-truth layout
 
@@ -56,12 +56,14 @@ The default OpenAPI server is `/` (same-origin) so **Try it out** requests hit t
 
 ## Deployment model
 
-| Endpoint                | Firebase static   | Express (`npm start`)          |
-| ----------------------- | ----------------- | ------------------------------ |
-| `GET /api/openapi.yaml` | Yes (after build) | Yes                            |
-| `GET /api/docs`         | No                | Swagger UI                     |
-| `GET /api/versions`     | Yes               | Yes                            |
-| Analyzer `POST` routes  | No                | Yes (`x-express-only` in spec) |
+| Endpoint                | Firebase Hosting only | Firebase + Cloud Function `api` | Express (`npm start`) |
+| ----------------------- | --------------------- | ------------------------------- | --------------------- |
+| `GET /api/openapi.yaml` | Yes (after build)     | Yes                             | Yes                   |
+| `GET /api/docs`         | No                    | No                              | Swagger UI            |
+| `GET /api/versions`     | Yes (static rewrite)  | Yes                             | Yes                   |
+| Analyzer routes         | No                    | Yes                             | Yes                   |
+
+Analyzer operations are tagged `x-node-runtime: true` in the spec — they require a Node backend (Express locally or the `api` Cloud Function on Firebase). See [functions/README.md](../functions/README.md).
 
 ## What is “strict AJV validation on every response”?
 

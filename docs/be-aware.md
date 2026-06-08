@@ -16,11 +16,12 @@ Helmet CSP allows `'unsafe-inline'` for scripts and styles (required by inline P
 
 ### Secrets
 
-| Never commit              | Use instead                     |
-| ------------------------- | ------------------------------- |
-| `.env` files              | `.gitignore` + local env        |
-| Firebase service accounts | Firebase CLI login / CI secrets |
-| `CODECOV_TOKEN`           | GitHub repository secret        |
+| Never commit              | Use instead                                  |
+| ------------------------- | -------------------------------------------- |
+| `.env` files              | `.gitignore` + local env                     |
+| Firebase service accounts | Firebase CLI login / CI secrets              |
+| `CODECOV_TOKEN`           | GitHub repository secret                     |
+| API keys in Functions     | Firebase Functions secrets / emulator `.env` |
 
 ### Production error pages
 
@@ -34,15 +35,28 @@ Contributors without write access should fork the repository and open PRs agains
 
 ---
 
-## Static hosting limitations
+## Production deployment model
 
-Firebase Hosting serves **static files only**:
+Firebase Hosting serves **static files** from `public/` after `npm run build`. There is no Express middleware on static routes.
 
-- No server-side Pug rendering in production
-- No Express middleware (Helmet, custom error pages) on Firebase — rely on pre-built HTML and CDN headers
-- API routes are static files generated at build time (`/api/versions.json`, `/api/openapi.yaml`)
+| Capability              | Local (`npm start`) | Firebase Hosting only | Firebase + Cloud Functions |
+| ----------------------- | ------------------- | --------------------- | -------------------------- |
+| HTML pages (`/docs`, …) | Pug (dynamic)       | Pre-built HTML        | Pre-built HTML             |
+| `GET /api/versions`     | Express             | Static JSON rewrite   | Static JSON rewrite        |
+| `GET /api/openapi.yaml` | Express             | Static file           | Static file                |
+| Analyzer POST APIs      | Express             | **Unavailable**       | Cloud Function `api`       |
+| Swagger UI `/api/docs`  | Express             | **Unavailable**       | **Unavailable**            |
 
-Dynamic features (e.g. `POST /api/analyze`) work on Express locally; on pure static Firebase, analyzer uses client-side logic or needs Cloud Functions (not currently deployed for analyzer).
+Analyzer UI on Firebase uses **client-side fallback** when the Cloud Function is not deployed or unreachable.
+
+Always deploy hosting **and** functions for full analyzer features:
+
+```bash
+npm run build
+firebase deploy --only functions,hosting
+```
+
+See [functions/README.md](../functions/README.md) and [wiki/Deployment.md](../wiki/Deployment.md).
 
 ---
 
@@ -50,7 +64,7 @@ Dynamic features (e.g. `POST /api/analyze`) work on Express locally; on pure sta
 
 Deploying without `npm run build` causes:
 
-- Missing or stale `/docs`, `/analyzer`, `/compare` pages
+- Missing or stale `/docs`, `/analyzer`, `/compare`, `/validate` pages
 - Outdated `versions.json` or `openapi.yaml`
 - Broken navigation on production
 
@@ -58,7 +72,7 @@ Always:
 
 ```bash
 SITE_URL=https://your-domain.com npm run build
-firebase deploy
+firebase deploy --only functions,hosting
 ```
 
 ---
@@ -83,12 +97,12 @@ Firebase sets `Cache-Control: public, max-age=3600` on PDFs. After updating a PD
 
 ## Node.js version
 
-| Context                    | Version                               |
-| -------------------------- | ------------------------------------- |
-| `package.json` engines     | ≥ 16.17.1                             |
-| CI (PR / feature branch)   | 20.x                                  |
-| CI (master push)           | 16.x, 18.x, 20.x matrix               |
-| GitHub Actions deprecation | Node 20 actions → Node 24 by mid-2026 |
+| Context                | Version                                  |
+| ---------------------- | ---------------------------------------- |
+| `package.json` engines | ≥ 22.0.0                                 |
+| `.nvmrc`               | 22                                       |
+| Cloud Functions        | Node 22 (`functions/package.json`)       |
+| CI                     | Node 22 (see `.github/workflows/ci.yml`) |
 
 ---
 
@@ -109,7 +123,7 @@ Project is **Apache-2.0**. Preserve license headers when copying utilities. Auth
 | Repo                                                                  | Role                                     |
 | --------------------------------------------------------------------- | ---------------------------------------- |
 | [`benmed00/Online-PDF-CV`](https://github.com/benmed00/Online-PDF-CV) | **Primary** — code, issues, CI, releases |
-| `ben-git-code/Online-PDF-CV`                                          | Legacy mirror (optional remote `legacy`) |
+| `ben-git-code/Online-PDF-CV`                                          | Development mirror (optional remote)     |
 
 Do not force-push to `master` without coordinating with open PRs.
 
@@ -117,7 +131,7 @@ Do not force-push to `master` without coordinating with open PRs.
 
 ## AI / Cursor agents and merges
 
-**Incident (2026-06-08):** [PR #32](https://github.com/benmed00/Online-PDF-CV/pull/32) was merged to `master` while checks were failing (**1 of 7 passed**) without explicit maintainer approval. GitHub shows **Merged by `benmed00`** because the Cursor agent used local `gh`/`git` credentials — not because the maintainer clicked Merge in the UI.
+**Incident (2026-06-08):** [PR #32](https://github.com/benmed00/Online-PDF-CV/pull/32) was merged to `master` while checks were failing without explicit maintainer approval.
 
 **Rule for agents and humans:**
 
@@ -132,6 +146,5 @@ Do not force-push to `master` without coordinating with open PRs.
 - Require pull request before merging to `master`
 - Require status checks to pass (`validate`, e2e jobs)
 - Do not allow bypassing for admins until process is stable
-- Disable auto-merge on the repo
 
 Project rule: `.cursor/rules/merge-approval-required.mdc` (always applied in Cursor).

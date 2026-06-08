@@ -13,6 +13,7 @@ Online-PDF-CV is a lightweight platform for publishing a professional resume as 
 - interactive documentation (`/docs`)
 - resume keyword analysis (`/analyzer`)
 - side-by-side version comparison (`/compare`)
+- job description matching (`/validate`)
 
 ## Quick start
 

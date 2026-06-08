@@ -59,18 +59,19 @@ npm run add-version -- /path/to/your.pdf technical
 
 ## Application pages
 
-| URL                 | Description                                              |
-| ------------------- | -------------------------------------------------------- |
-| `/`                 | Home — embedded default PDF resume                       |
-| `/resume`           | Default PDF download/view                                |
-| `/resume/:version`  | Named version (slug: lowercase letters, digits, hyphens) |
-| `/docs`             | Human-readable API documentation                         |
-| `/api/openapi.yaml` | OpenAPI 3.1 specification (canonical contract)           |
-| `/api/docs`         | Swagger UI (Express server only)                         |
-| `/analyzer`         | Paste resume text → keyword analysis                     |
-| `/compare`          | Side-by-side PDF comparison                              |
-| `/api/versions`     | JSON versions API                                        |
-| `POST /api/analyze` | Resume analysis API (JSON body; Express only)            |
+| URL                 | Description                                                    |
+| ------------------- | -------------------------------------------------------------- |
+| `/`                 | Home — embedded default PDF resume                             |
+| `/resume`           | Default PDF download/view                                      |
+| `/resume/:version`  | Named version (slug: lowercase letters, digits, hyphens)       |
+| `/docs`             | Human-readable API documentation                               |
+| `/api/openapi.yaml` | OpenAPI 3.1 specification (canonical contract)                 |
+| `/api/docs`         | Swagger UI (Express server only)                               |
+| `/analyzer`         | Paste resume text → keyword analysis                           |
+| `/compare`          | Side-by-side PDF comparison                                    |
+| `/validate`         | Job Matcher — resume vs job description (client-side UI)       |
+| `/api/versions`     | JSON versions API                                              |
+| `POST /api/analyze` | Resume analysis API (Node runtime — Express or Cloud Function) |
 
 Example — fetch the OpenAPI spec:
 
@@ -92,7 +93,7 @@ curl -s http://localhost:3000/api/versions
 | `OPENAI_API_KEY`     | —                       | AI Coach insights on `/analyzer` (`POST /api/analyze`)         |
 | `OPENAI_MODEL`       | `gpt-4o-mini`           | Optional OpenAI model override                                 |
 
-Copy `.env.example` to `.env` for analyzer keys. **Firebase static hosting does not run these APIs** — use Express locally or self-hosted for full analyzer features.
+Copy `.env.example` to `.env` for local Express. On Firebase, set the same keys on the **`api` Cloud Function** (see [functions/README.md](../functions/README.md)). Hosting-only deploy serves the analyzer UI with client-side fallback when APIs are unreachable.
 
 Example production build:
 
@@ -129,10 +130,10 @@ SITE_URL=https://benyakoub-cv.firebaseapp.com npm run build
 ```bash
 npm run build
 firebase login
-npm run deploy
+firebase deploy --only functions,hosting
 ```
 
-CI deploys automatically on merge to `master` when Firebase secrets are configured (see [wiki/Deployment.md](../wiki/Deployment.md)).
+Use `npm run deploy` (hosting only) for static pages and PDFs; analyzer APIs require the Cloud Function. CI deploys automatically on merge to `master` when Firebase secrets are configured (see [wiki/Deployment.md](../wiki/Deployment.md)).
 
 ---
 

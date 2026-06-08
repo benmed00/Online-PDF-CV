@@ -3,7 +3,7 @@
 Project documentation for developers, maintainers, and contributors.
 
 **Live site:** [benyakoub-cv.firebaseapp.com](https://benyakoub-cv.firebaseapp.com/)  
-**Version:** 3.6.2  
+**Version:** 4.1.0 (milestone **v3.6.2 platform hardening** shipped as git tag `v4.0.0`)  
 **Wiki (user guides):** [`wiki/`](../wiki/Home.md)
 
 ---
@@ -68,11 +68,13 @@ flowchart TB
 
 ## Architecture and usage
 
-| Document                            | Purpose                                                     |
-| ----------------------------------- | ----------------------------------------------------------- |
-| [How to use](how-to-use.md)         | Local dev, deploy, scripts, workflows                       |
-| [How it works](how-it-works.md)     | Architecture, request flow, static build, Firebase rewrites |
-| [Best practices](best-practices.md) | Coding, security, testing, and deployment conventions       |
+| Document                                      | Purpose                                                     |
+| --------------------------------------------- | ----------------------------------------------------------- |
+| [How to use](how-to-use.md)                   | Local dev, deploy, scripts, workflows                       |
+| [How it works](how-it-works.md)               | Architecture, request flow, static build, Firebase rewrites |
+| [Best practices](best-practices.md)           | Coding, security, testing, and deployment conventions       |
+| [SERVER_COMMANDS.md](../SERVER_COMMANDS.md)   | Local server startup output and endpoint URLs               |
+| [functions/README.md](../functions/README.md) | Cloud Function deploy, secrets, emulator                    |
 
 ---
 
@@ -148,4 +150,5 @@ npm run test:all
 | Playwright           | [Testing and Usability](../wiki/Testing-and-Usability.md)                                            |
 | Refactor timeline    | [Project history](project-history.md)                                                                |
 | Static build         | [How it works](how-it-works.md), [How to use](how-to-use.md)                                         |
-| VirusTotal / OpenAI  | [How to use](how-to-use.md), [Be aware](be-aware.md)                                                 |
+| Cloud Functions      | [functions/README.md](../functions/README.md), [How it works](how-it-works.md)                       |
+| VirusTotal / OpenAI  | [How to use](how-to-use.md), [Be aware](be-aware.md), [functions/README.md](../functions/README.md)  |

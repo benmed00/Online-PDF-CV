@@ -111,4 +111,4 @@ Record significant maintenance in CHANGELOG or a release note:
 
 ---
 
-_Next scheduled review: 2026-07-01 (post v3.6.2 merge target)_
+_Next scheduled review: 2026-07-01 (post v4.1.0 release)_

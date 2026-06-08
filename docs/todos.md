@@ -15,11 +15,12 @@ Active short-term tasks. For the full prioritized queue see [backlog.md](backlog
 
 ## After merge to master
 
-- [ ] Sync wiki per [wiki/Sync-Wiki.md](../wiki/Sync-Wiki.md)
+- [x] Sync wiki per [wiki/Sync-Wiki.md](../wiki/Sync-Wiki.md) — pushed 2026-06-08 (7 pages updated)
 - [ ] Verify Firebase production deploy for `/docs`, `/analyzer`, `/compare`
 - [ ] Confirm `npm run test:all` green on `master`
 - [ ] Close obsolete issues #25–#26 (upstream/fork tracking — no longer applicable)
 - [x] Close stale Snyk/Dependabot PRs #3–#16 (superseded by merged #32 / Express 5)
+- [x] **Docs reconciliation** — v4.1.0, Cloud Functions, OpenAPI `x-node-runtime`, wiki sync source updated
 - [ ] **OpenAI billing** — restore AI Coach when quota is available (key valid; 429 quota as of 2026-06-08)
 
 ---
@@ -29,7 +30,7 @@ Active short-term tasks. For the full prioritized queue see [backlog.md](backlog
 - [x] Add maintainer docs under `docs/` (roadmap, backlog, how-it-works, …)
 - [x] Link `docs/` index from root README
 - [x] Point clone URLs and metadata to `benmed00/Online-PDF-CV`
-- [ ] Retire or redirect outdated French content in old docs pages
+- [x] Retire or redirect outdated French content — `online-pdf-cv-docs/DEPRECATED.md` added
 
 ---
 

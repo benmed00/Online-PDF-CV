@@ -1,6 +1,6 @@
 # How it works
 
-Architecture overview for Online-PDF-CV v3.6.2.
+Architecture overview for Online-PDF-CV v4.1.0.
 
 ---
 
@@ -20,6 +20,8 @@ flowchart TB
     Firebase --> StaticHTML[public/*.html]
     Firebase --> StaticPDF[public/resumes/*.pdf]
     Firebase --> APIJson[public/api/versions.json]
+    Firebase --> CloudFn[Cloud Function api]
+    CloudFn --> ApiRoutes[routes/api.js]
   end
 
   Build[npm run build] --> StaticHTML
@@ -51,16 +53,19 @@ Firebase serves files from `public/` with **no Node runtime**.
 
 Before deploy, `scripts/build-static.js`:
 
-1. Renders Pug views → `public/index.html`, `public/docs/`, `public/analyzer/`, `public/compare/`
+1. Renders Pug views → `public/index.html`, `public/docs/`, `public/analyzer/`, `public/compare/`, `public/validate/`, `public/404.html`
 2. Writes `public/api/versions.json` from disk scan of `public/resumes/`
 
 `firebase.json` rewrites:
 
-| Request            | Destination             |
-| ------------------ | ----------------------- |
-| `/api/versions`    | `/api/versions.json`    |
-| `/resume`          | `/resume.pdf`           |
-| `/resume/:version` | `/resumes/:version.pdf` |
+| Request                | Destination             |
+| ---------------------- | ----------------------- |
+| `/api/analyze`         | Cloud Function `api`    |
+| `/api/extract-resume`  | Cloud Function `api`    |
+| `/api/analyzer/config` | Cloud Function `api`    |
+| `/api/versions`        | `/api/versions.json`    |
+| `/resume`              | `/resume.pdf`           |
+| `/resume/:version`     | `/resumes/:version.pdf` |
 
 ---
 
@@ -74,7 +79,7 @@ Version slugs are validated by `utils/validateVersion.js`:
 /^[a-z0-9-]+$/
 ```
 
-Invalid slugs → 400 (API) or 404 (browser).
+Invalid slugs → 400 on Express (both API and browser routes).
 
 ---
 
@@ -94,30 +99,36 @@ GET /resume/technical
 
 ## Resume analyzer
 
-| Component                            | Role                                                 |
-| ------------------------------------ | ---------------------------------------------------- |
-| `views/analyzer.pug`                 | UI shell                                             |
-| `public/javascripts/analyzer-app.js` | Client-side form + fetch                             |
-| `utils/resumeAnalyzer.js`            | Keyword scoring, suggestions                         |
-| `POST /api/analyze`                  | Server endpoint (also used by static page via fetch) |
+| Component                            | Role                                                          |
+| ------------------------------------ | ------------------------------------------------------------- |
+| `views/analyzer.pug`                 | UI shell                                                      |
+| `public/javascripts/analyzer-app.js` | Client-side form + fetch (offline fallback when API missing)  |
+| `utils/resumeAnalyzer.js`            | Keyword scoring, suggestions                                  |
+| `routes/api.js`                      | `POST /api/analyze`, `POST /api/extract-resume`, config route |
+| `api-server.js` + `functions/`       | Same API on Express locally and Cloud Function in production  |
 
 Target roles: `engineering`, `management`, `general`.
+
+See [functions/README.md](../functions/README.md) for deploy and secrets.
 
 ---
 
 ## Error handling
 
 ```
-Operational error (AppError)
+Operational error (AppError / ValidationError)
   → statusCode + message
-  → /api/*  → JSON { success, message }
+  → /api/*  → JSON { success: false, status, statusCode, message, error, validation? }
   → browser → render error.pug (stack in development only)
 
 Unknown error
   → 500, logged via Winston
+  → production masks internal message for non-operational errors
 ```
 
-Process-level hooks in `bin/www` exit on uncaught exceptions and unhandled rejections.
+Process-level hooks in `utils/processHandlers.js` (used by `bin/www` and `npm run dev`) exit on uncaught exceptions and unhandled rejections.
+
+The analyzer client uses `public/javascripts/api-client.js` for consistent fetch error handling and shows an explicit offline fallback message when the server is unreachable.
 
 ---
 
@@ -149,9 +160,12 @@ Fork PRs to upstream may not show CI checks until upstream enables fork workflow
 
 ```
 Online-PDF-CV/
-├── app.js                 # Express app, API, PDF routes
+├── app.js                 # Express app, page routes, PDF delivery
+├── api-server.js          # API-only Express app (local + Cloud Functions)
+├── functions/             # Firebase Cloud Function `api` (production analyzer APIs)
 ├── bin/www                # HTTP server + crash hooks
-├── routes/index.js        # Tool page routes
+├── routes/api.js          # JSON API routes
+├── routes/index.js        # Home route
 ├── views/                 # Pug templates
 ├── utils/                 # logger, errors, resume helpers, analyzer
 ├── public/                # Static assets + build output

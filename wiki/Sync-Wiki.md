@@ -4,16 +4,11 @@ The `wiki/` folder in this repository contains **source Markdown** for the GitHu
 
 ## Publish to GitHub Wiki
 
-### 0. First-time only — bootstrap the wiki (required once)
+### 0. First-time only — bootstrap the wiki (done)
 
-GitHub does **not** create the wiki git repository until the **first page** is saved in the web UI. Until then, `git push` to `.wiki.git` returns _Repository not found_.
+The wiki repo is **already bootstrapped** on `benmed00/Online-PDF-CV`. Live site: [github.com/benmed00/Online-PDF-CV/wiki](https://github.com/benmed00/Online-PDF-CV/wiki).
 
-1. Open **[Create first wiki page](https://github.com/benmed00/Online-PDF-CV/wiki/_new)** (must be signed in as `benmed00`)
-2. **Title:** `Home`
-3. Body: any placeholder (e.g. `# Online PDF CV`) — this will be overwritten by sync
-4. Click **Save Page**
-
-After that, the wiki git repo exists and automated sync works.
+If you fork the project and need a new wiki, GitHub does not create the wiki git repo until the **first page** is saved in the web UI. Until then, `git push` to `.wiki.git` returns _Repository not found_. Create a placeholder `Home` page via \*\*[Create first wiki page](https://github.com/benmed00/Online-PDF-CV/wiki/_new)`, then run the sync script.
 
 ### 1. Enable wiki on GitHub
 
@@ -99,7 +94,8 @@ Commit those folders in the main repository, then refresh wiki pages if paths ch
 When documentation changes in the main repo:
 
 1. Edit files in `wiki/`
-2. Copy to `Online-PDF-CV.wiki` clone
-3. Push wiki repository
+2. Run `.\scripts\sync-wiki-to-github.ps1` from the project root
+
+The script copies pages to `../Online-PDF-CV.wiki`, commits, and pushes to `benmed00/Online-PDF-CV.wiki.git`.
 
 Consider automating with a GitHub Action in the future.

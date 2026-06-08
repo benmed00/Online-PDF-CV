@@ -4,7 +4,7 @@ This guide helps you publish your own PDF resume using Online-PDF-CV.
 
 ## Prerequisites
 
-- Node.js **16.17.1+**
+- Node.js **22+** (see `.nvmrc`)
 - npm
 - A Firebase account (for production hosting)
 - Firebase CLI (`npm install -g firebase-tools`)
@@ -65,10 +65,10 @@ Generates HTML into `public/` for hosting without a Node runtime.
 
 ```bash
 firebase login
-npm run deploy
+firebase deploy --only functions,hosting
 ```
 
-See [[Deployment]] for CI/CD and rewrite rules.
+Use `npm run deploy` for hosting-only (static pages and PDFs). Full analyzer APIs require the Cloud Function — see [[Deployment]].
 
 ## Next steps
 

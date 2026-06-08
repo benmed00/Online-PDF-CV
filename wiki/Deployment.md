@@ -6,27 +6,42 @@
 
 - Firebase project (default: `benyakoub-cv`)
 - Firebase CLI authenticated (`firebase login`)
+- Node.js ≥ 22
 
 ### Manual deploy
+
+```bash
+npm run build
+firebase deploy --only functions,hosting
+```
+
+`npm run build` must run before deploy so Firebase serves pre-rendered HTML for `/docs`, `/analyzer`, `/compare`, and `/validate`.
+
+For static-only updates (no analyzer API changes):
 
 ```bash
 npm run build
 npm run deploy
 ```
 
-`npm run build` must run before deploy so Firebase serves pre-rendered HTML for `/docs`, `/analyzer`, and `/compare`.
-
 ### Hosting configuration
 
 `firebase.json` defines:
 
-| Rewrite            | Target                  |
-| ------------------ | ----------------------- |
-| `/api/versions`    | `/api/versions.json`    |
-| `/resume`          | `/resume.pdf`           |
-| `/resume/:version` | `/resumes/:version.pdf` |
+| Rewrite                | Target                  |
+| ---------------------- | ----------------------- |
+| `/api/analyze`         | Cloud Function `api`    |
+| `/api/extract-resume`  | Cloud Function `api`    |
+| `/api/analyzer/config` | Cloud Function `api`    |
+| `/api/versions`        | `/api/versions.json`    |
+| `/resume`              | `/resume.pdf`           |
+| `/resume/:version`     | `/resumes/:version.pdf` |
 
-Static files in `public/` are served directly when they exist.
+Static files in `public/` are served directly when they exist (including `/api/openapi.yaml` after build).
+
+### Cloud Functions
+
+Analyzer APIs run on the **`api`** HTTPS function. Set `OPENAI_API_KEY` and `VIRUSTOTAL_API_KEY` in Firebase Functions environment. Full guide: [functions/README.md](https://github.com/benmed00/Online-PDF-CV/blob/master/functions/README.md).
 
 ## Continuous deployment
 
