@@ -3,6 +3,10 @@ extends layout
 block content
   h1= title
 
+  #compare-alert.alert-banner(role='alert', aria-live='polite')
+    span#compare-alert-message
+    button.alert-close(type='button', aria-label='Dismiss') ×
+
   section.intro
     p This tool allows you to compare different versions of your resume side by side.
     p Select two resume versions from the dropdown menus below to compare them.
@@ -30,11 +34,15 @@ block content
     .pdf-container
       .pdf-view
         h3#pdf1-title
-        iframe#pdf1-frame(width='100%', height='600px')
+        #pdf1-loading.pdf-loading Loading PDF…
+        p#pdf1-error.pdf-error.hidden(role='alert') Could not load this PDF.
+        iframe#pdf1-frame(width='100%', height='600px', title='First resume version')
 
       .pdf-view
         h3#pdf2-title
-        iframe#pdf2-frame(width='100%', height='600px')
+        #pdf2-loading.pdf-loading Loading PDF…
+        p#pdf2-error.pdf-error.hidden(role='alert') Could not load this PDF.
+        iframe#pdf2-frame(width='100%', height='600px', title='Second resume version')
 
   section.tips
     h2 Why Compare Resume Versions?
@@ -51,12 +59,48 @@ block scripts
       const version2Select = document.getElementById('version2');
       const compareBtn = document.getElementById('compare-btn');
       const comparisonSection = document.getElementById('comparison');
-      const pdf1Frame = document.getElementById('pdf1-frame');
-      const pdf2Frame = document.getElementById('pdf2-frame');
-      const pdf1Title = document.getElementById('pdf1-title');
-      const pdf2Title = document.getElementById('pdf2-title');
+      const alertBanner = document.getElementById('compare-alert');
+      const alertMessage = document.getElementById('compare-alert-message');
 
-      // Set initial different values if possible
+      function showAlert(message) {
+        alertMessage.textContent = message;
+        alertBanner.className = 'alert-banner visible error';
+      }
+
+      function hideAlert() {
+        alertBanner.classList.remove('visible');
+      }
+
+      function setupPdfFrame(frameId, loadingId, errorId) {
+        const frame = document.getElementById(frameId);
+        const loading = document.getElementById(loadingId);
+        const errorEl = document.getElementById(errorId);
+        let loaded = false;
+
+        frame.addEventListener('load', function () {
+          loaded = true;
+          loading.classList.add('hidden');
+          errorEl.classList.add('hidden');
+        });
+
+        return function (src) {
+          loaded = false;
+          loading.classList.remove('hidden');
+          errorEl.classList.add('hidden');
+          frame.src = src;
+
+          setTimeout(function () {
+            if (!loaded) {
+              loading.classList.add('hidden');
+              errorEl.classList.remove('hidden');
+            }
+          }, 8000);
+        };
+      }
+
+      const loadPdf1 = setupPdfFrame('pdf1-frame', 'pdf1-loading', 'pdf1-error');
+      const loadPdf2 = setupPdfFrame('pdf2-frame', 'pdf2-loading', 'pdf2-error');
+
       if (version1Select.options.length > 1 && version1Select.value === version2Select.value) {
         version2Select.selectedIndex = 1;
       }
@@ -65,20 +109,24 @@ block scripts
         const version1 = version1Select.value;
         const version2 = version2Select.value;
 
-        // Update iframe sources
-        pdf1Frame.src = `/resume/${version1}`;
-        pdf2Frame.src = `/resume/${version2}`;
+        hideAlert();
 
-        // Update titles
-        pdf1Title.textContent = `${version1.charAt(0).toUpperCase() + version1.slice(1)} Version`;
-        pdf2Title.textContent = `${version2.charAt(0).toUpperCase() + version2.slice(1)} Version`;
+        if (version1 === version2) {
+          showAlert('Please select two different versions to compare.');
+          return;
+        }
 
-        // Show comparison section
+        document.getElementById('pdf1-title').textContent = `${version1.charAt(0).toUpperCase() + version1.slice(1)} Version`;
+        document.getElementById('pdf2-title').textContent = `${version2.charAt(0).toUpperCase() + version2.slice(1)} Version`;
+
+        loadPdf1(`/resume/${version1}`);
+        loadPdf2(`/resume/${version2}`);
+
         comparisonSection.classList.remove('hidden');
-
-        // Scroll to comparison section
         comparisonSection.scrollIntoView({ behavior: 'smooth' });
       });
+
+      document.querySelector('.alert-close')?.addEventListener('click', hideAlert);
     });
 
   style.
@@ -152,6 +200,37 @@ block scripts
     iframe {
       border: none;
       background-color: #f5f5f5;
+    }
+
+    .pdf-loading {
+      text-align: center;
+      padding: 1rem;
+      color: #666;
+    }
+
+    .pdf-error {
+      text-align: center;
+      padding: 1rem;
+      color: #991b1b;
+      background: #fef2f2;
+      border-radius: 4px;
+    }
+
+    .alert-banner {
+      display: none;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 4px;
+    }
+
+    .alert-banner.visible {
+      display: block;
+    }
+
+    .alert-banner.error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
     }
 
     @media (max-width: 768px) {

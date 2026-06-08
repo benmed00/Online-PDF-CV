@@ -1,0 +1,267 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Resume Job Matcher</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Validate your resume against a job description to improve keyword alignment"
+    />
+    <meta
+      name="keywords"
+      content="resume validation, job matcher, resume tailoring, ATS keywords"
+    />
+    <meta name="author" content="Resume Owner" />
+    <meta property="og:title" content="Resume Job Matcher" />
+    <meta
+      property="og:description"
+      content="Validate your resume against a job description to improve keyword alignment"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://benyakoub-cv.firebaseapp.com/validate" />
+    <meta property="og:image" content="/images/resume-preview.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Resume Job Matcher" />
+    <meta
+      name="twitter:description"
+      content="Validate your resume against a job description to improve keyword alignment"
+    />
+    <meta name="twitter:image" content="/images/resume-preview.png" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link rel="stylesheet" href="/stylesheets/analyzer.css" />
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="container">
+        <h1 class="site-title">Resume Job Matcher</h1>
+        <nav class="main-nav">
+          <ul>
+            <li><a href="/">View CV</a></li>
+            <li><a href="/docs">API Docs</a></li>
+            <li><a href="/analyzer">Resume Analyzer</a></li>
+            <li><a href="/compare">Compare Versions</a></li>
+            <li><a href="/validate">Job Matcher</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main class="container">
+      <h1>Resume Job Matcher</h1>
+      <div class="alert-banner" id="alert-banner" role="alert" aria-live="polite">
+        <span id="alert-message"></span
+        ><button class="alert-close" type="button" aria-label="Dismiss">×</button>
+      </div>
+      <section class="intro">
+        <p>
+          This tool helps you validate your resume against job descriptions to ensure you're
+          highlighting the right skills and experiences.
+        </p>
+        <p>Paste your resume text and a job description below to see how well they match.</p>
+      </section>
+      <section class="validator-tool">
+        <div class="input-area">
+          <div class="input-column">
+            <h2>Paste Your Resume Text</h2>
+            <textarea
+              id="resume-text"
+              rows="10"
+              placeholder="Paste your resume text here..."
+              aria-describedby="resume-hint"
+            ></textarea>
+            <p class="sr-only" id="resume-hint">Resume text for job matching</p>
+          </div>
+          <div class="input-column">
+            <h2>Paste Job Description</h2>
+            <textarea
+              id="job-description"
+              rows="10"
+              placeholder="Paste the job description here..."
+              aria-describedby="job-hint"
+            ></textarea>
+            <p class="sr-only" id="job-hint">Job description to match against</p>
+          </div>
+        </div>
+        <button class="btn" id="validate-btn">Validate Resume</button>
+        <div class="results-area hidden" id="results" role="status" aria-live="polite">
+          <h2>Validation Results</h2>
+          <div class="score-card">
+            <h3>Overall Match Score</h3>
+            <div class="score-value" id="overall-score">0%</div>
+            <div class="progress">
+              <div class="progress-bar" id="overall-bar" style="width: 0%"></div>
+            </div>
+          </div>
+          <div class="match-details">
+            <h3>Key Requirements Found in Your Resume</h3>
+            <ul id="found-requirements"></ul>
+            <h3>Missing Requirements</h3>
+            <ul id="missing-requirements"></ul>
+            <h3>Suggested Additions</h3>
+            <ul id="suggestions"></ul>
+          </div>
+        </div>
+      </section>
+      <section class="tips">
+        <h2>Resume Tailoring Tips</h2>
+        <ul>
+          <li>Always customize your resume for each job application</li>
+          <li>Use keywords from the job description in your resume</li>
+          <li>Quantify your achievements with numbers when possible</li>
+          <li>Focus on relevant skills and experiences for the specific role</li>
+          <li>Remove irrelevant information to keep your resume concise</li>
+        </ul>
+      </section>
+    </main>
+    <footer class="main-footer">
+      <div class="container"><p>&copy; 2026 - Resume Job Matcher</p></div>
+    </footer>
+    <script src="/javascripts/validate-app.js"></script>
+    <style>
+      .validator-tool {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        margin-bottom: 40px;
+      }
+
+      .input-area {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .input-column {
+        flex: 1;
+        min-width: 300px;
+      }
+
+      textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: inherit;
+        margin-bottom: 15px;
+      }
+
+      textarea[aria-invalid='true'] {
+        border-color: #e74c3c;
+      }
+
+      .btn {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        align-self: flex-start;
+      }
+
+      .btn:hover:not(:disabled) {
+        background-color: #2980b9;
+      }
+
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .btn.loading::after {
+        content: '';
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        margin-left: 8px;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        vertical-align: middle;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .score-card {
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+      }
+
+      .score-value {
+        font-size: 32px;
+        font-weight: bold;
+        margin: 10px 0;
+      }
+
+      .progress {
+        height: 10px;
+        background-color: #e9ecef;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        height: 100%;
+        border-radius: 5px;
+        transition: width 0.5s ease;
+      }
+
+      .progress-bar.low {
+        background-color: #e74c3c;
+      }
+
+      .progress-bar.medium {
+        background-color: #f39c12;
+      }
+
+      .progress-bar.high {
+        background-color: #2ecc71;
+      }
+
+      .match-details {
+        margin-top: 30px;
+      }
+
+      .match-details h3 {
+        margin-top: 20px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+      }
+
+      .match-details ul {
+        margin-bottom: 20px;
+      }
+
+      .match-details li {
+        margin-bottom: 8px;
+        line-height: 1.5;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+      }
+    </style>
+  </body>
+</html>

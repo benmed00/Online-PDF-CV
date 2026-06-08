@@ -1,7 +1,14 @@
 extends layout
 
+block styles
+  link(rel='stylesheet', href='/stylesheets/analyzer.css')
+
 block content
   h1= title
+
+  #alert-banner.alert-banner(role='alert', aria-live='polite')
+    span#alert-message
+    button.alert-close(type='button', aria-label='Dismiss') ×
 
   section.intro
     p This tool helps you validate your resume against job descriptions to ensure you're highlighting the right skills and experiences.
@@ -11,15 +18,25 @@ block content
     .input-area
       .input-column
         h2 Paste Your Resume Text
-        textarea#resume-text(rows='10', placeholder='Paste your resume text here...')
+        textarea#resume-text(
+          rows='10',
+          placeholder='Paste your resume text here...',
+          aria-describedby='resume-hint'
+        )
+        p#resume-hint.sr-only Resume text for job matching
 
       .input-column
         h2 Paste Job Description
-        textarea#job-description(rows='10', placeholder='Paste the job description here...')
+        textarea#job-description(
+          rows='10',
+          placeholder='Paste the job description here...',
+          aria-describedby='job-hint'
+        )
+        p#job-hint.sr-only Job description to match against
 
     button#validate-btn.btn Validate Resume
 
-    #results.results-area.hidden
+    #results.results-area.hidden(role='status', aria-live='polite')
       h2 Validation Results
 
       .score-card
@@ -48,201 +65,7 @@ block content
       li Remove irrelevant information to keep your resume concise
 
 block scripts
-  script.
-    document.addEventListener('DOMContentLoaded', function () {
-      const validateBtn = document.getElementById('validate-btn');
-      const resumeText = document.getElementById('resume-text');
-      const jobDescription = document.getElementById('job-description');
-      const resultsSection = document.getElementById('results');
-
-      // Score elements
-      const overallScore = document.getElementById('overall-score');
-      const overallBar = document.getElementById('overall-bar');
-
-      // Lists
-      const foundRequirements = document.getElementById('found-requirements');
-      const missingRequirements = document.getElementById('missing-requirements');
-      const suggestions = document.getElementById('suggestions');
-
-      validateBtn.addEventListener('click', function () {
-        const resumeContent = resumeText.value.trim();
-        const jobContent = jobDescription.value.trim();
-
-        if (!resumeContent || !jobContent) {
-          alert('Please paste both your resume text and the job description');
-          return;
-        }
-
-        // Perform validation
-        const results = validateResume(resumeContent, jobContent);
-
-        // Update score
-        overallScore.textContent = `${results.overallScore}%`;
-        overallBar.style.width = `${results.overallScore}%`;
-
-        // Set progress bar color
-        overallBar.className = 'progress-bar';
-        if (results.overallScore < 30) {
-          overallBar.classList.add('low');
-        } else if (results.overallScore < 70) {
-          overallBar.classList.add('medium');
-        } else {
-          overallBar.classList.add('high');
-        }
-
-        // Display found requirements
-        foundRequirements.innerHTML = '';
-        if (results.foundRequirements.length === 0) {
-          const li = document.createElement('li');
-          li.textContent = 'No key requirements found in your resume.';
-          foundRequirements.appendChild(li);
-        } else {
-          results.foundRequirements.forEach(req => {
-            const li = document.createElement('li');
-            li.textContent = req;
-            foundRequirements.appendChild(li);
-          });
-        }
-
-        // Display missing requirements
-        missingRequirements.innerHTML = '';
-        if (results.missingRequirements.length === 0) {
-          const li = document.createElement('li');
-          li.textContent = 'Your resume covers all key requirements!';
-          missingRequirements.appendChild(li);
-        } else {
-          results.missingRequirements.forEach(req => {
-            const li = document.createElement('li');
-            li.textContent = req;
-            missingRequirements.appendChild(li);
-          });
-        }
-
-        // Display suggestions
-        suggestions.innerHTML = '';
-        if (results.suggestions.length === 0) {
-          const li = document.createElement('li');
-          li.textContent = 'Your resume is well-tailored for this job!';
-          suggestions.appendChild(li);
-        } else {
-          results.suggestions.forEach(suggestion => {
-            const li = document.createElement('li');
-            li.textContent = suggestion;
-            suggestions.appendChild(li);
-          });
-        }
-
-        // Show results
-        resultsSection.classList.remove('hidden');
-        resultsSection.scrollIntoView({ behavior: 'smooth' });
-      });
-
-      function validateResume(resumeText, jobDescription) {
-        // This is a simplified validation algorithm
-        // In a real implementation, you would use more sophisticated NLP techniques
-
-        // Extract key requirements from job description
-        const requirements = extractRequirements(jobDescription);
-
-        // Check which requirements are found in the resume
-        const foundReqs = [];
-        const missingReqs = [];
-
-        requirements.forEach(req => {
-          if (resumeText.toLowerCase().includes(req.toLowerCase())) {
-            foundReqs.push(req);
-          } else {
-            missingReqs.push(req);
-          }
-        });
-
-        // Calculate overall score
-        const overallScore = requirements.length > 0 ? Math.round((foundReqs.length / requirements.length) * 100) : 0;
-
-        // Generate suggestions
-        const suggestions = [];
-        if (missingReqs.length > 0) {
-          suggestions.push(`Consider adding these ${missingReqs.length} missing requirements to your resume.`);
-
-          if (missingReqs.length > 3) {
-            suggestions.push('Focus on adding the most important requirements first.');
-          }
-
-          suggestions.push('Use specific examples to demonstrate your experience with these requirements.');
-        }
-
-        if (overallScore < 50) {
-          suggestions.push('Your resume may need significant revisions for this job.');
-        } else if (overallScore < 70) {
-          suggestions.push('Your resume is somewhat aligned with this job but could use improvement.');
-        }
-
-        return {
-          overallScore,
-          foundRequirements: foundReqs,
-          missingRequirements: missingReqs,
-          suggestions,
-        };
-      }
-
-      function extractRequirements(jobDescription) {
-        // This is a simplified extraction algorithm
-        // In a real implementation, you would use more sophisticated NLP techniques
-
-        // Look for common requirement indicators
-        const requirementIndicators = ['required', 'requirements', 'qualifications', 'skills', 'experience', 'proficiency', 'knowledge', 'familiarity', 'ability to', 'expertise', 'competency', 'proficient'];
-
-        // Split job description into sentences
-        const sentences = jobDescription.split(/[.!?]+/);
-
-        // Extract potential requirements
-        const potentialRequirements = [];
-
-        sentences.forEach(sentence => {
-          const lowerSentence = sentence.toLowerCase();
-
-          // Check if sentence contains requirement indicators
-          if (requirementIndicators.some(indicator => lowerSentence.includes(indicator))) {
-            // Extract key phrases (simplified approach)
-            const words = sentence.trim().split(/\s+/);
-
-            if (words.length >= 3 && words.length <= 10) {
-              potentialRequirements.push(sentence.trim());
-            } else if (words.length > 10) {
-              // For longer sentences, try to extract key phrases
-              const keyPhrases = extractKeyPhrases(sentence);
-              potentialRequirements.push(...keyPhrases);
-            }
-          }
-        });
-
-        // Remove duplicates and very short requirements
-        return [...new Set(potentialRequirements)].filter(req => req.split(/\s+/).length >= 2).slice(0, 10); // Limit to top 10 requirements for simplicity
-      }
-
-      function extractKeyPhrases(sentence) {
-        // This is a simplified key phrase extraction
-        // In a real implementation, you would use more sophisticated NLP techniques
-
-        const phrases = [];
-        const words = sentence.trim().split(/\s+/);
-
-        // Look for phrases with technical terms or skill indicators
-        const skillIndicators = ['experience', 'knowledge', 'skill', 'proficiency', 'ability', 'years', 'degree', 'certification', 'familiar', 'expert'];
-
-        for (let i = 0; i < words.length - 2; i++) {
-          if (skillIndicators.some(indicator => words[i].toLowerCase().includes(indicator))) {
-            // Extract a phrase of 3-5 words
-            const phraseLength = Math.min(5, words.length - i);
-            const phrase = words.slice(i, i + phraseLength).join(' ');
-            phrases.push(phrase);
-            i += phraseLength - 1; // Skip ahead
-          }
-        }
-
-        return phrases;
-      }
-    });
+  script(src='/javascripts/validate-app.js')
 
   style.
     .validator-tool {
@@ -272,6 +95,10 @@ block scripts
       margin-bottom: 15px;
     }
 
+    textarea[aria-invalid='true'] {
+      border-color: #e74c3c;
+    }
+
     .btn {
       background-color: #3498db;
       color: white;
@@ -283,8 +110,32 @@ block scripts
       align-self: flex-start;
     }
 
-    .btn:hover {
+    .btn:hover:not(:disabled) {
       background-color: #2980b9;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn.loading::after {
+      content: '';
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      margin-left: 8px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     .hidden {
@@ -348,4 +199,15 @@ block scripts
     .match-details li {
       margin-bottom: 8px;
       line-height: 1.5;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
     }

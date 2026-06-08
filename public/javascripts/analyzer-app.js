@@ -1,7 +1,7 @@
 /**
  * Resume Analyzer — UI controller with API integration and live validation.
  */
-/* global ResumeAnalyzer */
+/* global ResumeAnalyzer, ApiClient */
 (function () {
   const SAMPLE_RESUME =
     'Jane Developer — jane.dev@email.com | (555) 123-4567 | linkedin.com/in/janedev\n\n' +
@@ -16,7 +16,7 @@
     'SKILLS\nJavaScript, Python, React, Node, AWS, Docker, Kubernetes, Git, DevOps, SQL, NoSQL\n\n' +
     'EDUCATION\nB.S. Computer Science — State University | 2016';
 
-  const LIMITS = { minChars: 80, minWords: 40 };
+  const LIMITS = { minChars: 80, maxChars: 20000, minWords: 40 };
 
   const LOCAL_EXTENSIONS = new Set(['.txt', '.md', '.markdown', '.html', '.htm', '.csv', '.rtf']);
 
@@ -105,13 +105,19 @@
   }
 
   function setLoading(loading) {
-    els['analyze-btn'].disabled = loading;
     els['analyze-btn'].classList.toggle('loading', loading);
+    els['analyze-btn'].setAttribute('aria-busy', loading ? 'true' : 'false');
+    if (!loading) {
+      updateLiveStats();
+    } else {
+      els['analyze-btn'].disabled = true;
+    }
   }
 
   function setUploading(loading) {
     els['upload-btn'].disabled = loading;
     els['upload-btn'].classList.toggle('loading', loading);
+    els['upload-btn'].setAttribute('aria-busy', loading ? 'true' : 'false');
     els['drop-zone'].classList.toggle('uploading', loading);
   }
 
@@ -143,9 +149,11 @@
       return;
     }
     el.className = `upload-status ${type || ''}`.trim();
-    el.innerHTML = subline
-      ? `<strong>${message}</strong><span class="upload-subline">${subline}</span>`
-      : message;
+    const safeMessage = escapeHtml(message);
+    const safeSubline = subline ? escapeHtml(subline) : '';
+    el.innerHTML = safeSubline
+      ? `<strong>${safeMessage}</strong><span class="upload-subline">${safeSubline}</span>`
+      : safeMessage;
     el.classList.remove('hidden');
   }
 
@@ -175,27 +183,11 @@
     const formData = new FormData();
     formData.append('file', file);
 
-    let response;
-    try {
-      response = await fetch('/api/extract-resume', { method: 'POST', body: formData });
-    } catch {
-      return null;
-    }
-
-    let data;
-    try {
-      data = await response.json();
-    } catch {
-      return null;
-    }
-
-    if (response.ok && data.success) return data;
-
-    if ([400, 403, 422, 503, 504].includes(response.status)) {
-      throw new Error(data.message || data.error || 'Could not process this file.');
-    }
-
-    return null;
+    const data = await ApiClient.fetchApi('/api/extract-resume', {
+      method: 'POST',
+      body: formData,
+    });
+    return data;
   }
 
   function applyExtractedText(text, sourceLabel, security) {
@@ -224,6 +216,11 @@
       return;
     }
 
+    if (serverConfig.maxUploadMb && file.size > serverConfig.maxUploadMb * 1024 * 1024) {
+      showAlert(`File exceeds the ${serverConfig.maxUploadMb} MB limit. Choose a smaller file.`);
+      return;
+    }
+
     const ext = getExtension(file.name);
     setUploading(true);
     const needsServerScan = !LOCAL_EXTENSIONS.has(ext);
@@ -245,14 +242,8 @@
         };
       } else {
         const apiResult = await extractFileViaApi(file);
-        if (apiResult) {
-          text = apiResult.text;
-          security = apiResult.security;
-        } else {
-          throw new Error(
-            'This format requires the server upload API. Restart the dev server or paste text manually.'
-          );
-        }
+        text = apiResult.text;
+        security = apiResult.security;
       }
 
       text = text.trim();
@@ -270,8 +261,12 @@
       showAlert(alertMsg, 'success');
       setTimeout(hideAlert, 3500);
     } catch (err) {
-      setUploadStatus(err.message, 'error');
-      showAlert(err.message || 'Upload failed. Please try again.');
+      const msg =
+        err instanceof ApiClient.NetworkError
+          ? err.message
+          : err.message || 'Upload failed. Please try again.';
+      setUploadStatus(msg, 'error');
+      showAlert(msg);
     } finally {
       setUploading(false);
       if (els['file-upload']) els['file-upload'].value = '';
@@ -308,8 +303,15 @@
       statusEl.className = 'stat-pill valid';
     }
 
+    const tooShort = chars > 0 && chars < LIMITS.minChars;
+    const tooLong = chars > LIMITS.maxChars;
+    const canAnalyze = chars >= LIMITS.minChars && chars <= LIMITS.maxChars;
+
+    els['analyze-btn'].disabled = !canAnalyze;
+    els['resume-text'].setAttribute('aria-invalid', tooShort || tooLong ? 'true' : 'false');
+
     updateLiveHints(text, chars, words);
-    els['drop-zone'].classList.toggle('has-error', chars > 0 && chars < LIMITS.minChars);
+    els['drop-zone'].classList.toggle('has-error', tooShort || tooLong);
     syncDropZoneState();
   }
 
@@ -323,6 +325,12 @@
     if (chars < LIMITS.minChars) {
       hints.push({
         msg: `Add ${LIMITS.minChars - chars} more characters for analysis.`,
+        cls: 'warn',
+      });
+    }
+    if (chars > LIMITS.maxChars) {
+      hints.push({
+        msg: `Resume exceeds ${LIMITS.maxChars.toLocaleString()} character limit — shorten before analyzing.`,
         cls: 'warn',
       });
     }
@@ -452,8 +460,8 @@
       <div class="practice-check ${c.passed ? 'passed' : 'failed'}">
         <span class="check-icon">${c.passed ? '✓' : '!'}</span>
         <div>
-          <div class="check-label">${c.label}</div>
-          <div class="check-hint">${c.hint}</div>
+          <div class="check-label">${escapeHtml(c.label)}</div>
+          <div class="check-hint">${escapeHtml(c.hint)}</div>
         </div>
       </div>`
       )
@@ -463,8 +471,8 @@
       .map(
         (s, i) => `
       <li style="animation-delay:${i * 0.05}s">
-        <span class="suggestion-type ${s.type}">${s.type}</span>
-        <span>${s.text}</span>
+        <span class="suggestion-type ${escapeHtml(s.type)}">${escapeHtml(s.type)}</span>
+        <span>${escapeHtml(s.text)}</span>
       </li>`
       )
       .join('');
@@ -476,31 +484,11 @@
   }
 
   async function analyzeViaApi(text, targetRole, useAi) {
-    let response;
-    try {
-      response = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, targetRole, useAi }),
-      });
-    } catch {
-      return null;
-    }
-
-    let data;
-    try {
-      data = await response.json();
-    } catch {
-      return null;
-    }
-
-    if (response.ok) return data;
-
-    if (response.status === 400 && (data.error || data.validation)) {
-      throw new Error(data.error || data.message || 'Invalid resume text');
-    }
-
-    return null;
+    return ApiClient.fetchApi('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, targetRole, useAi }),
+    });
   }
 
   function analyzeLocally(text, targetRole) {
@@ -524,17 +512,34 @@
     setLoading(true);
     try {
       const useAi = serverConfig.openAi && els['use-ai']?.checked !== false;
-      let data = await analyzeViaApi(text, targetRole, useAi);
-      if (!data) {
+      let data;
+      let usedLocalFallback = false;
+
+      try {
+        data = await analyzeViaApi(text, targetRole, useAi);
+      } catch (err) {
+        if (err instanceof ApiClient.ApiError && err.statusCode === 400) {
+          throw err;
+        }
         data = analyzeLocally(text, targetRole);
         data.aiInsights = { available: false, skipped: true, reason: 'local_only' };
+        usedLocalFallback = true;
       }
+
       renderResults(data);
-      const doneMsg = data.aiInsights?.available
-        ? 'Analysis complete with AI coach insights!'
-        : 'Analysis complete!';
-      showAlert(doneMsg, 'success');
-      setTimeout(hideAlert, 3000);
+
+      if (usedLocalFallback) {
+        const fallbackMsg =
+          'Server unavailable — showing offline analysis. Start the dev server for full features.';
+        showAlert(fallbackMsg, 'warning');
+        setTimeout(hideAlert, 5000);
+      } else {
+        const doneMsg = data.aiInsights?.available
+          ? 'Analysis complete with AI coach insights!'
+          : 'Analysis complete!';
+        showAlert(doneMsg, 'success');
+        setTimeout(hideAlert, 3000);
+      }
     } catch (err) {
       showAlert(err.message || 'Something went wrong. Please try again.');
     } finally {

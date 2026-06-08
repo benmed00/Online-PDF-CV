@@ -38,6 +38,7 @@
             <li><a href="/docs">API Docs</a></li>
             <li><a href="/analyzer">Resume Analyzer</a></li>
             <li><a href="/compare">Compare Versions</a></li>
+            <li><a href="/validate">Job Matcher</a></li>
           </ul>
         </nav>
       </div>
@@ -52,7 +53,8 @@
             href="/api/docs"
             >Interactive Swagger UI</a
           >
-          (Express server only — analyzer POST routes require<code>npm start</code>)
+          (local Express only). Analyzer APIs need a Node runtime —<code>npm start</code>locally, or
+          the<code>api</code>Cloud Function on Firebase.
         </p>
       </section>
       <section class="usage">
@@ -67,7 +69,10 @@
             <a href="/resume/default" target="_blank">default</a> -<code>GET /resume/default</code>
           </li>
         </ul>
-        <p>If a requested version doesn't exist, the default resume will be served.</p>
+        <p>
+          On Express, if a requested version doesn't exist, the default resume is served. On
+          Firebase Hosting, unknown versions return 404 (no fallback).
+        </p>
       </section>
       <section class="api-endpoints">
         <h2>API Endpoints</h2>
@@ -96,7 +101,10 @@
         <pre><code>curl -O https://yourdomain.com/resume/technical</code></pre>
         <h3>JavaScript - Download Resume</h3>
         <pre><code>fetch('https://yourdomain.com/resume/executive')
-  .then(response => response.blob())
+  .then(response => {
+    if (!response.ok) throw new Error(`Download failed (${response.status})`);
+    return response.blob();
+  })
   .then(blob => {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -105,11 +113,15 @@
     document.body.appendChild(a);
     a.click();
     a.remove();
-  });
+  })
+  .catch(err => console.error('Resume download error:', err.message));
 </code></pre>
         <h3>JavaScript - Get Available Versions</h3>
         <pre><code>fetch('/api/versions')
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) throw new Error(`API error (${response.status})`);
+    return response.json();
+  })
   .then(data => {
     console.log('Available versions:', data.versions);
     console.log('Total versions:', data.count);
@@ -123,7 +135,8 @@
       link.target = '_blank';
       container.appendChild(link);
     });
-  });
+  })
+  .catch(err => console.error('Versions API error:', err.message));
 </code></pre>
       </section>
       <section class="adding-versions">

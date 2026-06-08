@@ -1,0 +1,23 @@
+extends layout
+
+block content
+  section.error-page
+    h1= title
+    p The page you requested could not be found.
+    p
+      a(href='/') Return to Home
+
+  style.
+    .error-page {
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+
+    .error-page a {
+      color: #3498db;
+      text-decoration: none;
+    }
+
+    .error-page a:hover {
+      text-decoration: underline;
+    }

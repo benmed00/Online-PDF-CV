@@ -57,6 +57,19 @@ function buildStaticSite() {
     metaUrl: `${SITE_URL}/compare`,
   });
 
+  writePage(path.join('validate', 'index.html'), 'validate.pug', {
+    title: 'Resume Job Matcher',
+    metaDescription: 'Validate your resume against a job description to improve keyword alignment',
+    metaKeywords: 'resume validation, job matcher, resume tailoring, ATS keywords',
+    metaUrl: `${SITE_URL}/validate`,
+  });
+
+  writePage('404.html', '404.pug', {
+    title: 'Page Not Found',
+    metaDescription: 'The requested page could not be found',
+    metaUrl: `${SITE_URL}/404`,
+  });
+
   const apiPayload = {
     versions,
     count: versions.length,
@@ -80,6 +93,8 @@ function buildStaticSite() {
     path.join('docs', 'index.html'),
     path.join('analyzer', 'index.html'),
     path.join('compare', 'index.html'),
+    path.join('validate', 'index.html'),
+    '404.html',
     path.join('api', 'versions.json'),
     path.join('api', 'openapi.yaml'),
   ];

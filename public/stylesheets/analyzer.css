@@ -449,6 +449,12 @@ body:has(.analyzer-page) main.container {
   color: #991b1b;
 }
 
+.alert-banner.warning {
+  background: #fffbeb;
+  border-color: var(--analyzer-warning);
+  color: #92400e;
+}
+
 .alert-banner.success {
   background: #ecfdf5;
   border: 1px solid #a7f3d0;

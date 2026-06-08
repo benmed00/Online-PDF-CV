@@ -2,4 +2,39 @@ extends resume-layout
 
 block content
   .resume-viewport
-    iframe(src='/resume.pdf#navpanes=0&toolbar=0&view=FitH', title=title, frameborder='0')
+    iframe#resume-frame(src='/resume#navpanes=0&toolbar=0&view=FitH', title=title, frameborder='0')
+    p#resume-error.hidden.resume-error(role='alert') Could not load the resume PDF. Please try again later.
+
+block scripts
+  script.
+    document.addEventListener('DOMContentLoaded', function () {
+      const frame = document.getElementById('resume-frame');
+      const errorEl = document.getElementById('resume-error');
+      let loaded = false;
+
+      frame.addEventListener('load', function () {
+        loaded = true;
+        errorEl.classList.add('hidden');
+      });
+
+      setTimeout(function () {
+        if (!loaded) {
+          errorEl.classList.remove('hidden');
+        }
+      }, 8000);
+    });
+
+  style.
+    .resume-error {
+      text-align: center;
+      padding: 2rem;
+      color: #991b1b;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 4px;
+      margin-top: 1rem;
+    }
+
+    .resume-error.hidden {
+      display: none;
+    }

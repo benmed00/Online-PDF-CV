@@ -9,6 +9,8 @@ describe('build-static script', () => {
     path.join('docs', 'index.html'),
     path.join('analyzer', 'index.html'),
     path.join('compare', 'index.html'),
+    path.join('validate', 'index.html'),
+    '404.html',
     path.join('api', 'versions.json'),
     path.join('api', 'openapi.yaml'),
   ];
@@ -24,7 +26,7 @@ describe('build-static script', () => {
   test('should generate home page with full-screen resume viewer', () => {
     const html = fs.readFileSync(path.join(publicDir, 'index.html'), 'utf8');
     expect(html).toContain('BEN-YAKOUB');
-    expect(html).toContain('resume.pdf');
+    expect(html).toContain('/resume');
     expect(html).toContain('resume-page');
     expect(html).not.toContain('main-header');
   });
