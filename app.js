@@ -9,6 +9,8 @@ const fs = require('fs');
 const cookieParser = require('cookie-parser');
 const multer = require('multer');
 const helmet = require('helmet');
+const swaggerUi = require('swagger-ui-express');
+const yaml = require('yaml');
 const logger = require('./utils/logger');
 const AppError = require('./utils/AppError');
 const errorHandler = require('./utils/errorHandler');
@@ -29,6 +31,9 @@ const {
   isConfigured: isOpenAiConfigured,
 } = require('./utils/openAiResumeInsights');
 const indexRouter = require('./routes/index');
+
+const OPENAPI_PATH = path.join(__dirname, 'openapi', 'openapi.yaml');
+const openapiDocument = yaml.parse(fs.readFileSync(OPENAPI_PATH, 'utf8'));
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -138,6 +143,18 @@ app.post('/api/extract-resume', upload.single('file'), function (req, res, next)
     .catch(next);
 });
 
+app.get('/api/openapi.yaml', function (req, res) {
+  res.type('application/yaml').sendFile(OPENAPI_PATH);
+});
+
+app.use(
+  '/api/docs',
+  swaggerUi.serve,
+  swaggerUi.setup(openapiDocument, {
+    customSiteTitle: 'Online-PDF-CV API',
+  })
+);
+
 app.use(function (err, req, res, next) {
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
@@ -228,6 +245,8 @@ if (require.main === module) {
     console.log('🌍 Local URL: http://localhost:' + port);
     console.log('📄 Your resume is available at: http://localhost:' + port);
     console.log('📚 API documentation: http://localhost:' + port + '/docs');
+    console.log('📋 OpenAPI spec: http://localhost:' + port + '/api/openapi.yaml');
+    console.log('🔧 Swagger UI: http://localhost:' + port + '/api/docs');
     console.log('🔍 Resume analyzer: http://localhost:' + port + '/analyzer');
     console.log('⚖️  Resume comparison: http://localhost:' + port + '/compare');
     console.log('📊 API versions: http://localhost:' + port + '/api/versions');

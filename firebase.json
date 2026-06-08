@@ -18,6 +18,15 @@
     ],
     "headers": [
       {
+        "source": "/api/openapi.yaml",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/yaml; charset=utf-8"
+          }
+        ]
+      },
+      {
         "source": "**/*.@(pdf)",
         "headers": [
           {

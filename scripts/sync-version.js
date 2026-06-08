@@ -6,6 +6,7 @@ const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
 const PKG_PATH = path.join(ROOT, 'package.json');
+const OPENAPI_BASE_PATH = path.join(ROOT, 'openapi', 'openapi.base.yaml');
 
 function run(command) {
   return execSync(command, {
@@ -23,6 +24,56 @@ function writePackageVersion(version) {
   const pkg = JSON.parse(fs.readFileSync(PKG_PATH, 'utf8'));
   pkg.version = version;
   fs.writeFileSync(PKG_PATH, `${JSON.stringify(pkg, null, 2)}\n`, 'utf8');
+  syncOpenApiVersion(version);
+}
+
+function readOpenApiVersion() {
+  const content = fs.readFileSync(OPENAPI_BASE_PATH, 'utf8');
+  const match = content.match(/^ {2}version:\s*(\S+)/m);
+  if (!match) {
+    throw new Error('Could not parse info.version from openapi/openapi.base.yaml');
+  }
+  return match[1];
+}
+
+function writeOpenApiVersion(version) {
+  const content = fs.readFileSync(OPENAPI_BASE_PATH, 'utf8');
+  const updated = content.replace(/^ {2}version:\s*\S+/m, `  version: ${version}`);
+  if (updated === content) {
+    throw new Error('Could not update info.version in openapi/openapi.base.yaml');
+  }
+  fs.writeFileSync(OPENAPI_BASE_PATH, updated, 'utf8');
+}
+
+function syncOpenApiVersion(version) {
+  if (!fs.existsSync(OPENAPI_BASE_PATH)) {
+    return;
+  }
+  const current = readOpenApiVersion();
+  if (current !== version) {
+    writeOpenApiVersion(version);
+    console.log(`Updated openapi/openapi.base.yaml: ${current} -> ${version}`);
+    try {
+      require('./generate-openapi').generateOpenApiSpec();
+    } catch {
+      console.warn('Run npm run openapi:generate to refresh openapi/openapi.yaml');
+    }
+  }
+}
+
+function assertOpenApiVersionMatchesPackage() {
+  if (!fs.existsSync(OPENAPI_BASE_PATH)) {
+    return;
+  }
+  const pkgVersion = readPackageVersion();
+  const openApiVersion = readOpenApiVersion();
+  if (pkgVersion !== openApiVersion) {
+    console.error(
+      `version:check failed — openapi info.version is ${openApiVersion}, but package.json is ${pkgVersion}.`
+    );
+    console.error('Run: npm run version:sync');
+    process.exit(1);
+  }
 }
 
 function parseVersion(version) {
@@ -145,11 +196,19 @@ function main() {
   const requiredBump = args.explicitBump || getRequiredBump(commits);
 
   if (!requiredBump) {
+    if (args.check) {
+      assertOpenApiVersionMatchesPackage();
+    }
     console.log(
       latestTag
         ? `No commits since ${latestTag}. package.json stays at ${currentVersion}.`
         : `No semver tag found. package.json stays at ${currentVersion}.`
     );
+    if (args.check) {
+      console.log(
+        `version:check passed — OpenAPI info.version matches package.json (${currentVersion}).`
+      );
+    }
     return;
   }
 
@@ -164,8 +223,12 @@ function main() {
       process.exit(1);
     }
 
+    assertOpenApiVersionMatchesPackage();
     console.log(
       `version:check passed — ${currentVersion} satisfies ${requiredBump} bump since ${latestTag || 'start'}.`
+    );
+    console.log(
+      `version:check passed — OpenAPI info.version matches package.json (${currentVersion}).`
     );
     return;
   }
@@ -204,4 +267,7 @@ module.exports = {
   getLatestTag,
   getRequiredBump,
   parseVersion,
+  readOpenApiVersion,
+  syncOpenApiVersion,
+  assertOpenApiVersionMatchesPackage,
 };

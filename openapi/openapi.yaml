@@ -1,0 +1,633 @@
+openapi: 3.1.0
+info:
+  title: Online-PDF-CV API
+  version: 4.1.0
+  description: >
+    API for hosting PDF resumes online with version discovery and optional
+    resume analysis tools.
+
+
+    **Deployment model:** Firebase static hosting serves `GET /api/versions`,
+    `GET /api/openapi.yaml`,
+
+    and PDF delivery routes. Analyzer endpoints (`POST /api/analyze`, `POST
+    /api/extract-resume`,
+
+    `GET /api/analyzer/config`) require the Express server (`npm start`).
+    Interactive Swagger UI is
+
+    available at `/api/docs` on Express only.
+  contact:
+    name: Jacob Son
+    email: ben94med@gmail.com
+    url: https://github.com/benmed00/Online-PDF-CV
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  x-environment-variables:
+    OPENAI_API_KEY: Optional — enables AI Coach insights on POST /api/analyze
+    OPENAI_MODEL: Optional — OpenAI model override (default gpt-4o-mini)
+    VIRUSTOTAL_API_KEY: Optional — malware scan on POST /api/extract-resume uploads
+externalDocs:
+  description: Human-readable API reference
+  url: https://github.com/benmed00/Online-PDF-CV/blob/master/wiki/API-Reference.md
+servers:
+  - url: /
+    description: Current host (same-origin — Express local or Firebase static)
+  - url: https://benyakoub-cv.firebaseapp.com
+    description: Production Firebase (explicit base URL)
+tags:
+  - name: Versions
+    description: Discover available resume PDF versions
+  - name: Resume
+    description: Download resume PDF files
+  - name: Analyzer
+    description: Resume text analysis and file extraction (Express server only)
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+        - status
+        - statusCode
+        - message
+      properties:
+        status:
+          type: string
+          enum:
+            - error
+        statusCode:
+          type: integer
+        message:
+          type: string
+        stack:
+          type: string
+          description: Present only when NODE_ENV=development
+    VersionsResponse:
+      type: object
+      required:
+        - versions
+        - count
+        - baseUrl
+      properties:
+        versions:
+          type: array
+          items:
+            type: string
+        count:
+          type: integer
+          minimum: 0
+        baseUrl:
+          type: string
+          format: uri
+    AnalyzerConfigResponse:
+      type: object
+      required:
+        - openAi
+        - virusTotal
+        - maxUploadMb
+        - supportedUploads
+      properties:
+        openAi:
+          type: boolean
+          description: True when OPENAI_API_KEY is configured
+        virusTotal:
+          type: boolean
+          description: True when VIRUSTOTAL_API_KEY is configured
+        maxUploadMb:
+          type: number
+          example: 10
+        supportedUploads:
+          type: array
+          items:
+            type: string
+          description: File extensions accepted by POST /api/extract-resume
+    AnalyzeRequest:
+      type: object
+      required:
+        - text
+      properties:
+        text:
+          type: string
+          minLength: 80
+          maxLength: 20000
+          description: Plain-text resume content
+        targetRole:
+          type: string
+          enum:
+            - engineering
+            - management
+            - general
+          default: general
+        useAi:
+          type: boolean
+          default: true
+          description: Request OpenAI insights when server key is configured
+    ValidationIssue:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    ValidationResult:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationIssue'
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationIssue'
+        charCount:
+          type: integer
+        wordCount:
+          type: integer
+    KeywordMatches:
+      type: object
+      properties:
+        technical:
+          type: array
+          items:
+            type: string
+        soft:
+          type: array
+          items:
+            type: string
+        management:
+          type: array
+          items:
+            type: string
+    ScoreGrade:
+      type: string
+      enum:
+        - excellent
+        - good
+        - fair
+        - needs-work
+    AnalysisResults:
+      type: object
+      properties:
+        technicalScore:
+          type: integer
+          minimum: 0
+          maximum: 100
+        softSkillsScore:
+          type: integer
+          minimum: 0
+          maximum: 100
+        managementScore:
+          type: integer
+          minimum: 0
+          maximum: 100
+        overallScore:
+          type: integer
+          minimum: 0
+          maximum: 100
+        practicesScore:
+          type: integer
+          minimum: 0
+          maximum: 100
+        grade:
+          $ref: '#/components/schemas/ScoreGrade'
+        practicesGrade:
+          $ref: '#/components/schemas/ScoreGrade'
+        matches:
+          $ref: '#/components/schemas/KeywordMatches'
+        charCount:
+          type: integer
+        wordCount:
+          type: integer
+    BestPracticeCheck:
+      type: object
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        passed:
+          type: boolean
+        score:
+          type: integer
+        hint:
+          type: string
+        found:
+          type: array
+          items:
+            type: string
+    Suggestion:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - improvement
+            - tip
+            - balance
+            - practice
+            - role
+            - success
+        text:
+          type: string
+    AnalyzeMeta:
+      type: object
+      properties:
+        analyzedAt:
+          type: string
+          format: date-time
+        targetRole:
+          type: string
+          enum:
+            - engineering
+            - management
+            - general
+    AiInsights:
+      type: object
+      description: OpenAI coach output or skip/error state
+      properties:
+        available:
+          type: boolean
+        skipped:
+          type: boolean
+        reason:
+          type: string
+        error:
+          type: string
+        summary:
+          type: string
+        strengths:
+          type: array
+          items:
+            type: string
+        improvements:
+          type: array
+          items:
+            type: string
+        atsTips:
+          type: array
+          items:
+            type: string
+        missingKeywords:
+          type: array
+          items:
+            type: string
+        scoreEstimate:
+          type:
+            - integer
+            - 'null'
+          minimum: 1
+          maximum: 100
+        model:
+          type: string
+        targetRole:
+          type: string
+        generatedAt:
+          type: string
+          format: date-time
+    AnalyzeSuccessResponse:
+      type: object
+      required:
+        - success
+        - validation
+        - results
+        - checks
+        - suggestions
+        - meta
+        - aiInsights
+      properties:
+        success:
+          type: boolean
+          enum:
+            - true
+        validation:
+          $ref: '#/components/schemas/ValidationResult'
+        results:
+          $ref: '#/components/schemas/AnalysisResults'
+        checks:
+          type: array
+          items:
+            $ref: '#/components/schemas/BestPracticeCheck'
+        suggestions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Suggestion'
+        meta:
+          $ref: '#/components/schemas/AnalyzeMeta'
+        aiInsights:
+          $ref: '#/components/schemas/AiInsights'
+    AnalyzeValidationError:
+      type: object
+      required:
+        - success
+        - error
+      properties:
+        success:
+          type: boolean
+          enum:
+            - false
+        error:
+          type: string
+        validation:
+          $ref: '#/components/schemas/ValidationResult'
+    ExtractSource:
+      type: object
+      properties:
+        filename:
+          type: string
+        extension:
+          type: string
+        kind:
+          type: string
+        fileType:
+          type: string
+        charCount:
+          type: integer
+    SecurityStats:
+      type: object
+      properties:
+        malicious:
+          type: integer
+        suspicious:
+          type: integer
+        harmless:
+          type: integer
+        undetected:
+          type: integer
+        timeout:
+          type: integer
+    SecurityReport:
+      type: object
+      description: VirusTotal scan result or skip state
+      properties:
+        scanned:
+          type: boolean
+        skipped:
+          type: boolean
+        reason:
+          type: string
+        provider:
+          type: string
+        sha256:
+          type: string
+        verdict:
+          type: string
+          enum:
+            - clean
+            - suspicious
+            - malicious
+        stats:
+          $ref: '#/components/schemas/SecurityStats'
+        engines:
+          type: integer
+        source:
+          type: string
+        permalink:
+          type: string
+          format: uri
+    ExtractSuccessResponse:
+      type: object
+      required:
+        - success
+        - text
+        - source
+        - security
+      properties:
+        success:
+          type: boolean
+          enum:
+            - true
+        text:
+          type: string
+        source:
+          $ref: '#/components/schemas/ExtractSource'
+        security:
+          $ref: '#/components/schemas/SecurityReport'
+paths:
+  /api/versions:
+    get:
+      operationId: listResumeVersions
+      tags:
+        - Versions
+      summary: List available resume versions
+      description: Returns JSON with version slugs and a base URL for PDF downloads.
+      responses:
+        '200':
+          description: Version list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionsResponse'
+              example:
+                versions:
+                  - default
+                  - technical
+                  - executive
+                count: 3
+                baseUrl: https://benyakoub-cv.firebaseapp.com/resume/
+        '404':
+          description: Endpoint not available on static hosting without Express
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/openapi.yaml:
+    get:
+      operationId: getOpenApiSpec
+      tags:
+        - Versions
+      summary: OpenAPI specification document
+      description: Machine-readable API contract (YAML). Served statically on Firebase
+        after build.
+      responses:
+        '200':
+          description: OpenAPI 3.1 YAML document
+          content:
+            application/yaml:
+              schema:
+                type: string
+        '404':
+          description: Spec file not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/analyzer/config:
+    get:
+      operationId: getAnalyzerConfig
+      tags:
+        - Analyzer
+      summary: Analyzer capability flags
+      description: Reports which optional server features are configured. Requires
+        Express server.
+      x-express-only: true
+      responses:
+        '200':
+          description: Analyzer configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyzerConfigResponse'
+        '404':
+          description: Not available on Firebase static hosting (Express only)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/analyze:
+    post:
+      operationId: analyzeResume
+      tags:
+        - Analyzer
+      summary: Analyze resume text
+      description: Runs keyword scoring, best-practice checks, and suggestions.
+        Optionally calls OpenAI when OPENAI_API_KEY is set and useAi is true.
+        Requires Express server.
+      x-express-only: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnalyzeRequest'
+      responses:
+        '200':
+          description: Analysis completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyzeSuccessResponse'
+        '400':
+          description: Validation error or invalid target role
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/AnalyzeValidationError'
+                  - $ref: '#/components/schemas/ErrorResponse'
+  /api/extract-resume:
+    post:
+      operationId: extractResumeFromUpload
+      tags:
+        - Analyzer
+      summary: Upload and extract resume text
+      description: Accepts a CV file (max 10 MB), optionally scans with VirusTotal,
+        then extracts plain text. Requires Express server.
+      x-express-only: true
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: CV document (supported extensions listed in GET
+                    /api/analyzer/config)
+      responses:
+        '200':
+          description: Text extracted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtractSuccessResponse'
+        '400':
+          description: Missing file, unsupported type, or file too large
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Upload blocked by VirusTotal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Could not extract enough text from file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: VirusTotal scan failed or rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '504':
+          description: VirusTotal scan timed out
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /resume:
+    get:
+      operationId: downloadDefaultResume
+      tags:
+        - Resume
+      summary: Download default resume PDF
+      description: Returns the default resume PDF. Falls back to public/resume.pdf if
+        no version file exists.
+      responses:
+        '200':
+          description: PDF file
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Resume not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /resume/{version}:
+    get:
+      operationId: downloadResumeVersion
+      tags:
+        - Resume
+      summary: Download a specific resume version
+      description: Returns a versioned PDF from public/resumes/{version}.pdf, or the
+        default PDF as fallback.
+      parameters:
+        - name: version
+          in: path
+          required: true
+          description: Version slug (lowercase letters, numbers, hyphens)
+          schema:
+            type: string
+            pattern: ^[a-z0-9-]+$
+          examples:
+            technical:
+              value: technical
+            executive:
+              value: executive
+      responses:
+        '200':
+          description: PDF file
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Invalid version slug
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Resume not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

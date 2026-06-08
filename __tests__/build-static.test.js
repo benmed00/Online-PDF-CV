@@ -10,6 +10,7 @@ describe('build-static script', () => {
     path.join('analyzer', 'index.html'),
     path.join('compare', 'index.html'),
     path.join('api', 'versions.json'),
+    path.join('api', 'openapi.yaml'),
   ];
 
   beforeAll(() => {
@@ -36,5 +37,11 @@ describe('build-static script', () => {
     expect(payload.versions).toContain('default');
     expect(payload.count).toBeGreaterThan(0);
     expect(payload.baseUrl).toContain('/resume/');
+  });
+
+  test('should copy OpenAPI spec to public/api', () => {
+    const spec = fs.readFileSync(path.join(publicDir, 'api', 'openapi.yaml'), 'utf8');
+    expect(spec).toContain('openapi: 3.1');
+    expect(spec).toContain('Online-PDF-CV API');
   });
 });

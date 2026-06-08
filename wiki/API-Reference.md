@@ -3,7 +3,8 @@
 Base URL (local): `http://localhost:3000`  
 Base URL (production): `https://benyakoub-cv.firebaseapp.com`
 
-Interactive docs: `/docs`
+**Canonical contract:** [`GET /api/openapi.yaml`](/api/openapi.yaml) (OpenAPI 3.1, generated from JSDoc)  
+Human docs: `/docs` · Interactive Swagger UI: `/api/docs` (Express server only) · Maintainer guide: [docs/openapi.md](../docs/openapi.md)
 
 ## List resume versions
 

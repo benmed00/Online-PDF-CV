@@ -64,11 +64,20 @@ npm run add-version -- /path/to/your.pdf technical
 | `/`                 | Home — embedded default PDF resume                       |
 | `/resume`           | Default PDF download/view                                |
 | `/resume/:version`  | Named version (slug: lowercase letters, digits, hyphens) |
-| `/docs`             | Interactive API documentation                            |
+| `/docs`             | Human-readable API documentation                         |
+| `/api/openapi.yaml` | OpenAPI 3.1 specification (canonical contract)           |
+| `/api/docs`         | Swagger UI (Express server only)                         |
 | `/analyzer`         | Paste resume text → keyword analysis                     |
 | `/compare`          | Side-by-side PDF comparison                              |
 | `/api/versions`     | JSON versions API                                        |
-| `POST /api/analyze` | Resume analysis API (JSON body)                          |
+| `POST /api/analyze` | Resume analysis API (JSON body; Express only)            |
+
+Example — fetch the OpenAPI spec:
+
+```bash
+curl -s http://localhost:3000/api/openapi.yaml | head
+curl -s http://localhost:3000/api/versions
+```
 
 ---
 

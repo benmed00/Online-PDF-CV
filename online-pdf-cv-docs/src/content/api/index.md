@@ -1,88 +1,70 @@
 # Documentation de l'API - Online-PDF-CV
 
-Cette documentation décrit les points de terminaison de l'API disponibles pour l'application Online-PDF-CV.
+Contrat canonique : **`GET /api/openapi.yaml`** (OpenAPI 3.1).  
+Documentation interactive (serveur Express uniquement) : **`GET /api/docs`** (Swagger UI).
 
 ## Points de terminaison
 
-### 1. Obtenir le PDF du CV
+### 1. Lister les versions du CV
 
-- **URL** : `/api/resume`
+- **URL** : `/api/versions`
 - **Méthode** : `GET`
-- **Description** : Récupère le fichier PDF du CV.
-- **Exemple de requête** :
+- **Description** : Retourne la liste des slugs de versions PDF disponibles.
 
 ```
-GET /api/resume HTTP/1.1
+GET /api/versions HTTP/1.1
 Host: benyakoub-cv.firebaseapp.com
 ```
 
-- **Exemple de réponse** :
+```json
+{
+  "versions": ["default", "technical"],
+  "count": 2,
+  "baseUrl": "https://benyakoub-cv.firebaseapp.com/resume/"
+}
+```
+
+### 2. Télécharger le CV (PDF)
+
+- **URL** : `/resume` ou `/resume/{version}`
+- **Méthode** : `GET`
+- **Description** : Récupère le fichier PDF du CV (version par défaut ou nommée).
+
+```
+GET /resume/technical HTTP/1.1
+Host: benyakoub-cv.firebaseapp.com
+```
 
 ```
 HTTP/1.1 200 OK
 Content-Type: application/pdf
-
-[Contenu du fichier PDF]
 ```
 
-### 2. Obtenir des informations sur l'application
+### 3. Analyseur (serveur Express uniquement)
 
-- **URL** : `/api/info`
-- **Méthode** : `GET`
-- **Description** : Récupère des informations sur l'application, y compris la version et les fonctionnalités.
-- **Exemple de requête** :
+Ces routes nécessitent `npm start` (non disponibles sur Firebase statique seul) :
 
-```
-GET /api/info HTTP/1.1
-Host: benyakoub-cv.firebaseapp.com
-```
+| Route                  | Méthode | Description                     |
+| ---------------------- | ------- | ------------------------------- |
+| `/api/analyzer/config` | GET     | Indicateurs OpenAI / VirusTotal |
+| `/api/analyze`         | POST    | Analyse de texte de CV (JSON)   |
+| `/api/extract-resume`  | POST    | Upload + extraction de texte    |
 
-- **Exemple de réponse** :
+Voir le fichier OpenAPI pour les schémas complets des requêtes et réponses.
 
-```
-HTTP/1.1 200 OK
-Content-Type: application/json
+## Erreurs JSON
 
+Les routes `/api/*` renvoient des erreurs au format :
+
+```json
 {
-  "version": "1.0.0",
-  "features": [
-    "Hébergement de CV PDF",
-    "Accès via URL",
-    "Intégration Google Analytics"
-  ]
+  "status": "error",
+  "statusCode": 404,
+  "message": "Can't find /api/unknown on this server!"
 }
 ```
 
-## Erreurs
+## Notes
 
-### 1. Erreur 404 - Non trouvé
-
-- **Description** : Le point de terminaison demandé n'existe pas.
-- **Exemple de réponse** :
-
-```
-HTTP/1.1 404 Not Found
-Content-Type: application/json
-
-{
-  "error": "Not Found"
-}
-```
-
-### 2. Erreur 500 - Erreur interne du serveur
-
-- **Description** : Une erreur s'est produite sur le serveur.
-- **Exemple de réponse** :
-
-```
-HTTP/1.1 500 Internal Server Error
-Content-Type: application/json
-
-{
-  "error": "Internal Server Error"
-}
-```
-
-## Conclusion
-
-Cette API permet d'accéder facilement au CV PDF et aux informations de l'application. Assurez-vous de gérer les erreurs correctement lors de l'utilisation des points de terminaison.
+- Les anciens points `/api/resume` et `/api/info` **n'existent plus** — utilisez `/resume` et `/api/versions`.
+- Référence anglaise : [wiki/API-Reference.md](https://github.com/benmed00/Online-PDF-CV/blob/master/wiki/API-Reference.md)

@@ -93,18 +93,19 @@ flowchart TB
 
 The [`wiki/`](../wiki/) folder contains Markdown formatted for [GitHub Wiki](https://github.com/benmed00/Online-PDF-CV/wiki). Publish with [Sync-Wiki.md](../wiki/Sync-Wiki.md).
 
-| Wiki page                                                 | Topic                    |
-| --------------------------------------------------------- | ------------------------ |
-| [Home](../wiki/Home.md)                                   | Overview and quick start |
-| [Getting Started](../wiki/Getting-Started.md)             | Install and first deploy |
-| [Development](../wiki/Development.md)                     | Architecture and scripts |
-| [Testing and Usability](../wiki/Testing-and-Usability.md) | Jest, Playwright, media  |
-| [Deployment](../wiki/Deployment.md)                       | Firebase Hosting         |
-| [API Reference](../wiki/API-Reference.md)                 | HTTP endpoints           |
-| [Troubleshooting](../wiki/Troubleshooting.md)             | Common issues            |
-| [Project History](../wiki/Project-History.md)             | Timeline and refactor    |
-| [Releases](../wiki/Releases.md)                           | Tagged releases          |
-| [Sync Wiki](../wiki/Sync-Wiki.md)                         | Publish wiki to GitHub   |
+| Wiki page                                                 | Topic                                      |
+| --------------------------------------------------------- | ------------------------------------------ |
+| [Home](../wiki/Home.md)                                   | Overview and quick start                   |
+| [Getting Started](../wiki/Getting-Started.md)             | Install and first deploy                   |
+| [Development](../wiki/Development.md)                     | Architecture and scripts                   |
+| [Testing and Usability](../wiki/Testing-and-Usability.md) | Jest, Playwright, media                    |
+| [Deployment](../wiki/Deployment.md)                       | Firebase Hosting                           |
+| [API Reference](../wiki/API-Reference.md)                 | HTTP endpoints (narrative)                 |
+| [OpenAPI guide](openapi.md)                               | JSDoc spec, Swagger UI, traceability (#34) |
+| [Troubleshooting](../wiki/Troubleshooting.md)             | Common issues                              |
+| [Project History](../wiki/Project-History.md)             | Timeline and refactor                      |
+| [Releases](../wiki/Releases.md)                           | Tagged releases                            |
+| [Sync Wiki](../wiki/Sync-Wiki.md)                         | Publish wiki to GitHub                     |
 
 ---
 

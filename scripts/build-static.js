@@ -9,6 +9,7 @@ const { getResumeVersions } = require('../utils/getResumeVersions');
 const ROOT = path.join(__dirname, '..');
 const VIEWS_DIR = path.join(ROOT, 'views');
 const PUBLIC_DIR = path.join(ROOT, 'public');
+const OPENAPI_SOURCE = path.join(ROOT, 'openapi', 'openapi.yaml');
 const SITE_URL = (process.env.SITE_URL || 'https://benyakoub-cv.firebaseapp.com').replace(
   /\/$/,
   ''
@@ -71,12 +72,16 @@ function buildStaticSite() {
   );
   console.log('Built api/versions.json');
 
+  fs.copyFileSync(OPENAPI_SOURCE, path.join(apiDir, 'openapi.yaml'));
+  console.log('Built api/openapi.yaml');
+
   return [
     'index.html',
     path.join('docs', 'index.html'),
     path.join('analyzer', 'index.html'),
     path.join('compare', 'index.html'),
     path.join('api', 'versions.json'),
+    path.join('api', 'openapi.yaml'),
   ];
 }
 

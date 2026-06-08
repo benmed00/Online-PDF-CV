@@ -42,16 +42,16 @@ By participating in this project, you agree to abide by our [Code of Conduct](CO
 
 This project enforces formatting and linting **before every commit** and runs CI checks **before every push**.
 
-| Hook / command             | What it runs                                                                                  |
-| -------------------------- | --------------------------------------------------------------------------------------------- |
-| **pre-commit** (automatic) | `lint-staged` → Prettier + ESLint fix on staged files, then full-repo `format:check` + `lint` |
-| **commit-msg** (automatic) | Conventional commit format (`feat:`, `fix:`, `docs:`, …)                                      |
-| **pre-push** (automatic)   | `npm run validate` — same gate as CI build job                                                |
-| `npm run format`           | Format entire repository (use before large doc changes)                                       |
-| `npm run precommit`        | Manual pre-commit pipeline without committing                                                 |
-| `npm run validate`         | `format:check` + `lint` + `audit:check` + `test:coverage` + `build`                           |
-| `npm run validate:full`    | `validate` + Playwright e2e                                                                   |
-| `npm run test:all`         | `validate:full` + publish Playwright media to `docs/assets/`                                  |
+| Hook / command             | What it runs                                                                                           |
+| -------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **pre-commit** (automatic) | `lint-staged` → Prettier + ESLint fix on staged files, then full-repo `format:check` + `lint`          |
+| **commit-msg** (automatic) | Conventional commit format (`feat:`, `fix:`, `docs:`, …)                                               |
+| **pre-push** (automatic)   | `npm run validate` — same gate as CI build job                                                         |
+| `npm run format`           | Format entire repository (use before large doc changes)                                                |
+| `npm run precommit`        | Manual pre-commit pipeline without committing                                                          |
+| `npm run validate`         | `format:check` + `lint` + `audit:check` + `version:check` + `openapi:lint` + `test:coverage` + `build` |
+| `npm run validate:full`    | `validate` + Playwright e2e                                                                            |
+| `npm run test:all`         | `validate:full` + publish Playwright media to `docs/assets/`                                           |
 
 ```bash
 # Fix formatting across the repo
@@ -96,8 +96,9 @@ npm run test:all         # Full pipeline + media artifacts
 When adding new features or making changes, please update the documentation accordingly:
 
 - Update the README.md if necessary
+- **When changing API routes or request/response shapes**, update [`openapi/jsdoc-routes.js`](openapi/jsdoc-routes.js) and schemas in [`openapi/openapi.base.yaml`](openapi/openapi.base.yaml), then run `npm run openapi:validate` (see [docs/openapi.md](docs/openapi.md))
 - Add comments to your code
-- Update any relevant documentation files
+- Update any relevant documentation files (including [wiki/API-Reference.md](wiki/API-Reference.md))
 
 ## License
 

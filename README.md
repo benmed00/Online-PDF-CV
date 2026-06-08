@@ -31,14 +31,16 @@ Deploy: `npm run build` → `npm run deploy` ([details](wiki/Deployment.md)).
 
 ## What you get
 
-| Route              | Purpose                                                                |
-| ------------------ | ---------------------------------------------------------------------- |
-| `/`                | Home — embedded PDF + navigation                                       |
-| `/resume/:version` | Versioned PDF (`technical`, `executive`, …)                            |
-| `/api/versions`    | JSON list of available versions                                        |
-| `/docs`            | Interactive API documentation                                          |
-| `/analyzer`        | Keyword scoring, upload extraction, optional VirusTotal + OpenAI coach |
-| `/compare`         | Side-by-side PDF comparison                                            |
+| Route               | Purpose                                                                    |
+| ------------------- | -------------------------------------------------------------------------- |
+| `/`                 | Home — embedded PDF + navigation                                           |
+| `/resume/:version`  | Versioned PDF (`technical`, `executive`, …)                                |
+| `/api/versions`     | JSON list of available versions                                            |
+| `/api/openapi.yaml` | OpenAPI 3.1 spec (JSDoc-generated; see [docs/openapi.md](docs/openapi.md)) |
+| `/api/docs`         | Swagger UI (Express server only)                                           |
+| `/docs`             | Human-readable API documentation                                           |
+| `/analyzer`         | Keyword scoring, upload extraction, optional VirusTotal + OpenAI coach     |
+| `/compare`          | Side-by-side PDF comparison                                                |
 
 **Stack:** Node.js · Express 5 · Pug · Firebase · Jest · Playwright · Winston · Helmet
 

@@ -1,0 +1,14 @@
+extends:
+  - recommended
+
+rules:
+  operation-operationId: error
+  operation-description: error
+  info-license: error
+  no-unused-components: warn
+  security-defined: off
+  no-server-example.com: off
+
+apis:
+  main:
+    root: openapi/openapi.yaml
