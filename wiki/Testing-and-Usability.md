@@ -27,6 +27,16 @@ npm run test:coverage
 
 Coverage targets core server files in `app.js`, `routes/`, and `utils/`.
 
+OpenAPI contract tests:
+
+```bash
+npm run openapi:validate   # generate spec from JSDoc + Redocly lint
+npm test -- __tests__/openapi.test.js __tests__/generate-openapi.test.js
+npx playwright test e2e/openapi.spec.js
+```
+
+See [docs/openapi.md](https://github.com/benmed00/Online-PDF-CV/blob/master/docs/openapi.md) for the full traceability index.
+
 ## Playwright
 
 ```bash
@@ -42,19 +52,21 @@ Configuration: `playwright.config.js`
 | ------------------------------- | ------------------------------------------------------------------ |
 | `e2e/usability.spec.js`         | Home, docs, basic analyzer, compare, navigation, API smoke         |
 | `e2e/analyzer-workflow.spec.js` | Full analyzer path + edge cases (~24 scenarios × desktop + mobile) |
+| `e2e/openapi.spec.js`           | OpenAPI YAML, Swagger UI shell, Try it out → Execute (GET/POST)    |
 
 ### Usability scenarios covered
 
-| Scenario         | Description                                                     |
-| ---------------- | --------------------------------------------------------------- |
-| Home page        | PDF iframe, title, navigation                                   |
-| API docs         | Endpoint documentation visible                                  |
-| Analyzer (basic) | Paste resume text, view scores                                  |
-| Analyzer (full)  | Config API, upload, VT mock, tabs, AI toggle, drag-drop, errors |
-| Compare          | Side-by-side PDF comparison                                     |
-| Versions API     | JSON payload validation                                         |
-| PDF endpoints    | `/resume` and `/resume/default`                                 |
-| Navigation flow  | Home → Docs → Analyzer → Compare → Home                         |
+| Scenario          | Description                                                     |
+| ----------------- | --------------------------------------------------------------- |
+| Home page         | PDF iframe, title, navigation                                   |
+| API docs          | Endpoint documentation visible                                  |
+| Analyzer (basic)  | Paste resume text, view scores                                  |
+| Analyzer (full)   | Config API, upload, VT mock, tabs, AI toggle, drag-drop, errors |
+| Compare           | Side-by-side PDF comparison                                     |
+| Versions API      | JSON payload validation                                         |
+| OpenAPI / Swagger | YAML spec, interactive docs, live API calls from Swagger UI     |
+| PDF endpoints     | `/resume` and `/resume/default`                                 |
+| Navigation flow   | Home → Docs → Analyzer → Compare → Home                         |
 
 The `@live` analyzer test calls real OpenAI when `OPENAI_API_KEY` is set and skips if quota/billing blocks the API.
 
@@ -127,6 +139,7 @@ GitHub Actions (`.github/workflows/ci.yml`) runs on pull requests and `master`:
 
 - Prettier check
 - ESLint
+- OpenAPI generate + Redocly lint (`openapi:generate`, `openapi:lint` inside `validate`)
 - Jest with coverage
 - Static build
 - Playwright e2e (desktop + mobile, including analyzer workflow)

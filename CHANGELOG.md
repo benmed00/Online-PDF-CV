@@ -6,6 +6,14 @@ All notable changes to Online-PDF-CV. For the full timeline and refactor context
 
 ## Unreleased
 
+### Added
+
+- OpenAPI 3.1 API contract ([`openapi/openapi.yaml`](openapi/openapi.yaml)) with JSDoc path generation (`npm run openapi:generate`) — closes [#34](https://github.com/benmed00/Online-PDF-CV/issues/34)
+- Swagger UI at `/api/docs` (Express) and static `GET /api/openapi.yaml` on Firebase after `npm run build`
+- Redocly lint in `npm run validate`; maintainer guide [docs/openapi.md](docs/openapi.md)
+- Playwright `e2e/openapi.spec.js` — Swagger Try it out → Execute with HTTP assertions
+- `@prettier/plugin-pug` for formatting Pug templates in pre-commit
+
 ---
 
 ## Version 4.1.0 — Analyzer & quality gates (2026-06)

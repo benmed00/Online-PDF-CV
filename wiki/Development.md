@@ -2,17 +2,18 @@
 
 ## Project layout
 
-| Path         | Purpose                          |
-| ------------ | -------------------------------- |
-| `app.js`     | Express application and routes   |
-| `bin/www`    | HTTP server entrypoint           |
-| `routes/`    | Page routers                     |
-| `views/`     | Pug templates                    |
-| `utils/`     | Logging, errors, resume helpers  |
-| `public/`    | Static assets and generated HTML |
-| `scripts/`   | CLI utilities and static build   |
-| `e2e/`       | Playwright usability tests       |
-| `__tests__/` | Jest unit/integration tests      |
+| Path         | Purpose                                         |
+| ------------ | ----------------------------------------------- |
+| `app.js`     | Express application and routes                  |
+| `bin/www`    | HTTP server entrypoint                          |
+| `routes/`    | Page routers                                    |
+| `views/`     | Pug templates                                   |
+| `utils/`     | Logging, errors, resume helpers                 |
+| `public/`    | Static assets and generated HTML                |
+| `scripts/`   | CLI utilities and static build                  |
+| `e2e/`       | Playwright usability tests                      |
+| `openapi/`   | OpenAPI base YAML, JSDoc routes, generated spec |
+| `__tests__/` | Jest unit/integration tests                     |
 
 ## Common scripts
 
@@ -23,11 +24,14 @@ npm run build          # Pre-render Pug views for Firebase
 npm test               # Jest unit tests
 npm run test:coverage  # Jest with coverage thresholds
 npm run test:e2e       # Playwright usability tests
-npm run validate       # CI build job parity (format, lint, audit, coverage, build)
-npm run validate:full  # validate + Playwright e2e
-npm run test:all       # validate:full + publish e2e media to docs/assets/
-npm run lint           # ESLint
-npm run format         # Prettier
+npm run openapi:generate  # Merge openapi/jsdoc-routes.js + base → openapi/openapi.yaml
+npm run openapi:lint      # Redocly validate generated spec
+npm run openapi:validate  # generate + lint (use before editing API routes)
+npm run validate          # CI parity: format, lint, audit, version, openapi, tests, build
+npm run validate:full     # validate + Playwright e2e
+npm run test:all          # validate:full + publish e2e media to docs/assets/
+npm run lint              # ESLint
+npm run format            # Prettier
 ```
 
 Husky runs **pre-commit** (format + lint), **commit-msg** (conventional commits), and **pre-push** (`validate`) automatically after `npm install`.
@@ -47,8 +51,11 @@ Firebase serves static files from `public/`. Run `npm run build` before deploy t
 - `public/analyzer/index.html`
 - `public/compare/index.html`
 - `public/api/versions.json`
+- `public/api/openapi.yaml` (copied from generated `openapi/openapi.yaml`)
 
-Firebase rewrites map `/resume/:version` to PDF files.
+Firebase rewrites map `/resume/:version` to PDF files. `GET /api/openapi.yaml` is served directly from `public/api/` (no rewrite).
+
+When changing API routes, update `openapi/jsdoc-routes.js` and run `npm run openapi:validate` — see [docs/openapi.md](https://github.com/benmed00/Online-PDF-CV/blob/master/docs/openapi.md).
 
 ## Environment variables
 

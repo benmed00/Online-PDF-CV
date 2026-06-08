@@ -40,7 +40,7 @@ Firebase Hosting serves **static files only**:
 
 - No server-side Pug rendering in production
 - No Express middleware (Helmet, custom error pages) on Firebase — rely on pre-built HTML and CDN headers
-- API routes are static JSON files generated at build time (`/api/versions.json`)
+- API routes are static files generated at build time (`/api/versions.json`, `/api/openapi.yaml`)
 
 Dynamic features (e.g. `POST /api/analyze`) work on Express locally; on pure static Firebase, analyzer uses client-side logic or needs Cloud Functions (not currently deployed for analyzer).
 
@@ -51,7 +51,7 @@ Dynamic features (e.g. `POST /api/analyze`) work on Express locally; on pure sta
 Deploying without `npm run build` causes:
 
 - Missing or stale `/docs`, `/analyzer`, `/compare` pages
-- Outdated `versions.json`
+- Outdated `versions.json` or `openapi.yaml`
 - Broken navigation on production
 
 Always:
