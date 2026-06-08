@@ -19,8 +19,11 @@ An Express.js web application that serves a PDF resume with multiple versions. T
   - index.html: HTML wrapper with Firebase SDK integration and PDF embedding
   - stylesheets/: CSS styling for the application interface
   - favicon.ico: Browser tab icon
-- **routes/**: Express.js route definitions (index.js, users.js)
-- **views/**: Jade template files (layout.jade, index.jade, error.jade)
+- **routes/**: Express route definitions (`index.js`, `api.js`)
+- **views/**: Pug templates (`layout.pug`, `index.pug`, `analyzer.pug`, …)
+- **functions/**: Firebase Cloud Function `api` (production analyzer APIs)
+- **docs/**, **wiki/**: Maintainer and user documentation
+- **openapi/**: OpenAPI 3.1 spec (JSDoc-generated)
 - **.github/workflows/**: CI/CD automation for Firebase deployment
 - **.firebase/**: Firebase deployment cache and hosting configuration
 
@@ -36,24 +39,20 @@ An Express.js web application that serves a PDF resume with multiple versions. T
 ### Language & Runtime
 
 **Primary Language**: JavaScript (Node.js)
-**Runtime Version**: Node.js >=16.17.1 (specified in engines field)
-**Framework**: Express.js 4.20.0
+**Runtime Version**: Node.js >=22.0.0 (see `package.json` engines and `.nvmrc`)
+**Framework**: Express.js 5.x
 **Package Manager**: npm
-**Template Engine**: Jade 1.11.0 (legacy template system)
-**Deployment Target**: Firebase Hosting static platform
+**Template Engine**: Pug 3.x
+**Deployment Target**: Firebase Hosting (static) + Cloud Functions (`api` for analyzer APIs)
+**Package version**: 4.1.0
 
 ### Dependencies Analysis
 
-**Production Dependencies**:
+**Production Dependencies** (see `package.json`): express 5, pug, helmet, winston, multer, swagger-ui-express, yaml, dotenv, officeparser, tesseract.js, …
 
-- express: ^4.20.0 - Web framework providing robust routing and middleware architecture
-- jade: ~1.11.0 - Template engine for server-rendered views (minimally utilized)
-- cookie-parser: ^1.4.6 - HTTP cookie parsing middleware for session management
-- debug: ^4.3.4 - Debugging utility with namespace support for selective debugging
-- http-errors: ^2.0.0 - HTTP-friendly error objects with status codes
-- morgan: ^1.10.1 - HTTP request logger middleware for access logging
+**Development Dependencies**: jest, playwright, eslint, prettier, @redocly/cli, swagger-jsdoc, husky, …
 
-**Development Dependencies**: None explicitly defined
+**Documentation**: README, `docs/`, `wiki/`, `functions/README.md`, OpenAPI at `/api/openapi.yaml`
 
 **Client-Side Dependencies**:
 
@@ -67,13 +66,14 @@ An Express.js web application that serves a PDF resume with multiple versions. T
 - **Port Assignment**: Uses environment variable PORT or defaults to 3000
 - **Error Handling**: Custom error middleware with development/production mode detection
 - **Static File Serving**: Express static middleware for public directory
-- **Route Override**: Wildcard route (\*) to serve resume.pdf for all paths
+- **Routes**: Explicit page, PDF, and API routes in `app.js` and `routes/`
 - **HTTP Server**: Node.js native http module with custom error handlers
 
 **Firebase Hosting**:
 
 - **Public Directory**: ./public
-- **Rewrite Rules**: All requests rewritten to /index.html
+- **Rewrite Rules**: PDF paths, `/api/versions`, analyzer APIs → Cloud Function `api` (see `firebase.json`)
+- **Static build**: `npm run build` pre-renders Pug to `public/*.html`
 - **Ignore Patterns**: Excludes firebase.json, hidden files, and node_modules
 - **Cache Control**: Default Firebase caching strategy
 
@@ -97,8 +97,9 @@ npm start  # Runs node ./bin/www
 # Login to Firebase
 firebase login
 
-# Deploy to Firebase
-npm run deploy  # Runs firebase deploy
+# Deploy to Firebase (hosting + analyzer APIs)
+npm run build
+firebase deploy --only functions,hosting
 ```
 
 **Automated Deployment**:
