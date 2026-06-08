@@ -103,6 +103,10 @@ Copy `.env.example` to `.env` and set:
 
 Restart the server after changing `.env`. Never commit `.env` to git.
 
+**Firebase vs Express:** On [Firebase Hosting](https://benyakoub-cv.firebaseapp.com/analyzer), the analyzer UI runs with **client-side scoring only** — no VirusTotal scan, no OpenAI coach, no server upload extraction. Run `npm start` locally (or self-host Express) for the full workflow: upload → VirusTotal → extract → analyze → AI Coach.
+
+If AI Coach shows a quota/billing message, add credits at [platform.openai.com](https://platform.openai.com/) — local keyword scores still work.
+
 ### Add your resume
 
 1. Replace `public/resume.pdf` with your PDF
@@ -117,8 +121,9 @@ npm run dev            # Start server (app.js)
 npm run build          # Build static HTML for Firebase
 npm test               # Jest unit tests
 npm run test:coverage  # Jest with coverage
-npm run test:e2e       # Playwright usability tests
-npm run test:all       # test → build → e2e → publish docs/assets
+npm run test:e2e       # Playwright usability tests (all specs)
+npm run test:e2e:analyzer  # Analyzer workflow + edge cases only
+npm run test:all       # validate:full + publish e2e media to docs/assets/
 npm run test:e2e:report  # Open Playwright HTML report
 npm run lint           # ESLint
 npm run format         # Prettier
@@ -140,11 +145,14 @@ See [wiki/Deployment.md](wiki/Deployment.md) for CI/CD and rewrite rules.
 
 ## Documentation
 
-| Resource                             | Topic                                                                                          |
-| ------------------------------------ | ---------------------------------------------------------------------------------------------- |
-| [`docs/`](docs/README.md)            | **Maintainer hub** — roadmap, backlog, how-it-works, best practices, known issues, maintenance |
-| [How to use](docs/how-to-use.md)     | Scripts, deploy, local dev                                                                     |
-| [How it works](docs/how-it-works.md) | Architecture and request flow                                                                  |
+| Resource                                   | Topic                                                                                        |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| [`docs/`](docs/README.md)                  | **Maintainer hub** — index, roadmap, backlog, how-it-works, best practices, known issues     |
+| [Project history](docs/project-history.md) | Timeline from 2019 through the platform hardening refactor                                   |
+| [Releases](docs/releases/README.md)        | Tagged releases including [`working-messy-code`](docs/releases/working-messy-code.md) (2023) |
+| [How to use](docs/how-to-use.md)           | Scripts, deploy, local dev                                                                   |
+| [How it works](docs/how-it-works.md)       | Architecture and request flow                                                                |
+| [CHANGELOG](CHANGELOG.md)                  | Version-by-version release notes                                                             |
 
 ### Wiki (user guides)
 
@@ -156,6 +164,8 @@ See [wiki/Deployment.md](wiki/Deployment.md) for CI/CD and rewrite rules.
 | [Testing and Usability](wiki/Testing-and-Usability.md) | Jest, Playwright, media assets |
 | [Deployment](wiki/Deployment.md)                       | Firebase Hosting               |
 | [API Reference](wiki/API-Reference.md)                 | HTTP endpoints                 |
+| [Project History](wiki/Project-History.md)             | Refactor timeline and releases |
+| [Releases](wiki/Releases.md)                           | Tagged release index           |
 | [Troubleshooting](wiki/Troubleshooting.md)             | Common issues                  |
 | [Sync Wiki](wiki/Sync-Wiki.md)                         | Publish to GitHub Wiki         |
 

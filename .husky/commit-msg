@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+set -e
+
+commit_msg=$(cat "$1")
+first_line=$(printf '%s\n' "$commit_msg" | head -n1)
+
+case "$first_line" in
+  Merge* | Revert*)
+    exit 0
+    ;;
+esac
+
+if ! printf '%s\n' "$first_line" | grep -qE '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore)(\([a-z0-9./-]+\))?!?: .{3,}'; then
+  echo "commit-msg: invalid commit message format."
+  echo ""
+  echo "Use conventional commits, e.g.:"
+  echo "  feat(analyzer): add keyword scoring"
+  echo "  fix: handle missing resume slug"
+  echo "  docs: update quality gate workflow"
+  echo ""
+  echo "Allowed types: feat, fix, docs, style, refactor, perf, test, build, ci, chore"
+  exit 1
+fi
+
+echo "commit-msg: format OK."

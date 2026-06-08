@@ -91,7 +91,28 @@ async function getAiResumeInsights(text, targetRole = 'general') {
   if (!response.ok) {
     const detail = await response.text();
     logger.warn('OpenAI resume insights failed', { status: response.status, detail });
-    throw new Error('AI analysis is temporarily unavailable. Local results are still shown.');
+
+    let userMessage = 'AI analysis is temporarily unavailable. Local results are still shown.';
+    try {
+      const parsed = JSON.parse(detail);
+      const apiMessage = parsed?.error?.message || '';
+      if (response.status === 401) {
+        userMessage =
+          'AI coach unavailable: invalid OPENAI_API_KEY. Check your key in .env and restart the server.';
+      } else if (response.status === 429 && /quota|billing|insufficient/i.test(apiMessage)) {
+        userMessage =
+          'AI coach unavailable: OpenAI quota or billing limit reached. Add credits at platform.openai.com — local scores still work.';
+      } else if (response.status === 429) {
+        userMessage =
+          'AI coach unavailable: OpenAI rate limit reached. Try again in a minute — local scores still work.';
+      } else if (apiMessage) {
+        userMessage = `AI coach unavailable: ${apiMessage}`;
+      }
+    } catch {
+      /* keep default message */
+    }
+
+    throw new Error(userMessage);
   }
 
   const payload = await response.json();

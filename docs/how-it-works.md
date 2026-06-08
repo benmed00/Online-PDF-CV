@@ -162,3 +162,16 @@ Online-PDF-CV/
 ├── docs/                  # This documentation set
 └── wiki/                  # GitHub Wiki source
 ```
+
+---
+
+## Related documentation
+
+| Document                                                             | Topic                            |
+| -------------------------------------------------------------------- | -------------------------------- |
+| [Documentation index](README.md)                                     | Full docs hub                    |
+| [Project history](project-history.md)                                | Timeline and refactor context    |
+| [Release: working-messy-code](releases/working-messy-code.md)        | Pre-refactor architecture (2023) |
+| [Release: platform hardening](releases/platform-hardening-v3.6.2.md) | Current era release notes        |
+| [How to use](how-to-use.md)                                          | Scripts and workflows            |
+| [Wiki: Development](../wiki/Development.md)                          | GitHub Wiki mirror               |

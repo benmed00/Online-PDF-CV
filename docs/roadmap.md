@@ -69,11 +69,12 @@ Release planning for Online-PDF-CV. Aligned with milestone **v3.6.2 — Platform
 
 ## Version history
 
-| Version | Theme                                                   |
-| ------- | ------------------------------------------------------- |
-| 3.6.2   | Platform hardening, Express 5, Playwright, static build |
-| 3.x     | Multi-version resumes, analyzer, compare, API docs      |
-| 2.x     | Firebase Hosting, basic PDF serve                       |
-| 1.x     | Initial Express + Jade CV host                          |
+| Version                      | Theme                                                   |
+| ---------------------------- | ------------------------------------------------------- |
+| 3.6.2                        | Platform hardening, Express 5, Playwright, static build |
+| 4.0.0                        | Multi-version resumes, analyzer, compare, API docs      |
+| 3.6.2 (`working-messy-code`) | Minimal Firebase PDF host (2023-06-02 tag)              |
+| 1.x                          | Initial Express + Jade CV host                          |
 
-See [CHANGELOG.md](../CHANGELOG.md) for detailed release notes.
+See [CHANGELOG.md](../CHANGELOG.md) for detailed release notes.  
+See [project-history.md](project-history.md) and [releases/](releases/README.md) for the full timeline and tagged release documentation.

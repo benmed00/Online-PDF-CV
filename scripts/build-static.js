@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const pug = require('pug');
+const prettier = require('prettier');
 const { getResumeVersions } = require('../utils/getResumeVersions');
 
 const ROOT = path.join(__dirname, '..');
@@ -69,6 +70,37 @@ function buildStaticSite() {
     'utf8'
   );
   console.log('Built api/versions.json');
+
+  return [
+    'index.html',
+    path.join('docs', 'index.html'),
+    path.join('analyzer', 'index.html'),
+    path.join('compare', 'index.html'),
+    path.join('api', 'versions.json'),
+  ];
 }
 
-buildStaticSite();
+async function formatBuiltOutputs(relativePaths) {
+  for (const relativePath of relativePaths) {
+    const filePath = path.join(PUBLIC_DIR, relativePath);
+    const input = fs.readFileSync(filePath, 'utf8');
+    const config = (await prettier.resolveConfig(filePath)) || {};
+    const output = await prettier.format(input, { ...config, filepath: filePath });
+    fs.writeFileSync(filePath, output, 'utf8');
+  }
+  console.log('Formatted static build outputs with Prettier');
+}
+
+async function main() {
+  const outputs = buildStaticSite();
+  await formatBuiltOutputs(outputs);
+}
+
+if (require.main === module) {
+  main().catch(error => {
+    console.error(error);
+    process.exit(1);
+  });
+}
+
+module.exports = { buildStaticSite, formatBuiltOutputs, main };

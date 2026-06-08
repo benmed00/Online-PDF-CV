@@ -31,25 +31,32 @@ Coverage targets core server files in `app.js`, `routes/`, and `utils/`.
 
 ```bash
 npm run test:e2e
+npm run test:e2e:analyzer   # full /analyzer workflow (SEO, upload, VT, AI tabs, edge cases)
 npm run test:e2e:ui      # interactive runner
 npm run test:e2e:report  # HTML report with traces
 ```
 
 Configuration: `playwright.config.js`
 
-Tests: `e2e/usability.spec.js`
+| Spec file                       | Scenarios                                                          |
+| ------------------------------- | ------------------------------------------------------------------ |
+| `e2e/usability.spec.js`         | Home, docs, basic analyzer, compare, navigation, API smoke         |
+| `e2e/analyzer-workflow.spec.js` | Full analyzer path + edge cases (~24 scenarios × desktop + mobile) |
 
 ### Usability scenarios covered
 
-| Scenario        | Description                             |
-| --------------- | --------------------------------------- |
-| Home page       | PDF iframe, title, navigation           |
-| API docs        | Endpoint documentation visible          |
-| Analyzer        | Paste resume text, view scores          |
-| Compare         | Side-by-side PDF comparison             |
-| Versions API    | JSON payload validation                 |
-| PDF endpoints   | `/resume` and `/resume/default`         |
-| Navigation flow | Home → Docs → Analyzer → Compare → Home |
+| Scenario         | Description                                                     |
+| ---------------- | --------------------------------------------------------------- |
+| Home page        | PDF iframe, title, navigation                                   |
+| API docs         | Endpoint documentation visible                                  |
+| Analyzer (basic) | Paste resume text, view scores                                  |
+| Analyzer (full)  | Config API, upload, VT mock, tabs, AI toggle, drag-drop, errors |
+| Compare          | Side-by-side PDF comparison                                     |
+| Versions API     | JSON payload validation                                         |
+| PDF endpoints    | `/resume` and `/resume/default`                                 |
+| Navigation flow  | Home → Docs → Analyzer → Compare → Home                         |
+
+The `@live` analyzer test calls real OpenAI when `OPENAI_API_KEY` is set and skips if quota/billing blocks the API.
 
 ---
 
@@ -116,15 +123,14 @@ After Playwright runs, raw artifacts are also available at:
 
 ## CI
 
-GitHub Actions (`.github/workflows/ci.yml`) runs on `master`:
+GitHub Actions (`.github/workflows/ci.yml`) runs on pull requests and `master`:
 
 - Prettier check
 - ESLint
-- Jest
+- Jest with coverage
 - Static build
-- Coverage upload
-
-Add Playwright to CI by extending the workflow with `npx playwright install chromium` and `npm run test:e2e`.
+- Playwright e2e (desktop + mobile, including analyzer workflow)
+- Coverage upload (when `CODECOV_TOKEN` is configured)
 
 ## Related pages
 

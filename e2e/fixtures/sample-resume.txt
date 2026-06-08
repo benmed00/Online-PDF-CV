@@ -1,0 +1,15 @@
+Jane Developer — jane.dev@email.com | (555) 123-4567 | linkedin.com/in/janedev
+
+SUMMARY
+Experienced software engineer with JavaScript, React, Node.js, AWS, Docker, and CI/CD expertise.
+
+EXPERIENCE
+Senior Software Engineer — TechCorp | 2020 – Present
+• Led a team of 6 engineers, built microservices reducing latency by 40%
+• Implemented API integrations and SQL optimizations improving performance 35%
+
+SKILLS
+JavaScript, Python, React, Node, AWS, leadership, communication, project management
+
+EDUCATION
+B.S. Computer Science — State University | 2016

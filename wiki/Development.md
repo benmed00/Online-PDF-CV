@@ -23,10 +23,14 @@ npm run build          # Pre-render Pug views for Firebase
 npm test               # Jest unit tests
 npm run test:coverage  # Jest with coverage thresholds
 npm run test:e2e       # Playwright usability tests
-npm run test:all       # test → build → e2e → publish artifacts
+npm run validate       # CI build job parity (format, lint, audit, coverage, build)
+npm run validate:full  # validate + Playwright e2e
+npm run test:all       # validate:full + publish e2e media to docs/assets/
 npm run lint           # ESLint
 npm run format         # Prettier
 ```
+
+Husky runs **pre-commit** (format + lint), **commit-msg** (conventional commits), and **pre-push** (`validate`) automatically after `npm install`.
 
 ## Architecture
 
@@ -79,3 +83,6 @@ Winston writes to:
 - [[Testing-and-Usability]]
 - [[Deployment]]
 - [[API-Reference]]
+- [[Project-History]]
+- [[Releases]]
+- [Maintainer docs — how it works](https://github.com/benmed00/Online-PDF-CV/blob/master/docs/how-it-works.md)

@@ -65,6 +65,28 @@ Express logs:
 
 Run with `NODE_ENV=development` for verbose Winston output.
 
+---
+
+## Analyzer / AI Coach
+
+### AI checkbox visible but Coach tab empty
+
+1. Confirm `OPENAI_API_KEY` in `.env` and restart the server (`npm start`).
+2. Check server logs for OpenAI HTTP status.
+3. **429 quota/billing:** add credits at [platform.openai.com](https://platform.openai.com/) — local scores still work.
+4. **401 invalid key:** rotate the key if it was ever exposed; update `.env`.
+
+### Upload / VirusTotal not working on production site
+
+Firebase Hosting serves static HTML only. Word/PDF upload scanning and extraction need Express:
+
+```bash
+npm start
+# open http://localhost:3000/analyzer
+```
+
+See [known-issues.md](../docs/known-issues.md) for Firebase vs Express analyzer limits.
+
 ## Related pages
 
 - [[Testing-and-Usability]]

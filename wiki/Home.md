@@ -35,6 +35,8 @@ Open http://localhost:3000
 | [[Deployment]]            | Firebase Hosting and static build                 |
 | [[API-Reference]]         | HTTP endpoints and JSON payloads                  |
 | [[Troubleshooting]]       | Common issues and fixes                           |
+| [[Project-History]]       | Timeline from 2019 to platform hardening refactor |
+| [[Releases]]              | Tagged releases including `working-messy-code`    |
 
 ## Screenshots
 

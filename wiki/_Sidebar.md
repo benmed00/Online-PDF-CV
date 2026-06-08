@@ -12,6 +12,11 @@
 - [API Reference](API-Reference)
 - [Troubleshooting](Troubleshooting)
 
+### History
+
+- [Project History](Project-History)
+- [Releases](Releases)
+
 ### Meta
 
 - [Sync Wiki](Sync-Wiki)

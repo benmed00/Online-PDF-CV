@@ -37,20 +37,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Check code formatting
-        run: npm run format:check
-
-      - name: Lint code
-        run: npm run lint
-
-      - name: Run tests
-        run: npm test
-
-      - name: Build static site
-        run: npm run build
-
-      - name: Generate test coverage
-        run: npm run test:coverage
+      - name: Validate (format, lint, audit, test, build)
+        run: npm run validate
 
       - name: Upload coverage to Codecov
         continue-on-error: true

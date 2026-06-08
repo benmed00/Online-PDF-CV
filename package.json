@@ -1,6 +1,6 @@
 {
   "name": "benyakoub-cv",
-  "version": "3.6.2",
+  "version": "4.1.0",
   "description": "Host your PDF resume online with Express and Firebase Hosting, including multi-version delivery, API docs, and analysis tools.",
   "private": true,
   "author": "Jacob Son <ben94med@gmail.com>",
@@ -33,8 +33,11 @@
     "start": "node ./bin/www",
     "dev": "node app.js",
     "deploy": "firebase deploy",
-    "build": "node scripts/build-static.js && prettier --write public/index.html public/docs/index.html public/analyzer/index.html public/compare/index.html public/api/versions.json",
-    "precommit": "npm run format && npm run format:check && npm run lint",
+    "build": "node scripts/build-static.js",
+    "validate": "npm run format:check && npm run lint && npm run audit:check && npm run version:check && npm run test:coverage && npm run build",
+    "validate:full": "npm run validate && npm run test:e2e",
+    "precommit": "npx lint-staged && npm run format:check && npm run lint",
+    "audit:check": "npm audit --audit-level=high",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
@@ -47,11 +50,16 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:report": "playwright show-report",
     "test:e2e:artifacts": "node scripts/copy-playwright-artifacts.js",
-    "test:all": "npm test && npm run build && npm run test:e2e && npm run test:e2e:artifacts",
+    "test:all": "npm run validate:full && npm run test:e2e:artifacts",
     "add-version": "node scripts/add-resume-version.js",
     "generate-sitemap": "node scripts/generate-sitemap.js",
     "create-template": "node scripts/create-resume-template.js",
-    "export": "node scripts/export-resume.js"
+    "export": "node scripts/export-resume.js",
+    "version:sync": "node scripts/sync-version.js",
+    "version:check": "node scripts/sync-version.js --check",
+    "version:patch": "node scripts/sync-version.js --patch",
+    "version:minor": "node scripts/sync-version.js --minor",
+    "version:major": "node scripts/sync-version.js --major"
   },
   "dependencies": {
     "cookie-parser": "^1.4.6",
@@ -80,6 +88,10 @@
     "lint-staged": "^15.5.0"
   },
   "lint-staged": {
-    "*.{js,cjs,mjs,json,md,yml,yaml,css,html,pug}": "prettier --write"
+    "*.{js,cjs,mjs}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,md,yml,yaml,css,html,pug}": "prettier --write"
   }
 }

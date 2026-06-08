@@ -1,6 +1,58 @@
 # Changelog
 
-## Version 4.0.0 - Feature Enhancement
+All notable changes to Online-PDF-CV. For the full timeline and refactor context see [docs/project-history.md](docs/project-history.md) and [docs/releases/](docs/releases/README.md).
+
+---
+
+## Unreleased
+
+---
+
+## Version 4.1.0 — Analyzer & quality gates (2026-06)
+
+Target release for [PR #32](https://github.com/benmed00/Online-PDF-CV/pull/32). Git tag `v4.1.0` on merge to `master`.
+
+### Added
+
+- File upload extraction, VirusTotal scan, and OpenAI coach on `/analyzer`
+- Project history and release documentation under `docs/` and `wiki/`
+- Automated version sync (`npm run version:sync`) and merge-time release workflow
+- Husky quality gates: pre-commit, commit-msg (conventional commits), pre-push (`validate`)
+- Dependabot for npm and GitHub Actions; `npm audit --audit-level=high` in CI
+
+### Changed
+
+- Canonical repository: `benmed00/Online-PDF-CV`
+- `package.json` version aligned with git tags (`v4.0.0` platform hardening → `4.1.0` for this wave)
+
+---
+
+## Version 4.0.0 — Platform hardening (2026-06)
+
+Git tag [`v4.0.0`](https://github.com/benmed00/Online-PDF-CV/releases/tag/v4.0.0). Maintainer milestone also referred to as **v3.6.2 platform hardening** — see [docs/releases/platform-hardening-v3.6.2.md](docs/releases/platform-hardening-v3.6.2.md).
+
+### Added
+
+- Express 5 routing with Helmet CSP and version slug validation
+- Winston logging, `AppError`, hybrid JSON/HTML error handler
+- Static build pipeline (`npm run build`) for Firebase Hosting
+- Playwright usability tests with screenshot and video capture
+- GitHub Wiki source (`wiki/`) and maintainer docs hub (`docs/`)
+- CI workflow: lint, test, build, e2e on `master`
+
+### Fixed
+
+- Merge conflicts in `app.js`, `package.json`, views
+- `app.get('*')` wildcard serving PDF for all routes (inherited from pre-refactor base)
+- Unmounted routers, unreachable 404 handler
+- Path traversal on `/resume/:version`
+- 11 npm audit vulnerabilities remediated
+
+---
+
+## Version 4.0.0 — Feature enhancement (2025)
+
+See [docs/project-history.md#phase-3--platform-build-out-20252026](docs/project-history.md) for context.
 
 ### New Features
 
@@ -92,8 +144,19 @@
 - Improved error handling for missing files
 - Enhanced mobile responsiveness
 
-## Version 3.6.2 - Initial Version
+## Version 3.6.2 — `working-messy-code` (2023-06-02)
 
-- Basic Express.js application serving a single PDF resume
-- Firebase hosting integration
-- Simple deployment workflow
+Tagged release [`working-messy-code`](https://github.com/benmed00/Online-PDF-CV/releases/tag/working-messy-code). Full notes: [docs/releases/working-messy-code.md](docs/releases/working-messy-code.md).
+
+- Basic Express.js application (6 dependencies, 22 files)
+- Firebase Hosting with static `index.html` embedding `resume.pdf`
+- Express server had unmounted routers and a wildcard PDF route (broken for local dev)
+- Jade templates present but unused in production
+- No tests, no CI beyond Firebase deploy workflows
+
+---
+
+## Version 1.x — Initial version (2019)
+
+- Initial Express + Jade CV host
+- Heroku deployment references (later replaced by Firebase)

@@ -72,4 +72,23 @@ describe('openAiResumeInsights', () => {
     expect(parsed.summary).toBe('Hi');
     expect(parsed.scoreEstimate).toBe(50);
   });
+
+  test('surfaces quota errors from OpenAI', async () => {
+    process.env.OPENAI_API_KEY = 'sk-test';
+
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 429,
+      text: async () =>
+        JSON.stringify({
+          error: {
+            message: 'You exceeded your current quota, please check your plan and billing details.',
+          },
+        }),
+    });
+
+    await expect(
+      getAiResumeInsights('resume text here for quota test case', 'general')
+    ).rejects.toThrow(/quota or billing limit/i);
+  });
 });

@@ -42,6 +42,26 @@ Documented limitations and bugs as of v3.6.2.
 
 ---
 
+### Analyzer APIs unavailable on Firebase static hosting
+
+**Symptom:** On production Firebase, `/analyzer` loads but upload scan, server extraction, and AI Coach do not work.
+
+**Cause:** `POST /api/analyze`, `POST /api/extract-resume`, and `GET /api/analyzer/config` require the Express server. Firebase serves pre-built HTML only.
+
+**Workaround:** Run `npm start` locally with `.env` keys, or self-host Express behind a reverse proxy.
+
+**Status:** Documented — full server-side analyzer is a local/self-hosted feature unless Cloud Functions are added later.
+
+---
+
+### OpenAI AI Coach — quota or billing
+
+**Symptom:** AI checkbox visible but AI Coach tab empty; API returns `aiInsights.available: false` with quota/billing message.
+
+**Cause:** `OPENAI_API_KEY` is set but OpenAI returns HTTP 429 (quota exceeded).
+
+**Fix:** Add billing credits at [platform.openai.com](https://platform.openai.com/). Local keyword scores and checks still work without AI.
+
 ## Development
 
 ### ESLint warnings on startup banner

@@ -74,11 +74,16 @@ npm run add-version -- /path/to/your.pdf technical
 
 ## Environment variables
 
-| Variable   | Default                 | Purpose                                         |
-| ---------- | ----------------------- | ----------------------------------------------- |
-| `PORT`     | `3000`                  | HTTP port                                       |
-| `NODE_ENV` | —                       | `development` shows stack traces on error pages |
-| `SITE_URL` | `http://localhost:3000` | Canonical URL used by `npm run build`           |
+| Variable             | Default                 | Purpose                                                        |
+| -------------------- | ----------------------- | -------------------------------------------------------------- |
+| `PORT`               | `3000`                  | HTTP port                                                      |
+| `NODE_ENV`           | —                       | `development` shows stack traces on error pages                |
+| `SITE_URL`           | `http://localhost:3000` | Canonical URL used by `npm run build`                          |
+| `VIRUSTOTAL_API_KEY` | —                       | VirusTotal scan on server-side uploads (`/api/extract-resume`) |
+| `OPENAI_API_KEY`     | —                       | AI Coach insights on `/analyzer` (`POST /api/analyze`)         |
+| `OPENAI_MODEL`       | `gpt-4o-mini`           | Optional OpenAI model override                                 |
+
+Copy `.env.example` to `.env` for analyzer keys. **Firebase static hosting does not run these APIs** — use Express locally or self-hosted for full analyzer features.
 
 Example production build:
 
@@ -90,22 +95,23 @@ SITE_URL=https://benyakoub-cv.firebaseapp.com npm run build
 
 ## npm scripts reference
 
-| Script                    | Command                             | When to use                                                |
-| ------------------------- | ----------------------------------- | ---------------------------------------------------------- |
-| `start`                   | `node ./bin/www`                    | Normal local/production server                             |
-| `dev`                     | `node app.js`                       | Direct app start (no bin wrapper)                          |
-| `build`                   | Static HTML generation              | **Required before Firebase deploy**                        |
-| `test`                    | Jest unit tests                     | After code changes                                         |
-| `test:coverage`           | Jest + coverage                     | CI / quality review                                        |
-| `test:e2e`                | Playwright usability                | UI regression checks                                       |
-| `test:all`                | test → build → e2e → copy artifacts | Pre-PR full pipeline                                       |
-| `test:e2e:report`         | Open Playwright HTML report         | Debug failed e2e                                           |
-| `lint` / `lint:fix`       | ESLint                              | Code quality                                               |
-| `format` / `format:check` | Prettier                            | Match CI formatting gate                                   |
-| `deploy`                  | `firebase deploy`                   | Publish to Firebase Hosting                                |
-| `add-version`             | Add resume PDF version              | Content updates                                            |
-| `generate-sitemap`        | Sitemap XML                         | SEO (`npm run generate-sitemap -- https://yourdomain.com`) |
-| `export`                  | Export resume formats               | JSON, TXT, Markdown                                        |
+| Script                    | Command                            | When to use                                                             |
+| ------------------------- | ---------------------------------- | ----------------------------------------------------------------------- |
+| `start`                   | `node ./bin/www`                   | Normal local/production server                                          |
+| `dev`                     | `node app.js`                      | Direct app start (no bin wrapper)                                       |
+| `build`                   | Static HTML generation             | **Required before Firebase deploy**                                     |
+| `test`                    | Jest unit tests                    | After code changes                                                      |
+| `test:coverage`           | Jest + coverage                    | CI / quality review                                                     |
+| `test:e2e`                | Playwright usability               | UI regression checks                                                    |
+| `test:e2e:analyzer`       | Analyzer workflow e2e only         | Full `/analyzer` path, edge cases, API mocks                            |
+| `test:all`                | validate:full + copy e2e artifacts | Pre-PR full pipeline (format, lint, audit, coverage, build, e2e, media) |
+| `test:e2e:report`         | Open Playwright HTML report        | Debug failed e2e                                                        |
+| `lint` / `lint:fix`       | ESLint                             | Code quality                                                            |
+| `format` / `format:check` | Prettier                           | Match CI formatting gate                                                |
+| `deploy`                  | `firebase deploy`                  | Publish to Firebase Hosting                                             |
+| `add-version`             | Add resume PDF version             | Content updates                                                         |
+| `generate-sitemap`        | Sitemap XML                        | SEO (`npm run generate-sitemap -- https://yourdomain.com`)              |
+| `export`                  | Export resume formats              | JSON, TXT, Markdown                                                     |
 
 ---
 

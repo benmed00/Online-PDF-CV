@@ -27,7 +27,7 @@ By participating in this project, you agree to maintain a respectful and inclusi
 1. Fork the repository
 2. Create a new branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
-4. Run the linter and formatter (`npm run lint && npm run format`)
+4. Run quality checks: `npm run validate` (or let Husky hooks run automatically on commit/push)
 5. Commit your changes (`git commit -m 'Add some amazing feature'`)
 6. Push to the branch (`git push origin feature/amazing-feature`)
 7. Open a Pull Request
@@ -38,24 +38,58 @@ By participating in this project, you agree to maintain a respectful and inclusi
 2. Install dependencies: `npm install`
 3. Start the development server: `npm start`
 
-## Code Style
+## Code quality (required)
 
-This project uses ESLint and Prettier to enforce code style. Before submitting a pull request, make sure your code passes the linting and formatting checks:
+This project enforces formatting and linting **before every commit** and runs CI checks **before every push**.
+
+| Hook / command             | What it runs                                                                                  |
+| -------------------------- | --------------------------------------------------------------------------------------------- |
+| **pre-commit** (automatic) | `lint-staged` → Prettier + ESLint fix on staged files, then full-repo `format:check` + `lint` |
+| **commit-msg** (automatic) | Conventional commit format (`feat:`, `fix:`, `docs:`, …)                                      |
+| **pre-push** (automatic)   | `npm run validate` — same gate as CI build job                                                |
+| `npm run format`           | Format entire repository (use before large doc changes)                                       |
+| `npm run precommit`        | Manual pre-commit pipeline without committing                                                 |
+| `npm run validate`         | `format:check` + `lint` + `audit:check` + `test:coverage` + `build`                           |
+| `npm run validate:full`    | `validate` + Playwright e2e                                                                   |
+| `npm run test:all`         | `validate:full` + publish Playwright media to `docs/assets/`                                  |
 
 ```bash
-# Check code style
-npm run lint
-
-# Fix linting issues
-npm run lint:fix
-
-# Format code
+# Fix formatting across the repo
 npm run format
+
+# Run the same checks as CI (without e2e)
+npm run validate
+
+# Full local CI including Playwright
+npm run validate:full
 ```
+
+Commit messages must follow [Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+feat(analyzer): add keyword density scoring
+fix: reject invalid resume slug
+docs: document quality gate workflow
+```
+
+Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`.
+
+**Versioning:** run `npm run version:sync` before opening a release PR if you added `feat:` or breaking commits since the last `v*` tag. CI runs `npm run version:check` inside `validate`. On merge to `master`, the release workflow tags `vX.Y.Z` automatically.
+
+To bypass hooks in an emergency only: `git commit --no-verify` / `git push --no-verify` (not recommended).
+
+See [docs/best-practices.md](docs/best-practices.md#quality-gates) for the full gate diagram and troubleshooting.
 
 ## Testing
 
-Currently, this project does not have automated tests. When adding new features, please manually test them thoroughly.
+Automated tests are required for changes that affect routes, utilities, or build output:
+
+```bash
+npm test                 # Jest unit/integration
+npm run test:coverage    # Jest with coverage thresholds
+npm run test:e2e         # Playwright usability
+npm run test:all         # Full pipeline + media artifacts
+```
 
 ## Documentation
 
