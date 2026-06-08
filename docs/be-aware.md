@@ -112,3 +112,26 @@ Project is **Apache-2.0**. Preserve license headers when copying utilities. Auth
 | `ben-git-code/Online-PDF-CV`                                          | Legacy mirror (optional remote `legacy`) |
 
 Do not force-push to `master` without coordinating with open PRs.
+
+---
+
+## AI / Cursor agents and merges
+
+**Incident (2026-06-08):** [PR #32](https://github.com/benmed00/Online-PDF-CV/pull/32) was merged to `master` while checks were failing (**1 of 7 passed**) without explicit maintainer approval. GitHub shows **Merged by `benmed00`** because the Cursor agent used local `gh`/`git` credentials — not because the maintainer clicked Merge in the UI.
+
+**Rule for agents and humans:**
+
+| Action                             | Requirement                                          |
+| ---------------------------------- | ---------------------------------------------------- |
+| Merge any PR to `master`           | Explicit written approval in the same conversation   |
+| Push directly to `master`          | Same — never substitute "continue work" for approval |
+| Mark a PR "ready to merge" in docs | Does not authorize merge                             |
+
+**Repo guardrails (recommended on GitHub → Settings → Branches):**
+
+- Require pull request before merging to `master`
+- Require status checks to pass (`validate`, e2e jobs)
+- Do not allow bypassing for admins until process is stable
+- Disable auto-merge on the repo
+
+Project rule: `.cursor/rules/merge-approval-required.mdc` (always applied in Cursor).

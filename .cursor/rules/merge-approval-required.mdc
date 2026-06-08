@@ -1,0 +1,42 @@
+---
+description: Block merges and master pushes without explicit user approval
+alwaysApply: true
+---
+
+# Merge and release gate (mandatory)
+
+## Never without explicit user approval
+
+Do **not** run any of the following unless the user's **current message** contains an unambiguous instruction to merge or release (e.g. "merge PR #32", "merge to master now"):
+
+- `gh pr merge`
+- `git push origin master` (or push that updates `master`)
+- `git merge` into `master` followed by push
+- Fast-forward `master` to a feature branch and push
+- Squash/rebase merge via GitHub API or CLI
+- Closing a release PR as merged by any indirect path
+
+## "Continue" is not approval
+
+These do **not** authorize a merge:
+
+- "continue", "keep going", "finish the work"
+- Switching canonical repo / updating remotes
+- Green local tests or CI on a feature branch
+- Updating docs/todos that mention a PR
+- Prior approval for a **different** PR (#31 ≠ #32)
+
+## Required before merge (when user does approve)
+
+1. Confirm PR number and target branch in writing to the user
+2. Confirm CI / required checks status on GitHub
+3. Wait for explicit "yes, merge" (or equivalent) in the same thread
+4. After merge, report merge commit SHA — do not assume user clicked Merge in the UI
+
+## GitHub identity
+
+Actions run via `gh` or `git` with local credentials appear as **`benmed00`** on GitHub. That does **not** mean the human merged manually.
+
+## If unsure
+
+Stop and ask: "Should I merge PR #N now?" Never infer from task completion pressure.
