@@ -10,17 +10,40 @@ permissions:
   pull-requests: write
 
 jobs:
-  build_and_preview:
+  build:
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+      - run: npm ci && npm run build
+
+  build_and_preview:
+    needs: build
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository && secrets.FIREBASE_SERVICE_ACCOUNT_BENYAKOUB_CV != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
       - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_BENYAKOUB_CV }}
           projectId: benyakoub-cv
+
+  preview_skipped:
+    needs: build
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository && secrets.FIREBASE_SERVICE_ACCOUNT_BENYAKOUB_CV == '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Firebase preview skipped — FIREBASE_SERVICE_ACCOUNT_BENYAKOUB_CV secret is not available (common for Dependabot PRs)."
 
   fork_pr_notice:
     if: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
