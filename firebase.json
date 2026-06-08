@@ -1,8 +1,21 @@
 {
   "hosting": {
+    "site": "benyakoub-cv",
     "public": "public",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
+      {
+        "source": "/api/analyze",
+        "function": "api"
+      },
+      {
+        "source": "/api/extract-resume",
+        "function": "api"
+      },
+      {
+        "source": "/api/analyzer/config",
+        "function": "api"
+      },
       {
         "source": "/api/versions",
         "destination": "/api/versions.json"
@@ -42,10 +55,7 @@
       "source": "functions",
       "codebase": "default",
       "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log", "*.local"],
-      "predeploy": [
-        "npm --prefix \"$RESOURCE_DIR\" run lint",
-        "npm --prefix \"$RESOURCE_DIR\" run build"
-      ]
+      "predeploy": ["npm --prefix functions run build"]
     }
   ],
   "storage": {

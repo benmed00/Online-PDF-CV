@@ -17,14 +17,13 @@ module.exports = {
     project: ['tsconfig.json', 'tsconfig.dev.json'],
     sourceType: 'module',
   },
-  ignorePatterns: [
-    '/lib/**/*', // Ignore built files.
-    '/generated/**/*', // Ignore generated files.
-  ],
+  ignorePatterns: ['/lib/**/*', '/generated/**/*', '/shared/**/*', '/scripts/**/*'],
   plugins: ['@typescript-eslint', 'import'],
   rules: {
     quotes: ['error', 'double'],
     'import/no-unresolved': 0,
     indent: ['error', 2],
+    'linebreak-style': 'off',
+    'object-curly-spacing': ['error', 'never'],
   },
 };
