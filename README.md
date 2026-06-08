@@ -1,87 +1,12 @@
 # Online-PDF-CV
 
-A simple and elegant way to host your PDF resume online with Express and Firebase.
+Host a PDF resume online with **Express 5**, **Firebase Hosting**, multi-version delivery, API docs, and analysis tools.
 
-**Live demo:** [https://benyakoub-cv.firebaseapp.com/](https://benyakoub-cv.firebaseapp.com/)
-
-**Documentation wiki:** see the [`wiki/`](wiki/Home.md) folder (GitHub Wiki–compatible). Start with [Home](wiki/Home.md) · [Getting Started](wiki/Getting-Started.md) · [Testing & Usability](wiki/Testing-and-Usability.md)
-
----
-
-## Screenshots
-
-Captured by Playwright usability tests (desktop, 1280×720).
-
-### Home page
-
-Embedded PDF resume with primary navigation.
-
-![Home page — PDF resume viewer](docs/assets/screenshots/01-home-desktop.png)
-
-### API documentation
-
-![API documentation page](docs/assets/screenshots/02-docs-page.png)
-
-### Resume analyzer
-
-| Input                                                                           | Results                                                                                       |
-| ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| ![Analyzer — paste resume text](docs/assets/screenshots/03-analyzer-before.png) | ![Analyzer — keyword scores and suggestions](docs/assets/screenshots/04-analyzer-results.png) |
-
-### Resume comparison
-
-| Select versions                                                               | Side-by-side PDFs                                                                   |
-| ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| ![Compare — version selectors](docs/assets/screenshots/05-compare-before.png) | ![Compare — side-by-side view](docs/assets/screenshots/06-compare-side-by-side.png) |
-
-### Navigation flow
-
-![Navigate to API docs](docs/assets/screenshots/08-nav-docs.png)
-
-![Navigate to analyzer](docs/assets/screenshots/09-nav-analyzer.png)
-
-![Navigate to compare tool](docs/assets/screenshots/10-nav-compare.png)
-
-![Return to home](docs/assets/screenshots/11-nav-home.png)
+**Live** · [benyakoub-cv.firebaseapp.com](https://benyakoub-cv.firebaseapp.com/)  
+**Guides** · [Wiki home](wiki/Home.md) · [Getting started](wiki/Getting-Started.md) · [API reference](wiki/API-Reference.md)  
+**Maintainers** · [docs/](docs/README.md) · [CHANGELOG](CHANGELOG.md) · v`4.1.0`
 
 ---
-
-## Usability videos
-
-WebM recordings from Playwright (desktop and mobile). Stored in [`docs/assets/videos/`](docs/assets/videos/).
-
-| Video                                                                 | Description                    |
-| --------------------------------------------------------------------- | ------------------------------ |
-| [home-desktop.webm](docs/assets/videos/home-desktop.webm)             | Home page load (desktop)       |
-| [analyzer-desktop.webm](docs/assets/videos/analyzer-desktop.webm)     | Analyzer workflow (desktop)    |
-| [compare-desktop.webm](docs/assets/videos/compare-desktop.webm)       | Compare tool (desktop)         |
-| [navigation-desktop.webm](docs/assets/videos/navigation-desktop.webm) | Full navigation tour (desktop) |
-| [home-mobile.webm](docs/assets/videos/home-mobile.webm)               | Home page load (mobile)        |
-| [navigation-mobile.webm](docs/assets/videos/navigation-mobile.webm)   | Full navigation tour (mobile)  |
-
-Regenerate screenshots and videos:
-
-```bash
-npm run test:all
-```
-
----
-
-## Features
-
-- **Multiple Resume Versions** — `/resume/:version` (technical, executive, creative, …)
-- **API Documentation** — interactive page at `/docs`
-- **Resume Analyzer** — keyword coverage, best-practice checks, multi-format upload, VirusTotal scan, optional OpenAI coach at `/analyzer`
-- **Resume Comparison** — side-by-side PDF view at `/compare`
-- **Versions API** — JSON at `/api/versions`
-- **Static Firebase build** — `npm run build` pre-renders pages for hosting
-- **Testing** — Jest unit tests + Playwright usability tests with screenshots and video
-- **CI/CD** — GitHub Actions for lint, test, build, and Firebase deploy
-
-## Technologies
-
-- Node.js · Express 5 · Pug · Firebase Hosting
-- Jest · Playwright · ESLint · Prettier · Winston · Helmet
 
 ## Quick start
 
@@ -92,94 +17,117 @@ npm install
 npm start
 ```
 
-Open http://localhost:3000
+Open [http://localhost:3000](http://localhost:3000).
 
-### Analyzer API keys (optional)
-
-Copy `.env.example` to `.env` and set:
-
-- `VIRUSTOTAL_API_KEY` — malware scan on uploaded files (Word, PDF, images, …)
-- `OPENAI_API_KEY` — AI Coach tab with strengths, ATS tips, and improvements
-
-Restart the server after changing `.env`. Never commit `.env` to git.
-
-**Firebase vs Express:** On [Firebase Hosting](https://benyakoub-cv.firebaseapp.com/analyzer), the analyzer UI runs with **client-side scoring only** — no VirusTotal scan, no OpenAI coach, no server upload extraction. Run `npm start` locally (or self-host Express) for the full workflow: upload → VirusTotal → extract → analyze → AI Coach.
-
-If AI Coach shows a quota/billing message, add credits at [platform.openai.com](https://platform.openai.com/) — local keyword scores still work.
-
-### Add your resume
-
-1. Replace `public/resume.pdf` with your PDF
-2. Add versions to `public/resumes/` (e.g. `technical.pdf`)
-3. Or use: `npm run add-version -- /path/to/file.pdf technical`
-
-## Scripts
+Replace `public/resume.pdf`, add slugs under `public/resumes/`, or run:
 
 ```bash
-npm start              # Start server (bin/www)
-npm run dev            # Start server (app.js)
-npm run build          # Build static HTML for Firebase
-npm test               # Jest unit tests
-npm run test:coverage  # Jest with coverage
-npm run test:e2e       # Playwright usability tests (all specs)
-npm run test:e2e:analyzer  # Analyzer workflow + edge cases only
-npm run test:all       # validate:full + publish e2e media to docs/assets/
-npm run test:e2e:report  # Open Playwright HTML report
-npm run lint           # ESLint
-npm run format         # Prettier
-npm run deploy         # firebase deploy
-npm run add-version    # Add a resume PDF version
-npm run generate-sitemap -- https://yourdomain.com
-npm run export         # Export resume to json/txt/markdown
+npm run add-version -- /path/to/file.pdf technical
 ```
 
-## Deployment
+Deploy: `npm run build` → `npm run deploy` ([details](wiki/Deployment.md)).
 
-```bash
-npm run build
-firebase login
-npm run deploy
-```
+---
 
-See [wiki/Deployment.md](wiki/Deployment.md) for CI/CD and rewrite rules.
+## What you get
+
+| Route              | Purpose                                                                |
+| ------------------ | ---------------------------------------------------------------------- |
+| `/`                | Home — embedded PDF + navigation                                       |
+| `/resume/:version` | Versioned PDF (`technical`, `executive`, …)                            |
+| `/api/versions`    | JSON list of available versions                                        |
+| `/docs`            | Interactive API documentation                                          |
+| `/analyzer`        | Keyword scoring, upload extraction, optional VirusTotal + OpenAI coach |
+| `/compare`         | Side-by-side PDF comparison                                            |
+
+**Stack:** Node.js · Express 5 · Pug · Firebase · Jest · Playwright · Winston · Helmet
+
+**Quality:** Husky hooks · CI (`validate` + e2e) · `npm audit` gate · Conventional commits
+
+---
+
+## Common commands
+
+| Command               | Purpose                                       |
+| --------------------- | --------------------------------------------- |
+| `npm start`           | Run server                                    |
+| `npm run build`       | Pre-render static HTML for Firebase           |
+| `npm run validate`    | Format, lint, audit, tests, build (CI parity) |
+| `npm run test:all`    | Full pipeline + refresh Playwright media      |
+| `npm run deploy`      | `firebase deploy`                             |
+| `npm run add-version` | Add a resume PDF slug                         |
+
+Full script list: [docs/how-to-use.md](docs/how-to-use.md).
+
+<details>
+<summary><strong>Analyzer API keys</strong> (optional — Express / local only)</summary>
+
+Copy `.env.example` → `.env`:
+
+| Variable             | Purpose                               |
+| -------------------- | ------------------------------------- |
+| `VIRUSTOTAL_API_KEY` | Malware scan on uploads               |
+| `OPENAI_API_KEY`     | AI Coach tab (ATS tips, improvements) |
+
+Restart after edits. Never commit `.env`.
+
+**Firebase vs Express:** [Production analyzer](https://benyakoub-cv.firebaseapp.com/analyzer) uses **client-side scoring only**. Run `npm start` locally for upload → VirusTotal → extract → AI Coach.
+
+</details>
+
+---
 
 ## Documentation
 
-| Resource                                   | Topic                                                                                        |
-| ------------------------------------------ | -------------------------------------------------------------------------------------------- |
-| [`docs/`](docs/README.md)                  | **Maintainer hub** — index, roadmap, backlog, how-it-works, best practices, known issues     |
-| [Project history](docs/project-history.md) | Timeline from 2019 through the platform hardening refactor                                   |
-| [Releases](docs/releases/README.md)        | Tagged releases including [`working-messy-code`](docs/releases/working-messy-code.md) (2023) |
-| [How to use](docs/how-to-use.md)           | Scripts, deploy, local dev                                                                   |
-| [How it works](docs/how-it-works.md)       | Architecture and request flow                                                                |
-| [CHANGELOG](CHANGELOG.md)                  | Version-by-version release notes                                                             |
+| Link                                                 | For                                      |
+| ---------------------------------------------------- | ---------------------------------------- |
+| [Getting started](wiki/Getting-Started.md)           | Install, first deploy                    |
+| [Deployment](wiki/Deployment.md)                     | Firebase rewrites & CI                   |
+| [Testing & usability](wiki/Testing-and-Usability.md) | Jest, Playwright, media                  |
+| [Troubleshooting](wiki/Troubleshooting.md)           | Common issues                            |
+| [docs/ hub](docs/README.md)                          | Roadmap, backlog, architecture, releases |
+| [Project history](docs/project-history.md)           | Refactor timeline                        |
+| [Contributing](CONTRIBUTING.md)                      | Hooks, PR workflow                       |
 
-### Wiki (user guides)
-
-| Wiki page                                              | Topic                          |
-| ------------------------------------------------------ | ------------------------------ |
-| [Home](wiki/Home.md)                                   | Overview                       |
-| [Getting Started](wiki/Getting-Started.md)             | Install and first deploy       |
-| [Development](wiki/Development.md)                     | Architecture and scripts       |
-| [Testing and Usability](wiki/Testing-and-Usability.md) | Jest, Playwright, media assets |
-| [Deployment](wiki/Deployment.md)                       | Firebase Hosting               |
-| [API Reference](wiki/API-Reference.md)                 | HTTP endpoints                 |
-| [Project History](wiki/Project-History.md)             | Refactor timeline and releases |
-| [Releases](wiki/Releases.md)                           | Tagged release index           |
-| [Troubleshooting](wiki/Troubleshooting.md)             | Common issues                  |
-| [Sync Wiki](wiki/Sync-Wiki.md)                         | Publish to GitHub Wiki         |
+---
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/my-feature`
-3. Run `npm run test:all` before submitting
-4. Open a pull request
+1. Fork → feature branch → `npm run validate` (or `npm run test:all` before PR)
+2. Conventional commits (`feat:`, `fix:`, `docs:`, …)
+3. Open a PR against `master`
 
-## License
+Apache-2.0 — see [LICENSE](LICENSE). **Jacob Son** — [ben94med@gmail.com](mailto:ben94med@gmail.com)
 
-Apache License 2.0 — see [LICENSE](LICENSE).
+---
 
-## Author
+<details>
+<summary><strong>Screenshots</strong> — Playwright captures (click to expand)</summary>
 
-Jacob Son — [ben94med@gmail.com](mailto:ben94med@gmail.com)
+<p align="center">
+  <a href="docs/assets/screenshots/01-home-desktop.png"><img src="docs/assets/screenshots/01-home-desktop.png" width="360" alt="Home — PDF viewer" /></a>
+  <a href="docs/assets/screenshots/02-docs-page.png"><img src="docs/assets/screenshots/02-docs-page.png" width="360" alt="API docs" /></a>
+</p>
+<p align="center">
+  <a href="docs/assets/screenshots/03-analyzer-before.png"><img src="docs/assets/screenshots/03-analyzer-before.png" width="240" alt="Analyzer input" /></a>
+  <a href="docs/assets/screenshots/04-analyzer-results.png"><img src="docs/assets/screenshots/04-analyzer-results.png" width="240" alt="Analyzer results" /></a>
+  <a href="docs/assets/screenshots/06-compare-side-by-side.png"><img src="docs/assets/screenshots/06-compare-side-by-side.png" width="240" alt="Compare tool" /></a>
+</p>
+
+[Full gallery →](docs/assets/GALLERY.md) · Regenerate: `npm run test:all`
+
+</details>
+
+<details>
+<summary><strong>Usability videos</strong> (WebM)</summary>
+
+| Clip                                                                  | Description         |
+| --------------------------------------------------------------------- | ------------------- |
+| [home-desktop.webm](docs/assets/videos/home-desktop.webm)             | Home (desktop)      |
+| [analyzer-desktop.webm](docs/assets/videos/analyzer-desktop.webm)     | Analyzer workflow   |
+| [compare-desktop.webm](docs/assets/videos/compare-desktop.webm)       | Compare tool        |
+| [navigation-desktop.webm](docs/assets/videos/navigation-desktop.webm) | Navigation tour     |
+| [home-mobile.webm](docs/assets/videos/home-mobile.webm)               | Home (mobile)       |
+| [navigation-mobile.webm](docs/assets/videos/navigation-mobile.webm)   | Navigation (mobile) |
+
+</details>

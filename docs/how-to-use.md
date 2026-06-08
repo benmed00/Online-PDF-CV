@@ -6,12 +6,12 @@ Guide for running, customizing, testing, and deploying Online-PDF-CV.
 
 ## Prerequisites
 
-| Requirement  | Version                                |
-| ------------ | -------------------------------------- |
-| Node.js      | ≥ 16.17.1 (20.x recommended)           |
-| npm          | Bundled with Node                      |
-| Firebase CLI | For deploy (`npm i -g firebase-tools`) |
-| Git          | For contribution workflow              |
+| Requirement  | Version                                   |
+| ------------ | ----------------------------------------- |
+| Node.js      | ≥ 20.0.0 (22.x recommended for CI parity) |
+| npm          | Bundled with Node                         |
+| Firebase CLI | For deploy (`npm i -g firebase-tools`)    |
+| Git          | For contribution workflow                 |
 
 ---
 

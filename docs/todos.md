@@ -19,7 +19,7 @@ Active short-term tasks. For the full prioritized queue see [backlog.md](backlog
 - [ ] Verify Firebase production deploy for `/docs`, `/analyzer`, `/compare`
 - [ ] Confirm `npm run test:all` green on `master`
 - [ ] Close obsolete issues #25–#26 (upstream/fork tracking — no longer applicable)
-- [ ] Close stale Snyk/Dependabot PRs superseded by Express 5 hardening
+- [x] Close stale Snyk/Dependabot PRs #3–#16 (superseded by merged #32 / Express 5)
 - [ ] **OpenAI billing** — restore AI Coach when quota is available (key valid; 429 quota as of 2026-06-08)
 
 ---

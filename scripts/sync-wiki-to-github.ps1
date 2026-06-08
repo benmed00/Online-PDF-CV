@@ -21,9 +21,12 @@ if (-not (Test-Path $WikiSrc)) {
 if (Test-Path $WikiClone) {
     Write-Host "Updating existing wiki clone..."
     Push-Location $WikiClone
-    git fetch origin 2>$null
-    git checkout master 2>$null
-    if ($LASTEXITCODE -ne 0) { git checkout main 2>$null }
+    $prevEap = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    git fetch origin *> $null
+    git checkout master *> $null
+    if ($LASTEXITCODE -ne 0) { git checkout main *> $null }
+    $ErrorActionPreference = $prevEap
     Pop-Location
 } else {
     Write-Host "Cloning wiki repository..."
@@ -64,8 +67,12 @@ $branch = git branch --show-current
 if (-not $branch) { git branch -M master; $branch = "master" }
 
 Write-Host "Pushing to $WikiRemote ($branch)..."
-git push origin $branch 2>&1 | Out-Host
-if ($LASTEXITCODE -ne 0) {
+$prevEap = $ErrorActionPreference
+$ErrorActionPreference = "Continue"
+git push origin $branch *> $null
+$pushOk = $LASTEXITCODE -eq 0
+$ErrorActionPreference = $prevEap
+if (-not $pushOk) {
     Pop-Location
     throw "Push failed. Ensure you are logged in: gh auth login"
 }
