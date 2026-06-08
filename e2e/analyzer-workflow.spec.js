@@ -505,6 +505,8 @@ test.describe('Resume Analyzer — edge cases', () => {
     await expect(page.locator('#results')).toBeVisible({ timeout: 15_000 });
     await expect(page.locator('#technical-score')).not.toHaveText('0%');
     await expect(page.locator('#ai-tab-btn')).toBeHidden();
+    await expect(page.locator('#alert-banner')).toHaveClass(/visible/);
+    await expect(page.locator('#alert-message')).toContainText(/offline analysis/i);
   });
 
   test('tab switching keeps layout stable (no flicker jump)', async ({ page }) => {
