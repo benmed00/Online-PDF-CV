@@ -8,12 +8,12 @@ Index of tagged releases and major milestones for Online-PDF-CV.
 
 ## Release index
 
-| Tag / version                                                                                     | Date       | Theme                                           | Documentation                                                                         |
-| ------------------------------------------------------------------------------------------------- | ---------- | ----------------------------------------------- | ------------------------------------------------------------------------------------- |
-| [`working-messy-code`](https://github.com/benmed00/Online-PDF-CV/releases/tag/working-messy-code) | 2023-06-02 | Minimal Firebase PDF host; Express layer broken | [Release notes](working-messy-code.md)                                                |
-| 3.6.2 (maintenance)                                                                               | 2023–2024  | CV updates, dependency security patches         | [Project history](../project-history.md#phase-1--maintenance-only-oct-2023--jul-2024) |
-| 4.0.0 (feature wave)                                                                              | 2025       | Analyzer, compare, docs, export, Jest           | [CHANGELOG](../../CHANGELOG.md)                                                       |
-| 3.6.2 (platform hardening)                                                                        | 2026       | Express 5, static build, Playwright, wiki       | [Platform hardening](platform-hardening-v3.6.2.md)                                    |
+| Tag / version                                                                                     | Date       | Theme                                           | Documentation                                                                                                          |
+| ------------------------------------------------------------------------------------------------- | ---------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| [`working-messy-code`](https://github.com/benmed00/Online-PDF-CV/releases/tag/working-messy-code) | 2023-06-02 | Minimal Firebase PDF host; Express layer broken | [Release notes](working-messy-code.md) · [Archive branch](archive-branches.md#archivefirst-release-working-messy-code) |
+| 3.6.2 (maintenance)                                                                               | 2023–2024  | CV updates, dependency security patches         | [Project history](../project-history.md#phase-1--maintenance-only-oct-2023--jul-2024)                                  |
+| 4.0.0 (feature wave)                                                                              | 2025       | Analyzer, compare, docs, export, Jest           | [CHANGELOG](../../CHANGELOG.md)                                                                                        |
+| 3.6.2 (platform hardening)                                                                        | 2026       | Express 5, static build, Playwright, wiki       | [Platform hardening](platform-hardening-v3.6.2.md)                                                                     |
 
 For the full timeline — when refactors happened, why, and what changed — see [Project history](../project-history.md).
 
@@ -48,11 +48,13 @@ For the full timeline — when refactors happened, why, and what changed — see
 ## Checking out a release locally
 
 ```bash
-git fetch origin tag working-messy-code
-git worktree add ../Online-PDF-CV-release working-messy-code
+git fetch origin archive/first-release-working-messy-code
+git worktree add ../Online-PDF-CV-release archive/first-release-working-messy-code
 cd ../Online-PDF-CV-release
 npm install
 npm start
 ```
 
-See [working-messy-code.md](working-messy-code.md) for expected local behaviour and known bugs at that tag.
+The archive branch [`archive/first-release-working-messy-code`](archive-branches.md) mirrors tag `working-messy-code` (commit `1bddfbc`). See [working-messy-code.md](working-messy-code.md) for expected local behaviour and known bugs at that snapshot.
+
+For all archive branches and maintainer notes, see [archive-branches.md](archive-branches.md).
